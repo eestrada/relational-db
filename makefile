@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 CC = g++
 CFLAGS = -Wall -g -I . -I inc/
 SUPP = ../string.supp
@@ -32,6 +31,3 @@ clean :
 	@ echo "Removing generated files"
 	rm -rf obj
 	rm -rf bin
-=======
-new makefile
->>>>>>> c8effe9804e2acd6492e7d9f57ba31af4a744e60
