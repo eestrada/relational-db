@@ -28,7 +28,7 @@ memcheck : $(BIN)
 
 $(BIN) : $(OBJ_FILES) $(DEPS) $(LIB)
 	@- mkdir -p bin
-	$(CC) -o $@ $(OBJ_FILES) $(CFLAGS)
+	$(CC) -o $@ $(OBJ_FILES) $(LIB) $(CFLAGS)
 
 obj/%.o : src/%.cpp $(DEPS)
 	@- mkdir -p obj
