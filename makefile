@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -g -I . -I inc/ -I cs240utils/inc/
-SUPP = ../string.supp
+SUPP = ./string.supp
 ARGS = file:///users/ta/cs240ta/webcrawler/file/student/index.html
 
 #LIB = cs240utils/lib/libcs240utils.a
