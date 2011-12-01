@@ -1,3 +1,4 @@
+
 #ifndef WEBPAGE_HPP
 #define WEBPAGE_HPP
 
@@ -26,16 +27,16 @@ class webpage
         
         //! Assignment operator
         //! @return Reference to oneself
-        webpage& operator = (const webpage & other);
+        webpage & operator = (const webpage & other);
 
         //! Get page URL
-        std::string& getURL();        
+        std::string & getURL();
 
         //! Set webpage description
         void setDesc(const std::string & descStr);
         
         //! Get webpage description
-        std::string& getDesc();
+        std::string & getDesc();
         
     // Private member functions
     private:

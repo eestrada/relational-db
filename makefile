@@ -7,12 +7,12 @@ ARGS = file:///users/ta/cs240ta/webcrawler/file/student/index.html
 LIB = cs240utils/obj/CommandRunner.o cs240utils/obj/FileSystem.o cs240utils/obj/HTMLTokenizer.o cs240utils/obj/StringUtil.o cs240utils/obj/FileInputStream.o cs240utils/obj/HTMLToken.o cs240utils/obj/HTTPInputStream.o cs240utils/obj/URLInputStream.o
 BIN = bin/crawlmain
 OBJ_FILES = obj/main.o
-DEPS = inc/parser.hpp inc/pgindex.hpp inc/webpage.hpp inc/word.hpp
+DEPS = inc/parser.hpp inc/pagebst.hpp inc/webpage.hpp inc/word.hpp inc/xmlgen.hpp
 STYLECHECKER = ~cs240ta/bin/CppCheckStyle/CppCheckStyle
 
 .PHONY : bin lib test clean memcheck
 
-bin : lib $(BIN)
+bin : $(BIN)
 	@ echo
 
 lib : $(LIB)
@@ -42,7 +42,7 @@ cs240utils/obj/%.o : cs240utils/src/%.cpp
 	@- mkdir -p cs240utils/obj/
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(BIN) : $(OBJ_FILES) $(DEPS) $(LIB)
+$(BIN) : $(OBJ_FILES) $(DEPS) lib
 	@- mkdir -p bin
 	$(CC) -o $@ $(OBJ_FILES) cs240utils/lib/libcs240utils.a $(CFLAGS)
 
@@ -52,5 +52,3 @@ obj/%.o : src/%.cpp $(DEPS)
 	@ echo
 	$(STYLECHECKER) $< $(DEPS)
 	@ echo
-
-

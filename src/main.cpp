@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
 #include "parser.hpp"
-#include "pgindex.hpp"
 #include "webpage.hpp"
+#include "pagebst.hpp"
 #include "word.hpp"
+#include "xmlgen.hpp"
 
 int main(int argc, char * argv[])
 {
