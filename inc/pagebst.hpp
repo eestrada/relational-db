@@ -129,9 +129,9 @@ class pagebst
 	private:
 
 		pageNode * rootnode;
-		int size;
+		int bstsize;
 
-		void CopyBST(pageNode * mine, pageNode * other);
+		void CopyBST(const pagebst & other);
 
 		pageNode * HelpFind(pageNode * treenode, const std::string & val) const;
 

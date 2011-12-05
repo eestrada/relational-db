@@ -1,4 +1,3 @@
-
 #ifndef WEBPAGE_HPP
 #define WEBPAGE_HPP
 
