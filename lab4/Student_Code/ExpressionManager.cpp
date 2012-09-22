@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <strstream>
 #include <stack>
 #include "ExpressionManager.h"
 
@@ -17,12 +16,14 @@ using namespace std;
 
 bool ExpressionManager::isBalanced(string expression)
 {
-    string::iterator it;
+    string::iterator it, end = expression.end();
 
-    for(it = expression.begin(); it < expression.end(); it++)
+    for(it = expression.begin(); it < end; it++)
     {
-        cout << *it << endl;
+        cout << *it << "\n";
     }
+
+    cout<<endl;
 
     return false;
 }
