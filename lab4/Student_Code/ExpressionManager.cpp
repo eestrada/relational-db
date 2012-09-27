@@ -17,6 +17,7 @@ using namespace std;
 bool ExpressionManager::isBalanced(string expression)
 {
     string::iterator it, end = expression.end();
+    stack <char> chstack;
 
     for(it = expression.begin(); it < end; it++)
     {
