@@ -11,7 +11,16 @@ void LinkedList::printMe()
     cout << "tail is: " << tail->data << endl;   
 }
 
-llnode* LinkedList::findNode(unsigned int index)
+
+/*
+ * Returns a pointer to the address of the node with value "value".
+ *
+ * Returns a value of -1 if the value does not exist.
+ *
+ * */
+
+
+llnode* LinkedList::findNode(int value)
 {
     if(index >= this->mysize)
     {
@@ -106,7 +115,24 @@ The list may or may not include a node with the given value.
 */
 void LinkedList::remove(int value)
 {
-    this -> mysize -= 1;
+    llnode *tmpA, *tmpB;
+
+    if(value == 0)
+    {
+        tmpA = this->head;
+        this->head = this->head->next;
+        delete(tmpA);
+        this -> mysize -= 1;
+    }
+    else if(value > 0 && value < this->mysize)
+    {
+        tmpA = this -> findNode(static_cast<unsigned int>(value-1));
+        tmpB = tmpA->next;
+        tmpA->next = tmpB->next;
+        delete(tmpB);
+        this -> mysize -= 1;
+    }
+
 }
 
 /*
@@ -116,14 +142,12 @@ Remove all nodes from the list.
 */
 void LinkedList::clear()
 {
-    for(int i = 0; i < this->mysize; i++)
+    for(int i = this->mysize - 1; i >= 0 ; i--)
     {
-        llnode *tmp = this->head;
-        head = head->next;
-        delete(tmp);
+        this->remove(i);
     }
 
-    this -> mysize = 0;
+//    this -> mysize = 0;
 
     this->printMe();
 }
