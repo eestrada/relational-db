@@ -7,42 +7,75 @@ using namespace std;
 
 void LinkedList::printMe()
 {
-    cout << "head is: " << head->data << endl;
-    cout << "tail is: " << tail->data << endl;   
+    cout << "Printing List contents.\n" << endl;
+
+    llnode *tmp = this->head;
+    for(int i = 0; i < this->mysize; i++)
+    {
+        cout << "My size is: " << this->mysize << endl;
+
+        cout << i << ": " << tmp->data << endl;
+        tmp = tmp->next;
+    }
+
 }
 
 
 /*
  * Returns a pointer to the address of the node with value "value".
  *
- * Returns a value of -1 if the value does not exist.
+ * Returns a null pointer if the value does not exist.
  *
  * */
 
 
-llnode* LinkedList::findNode(int value)
+void LinkedList::findNode(int value, llnode *parent, llnode *child)
 {
-    if(index >= this->mysize)
+    llnode *tmpA = NULL, *tmpB = this->head;
+
+    for(int i = 0; i < this->mysize; i++)
     {
-        llnode* tmp = this->head;
-        for(int i = 0; i < this->mysize; i++)
+        cout << "tmpB is: " << tmpB << endl;
+        if(tmpB->data == value)
         {
-            if(i == index)
-            {
-                return tmp;
-            }
-
-            if(tmp == NULL)
-            {
-                break;
-            }
-
-            tmp = tmp->next;
+            break;
         }
+
+        tmpA = tmpB;
+        tmpB = tmpB->next;
     }
-    return NULL;
+
+    parent = tmpA;
+    child = tmpB;
+
+    //If the value doesn't exist then child value should be NULL
+    //since the "next" variable of the tail node is always NULL.
+
+    return;
 }
 
+llnode* LinkedList::findNode(int index)
+{
+    if(index <= this->mysize && index <= 0)
+    {
+        llnode *tmp = this->head;
+
+        for(int i = 0; i < this->mysize; i++)
+        {
+           if(i == index)
+           {
+               return tmp;
+           }
+           else
+           {
+               tmp = tmp->next;
+           }
+        }
+    }
+
+    // If we are here, that means the index is out of range.
+    return NULL;
+}
 /*
 insertHead
 
@@ -53,12 +86,23 @@ duplicate values in the list.
 */
 void LinkedList::insertHead(int value)
 {
-    llnode * tmp = new llnode(value, head);
-    head = tmp;
+    llnode *tmpA, *tmpB;
 
-    if(tail == NULL) tail = tmp;
+    this->findNode(value, tmpA, tmpB);
 
-    this->printMe();
+    if(value >= 0 && tmpB == NULL)
+    {
+        llnode * tmp = new llnode(value, head);
+        head = tmp;
+
+        if(tail == NULL) tail = tmp;
+        
+        this->mysize += 1;
+
+        this->printMe();
+
+
+    }
 }
 
 /*
@@ -71,7 +115,11 @@ duplicate values in the list.
 */
 void LinkedList::insertTail(int value)
 {
-    if(value >= 0)
+    llnode *tmpA, *tmpB;
+
+    this->findNode(value, tmpA, tmpB);
+
+    if(value >= 0 && tmpB == NULL)
     {
         llnode *tmp = new llnode(value, NULL);
 
@@ -87,9 +135,10 @@ void LinkedList::insertTail(int value)
             tail->next = tmp;
             tail = tmp;
         }
-    }
+        
+        this->mysize += 1;
 
-    this->printMe();
+    }
 }
 
 /*
@@ -104,6 +153,17 @@ added to the list. Do not allow duplicate values in the list.
 */
 void LinkedList::insertAfter(int value, int insertionNode)
 {
+    llnode *nodeA, *nodeB;
+
+    this->findNode(insertionNode, nodeA, nodeB);
+
+    if(nodeB != NULL)
+    {
+        nodeA = new llnode(value, nodeB->next);
+        nodeB->next = nodeA;
+
+        this->mysize += 1;
+    }
 }
 
 /*
@@ -115,24 +175,37 @@ The list may or may not include a node with the given value.
 */
 void LinkedList::remove(int value)
 {
-    llnode *tmpA, *tmpB;
+    llnode *tmpA = NULL, *tmpB = NULL;
 
-    if(value == 0)
+    this->findNode(value, tmpA, tmpB);
+
+    if(tmpB != NULL) // If the node has a real address then we can remove it.
     {
-        tmpA = this->head;
-        this->head = this->head->next;
-        delete(tmpA);
-        this -> mysize -= 1;
-    }
-    else if(value > 0 && value < this->mysize)
-    {
-        tmpA = this -> findNode(static_cast<unsigned int>(value-1));
-        tmpB = tmpA->next;
-        tmpA->next = tmpB->next;
+        // If our node is the head then we need to be sure to change what
+        // "head" points to.
+        if(tmpB == this->head)
+        {
+            this->head = tmpB->next;
+
+            //If head is now pointing to NULL, then so must tail.
+            if(this->head == NULL)
+            {
+                this->tail = NULL;
+            }
+        }
+        else
+        {
+            // Since we know our node isn't NULL and isn't head, then we know it
+            // has a parent. Be sure to reassign the parent's "next" pointer.
+            tmpA->next = tmpB->next;
+        }
+
+        // After all our safety checks, delete our node (the final step in
+        // removal).
         delete(tmpB);
-        this -> mysize -= 1;
-    }
 
+        this->mysize -= 1;
+    }
 }
 
 /*
@@ -142,14 +215,17 @@ Remove all nodes from the list.
 */
 void LinkedList::clear()
 {
-    for(int i = this->mysize - 1; i >= 0 ; i--)
+    llnode *tmpA = this->head, *tmpB = NULL;
+    for(int i = 0; i < this->mysize ; i++)
     {
-        this->remove(i);
+        tmpB = tmpA->next;
+
+        delete(tmpA);
+
+        tmpA = tmpB;
     }
 
-//    this -> mysize = 0;
-
-    this->printMe();
+    this -> mysize = 0;
 }
 
 /*
@@ -162,8 +238,12 @@ If the given index is out of range of the list, return -1;
 */
 int LinkedList::at(int index)
 {
-    llnode *tmp = this->findNode(index);
-    return tmp->data;
+    llnode *inode = this->findNode(index);
+
+    if(inode != NULL)
+        {return inode->data;}
+
+    return -1;
 }
 
 /*

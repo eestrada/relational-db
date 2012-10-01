@@ -13,13 +13,17 @@ private:
     llnode *head;
     llnode *tail;
     unsigned int mysize;
-    void printMe();
-    llnode* findNode(unsigned int index);
+    void findNode(int value, llnode *parent, llnode *child);
+    llnode* findNode(int index);
 
 public:
 
+    void printMe();
 	LinkedList(void){};
-	virtual ~LinkedList(void){};
+	virtual ~LinkedList(void)
+    {
+        this->clear();
+    };
 	
 	/*
 		insertHead
