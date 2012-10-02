@@ -13,13 +13,18 @@ private:
     llnode *head;
     llnode *tail;
     unsigned int mysize;
-    void findNode(int value, llnode *parent, llnode *child);
-    llnode* findNode(int index);
+    bool valExists(int value);
 
 public:
 
     void printMe();
-	LinkedList(void){};
+
+	LinkedList(void)
+    {
+        this->head = NULL;
+        this->tail = NULL;
+    };
+
 	virtual ~LinkedList(void)
     {
         this->clear();
@@ -89,7 +94,6 @@ public:
 		Returns the number of nodes in the list.
 	 */
 	virtual int size();
-
 
 };
 
