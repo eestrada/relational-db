@@ -1,4 +1,6 @@
 #include "Factory.h"
+#include "ExpressionManager.hpp"
+
 //You may add #include statments here
 using namespace std;
 
@@ -16,6 +18,6 @@ using namespace std;
 */
 ExpressionManagerInterface* Factory::createManager()
 {
-	return NULL;//Modify this line
+	return new ExpressionManager();//Modify this line
 }
 //=======================================================================================

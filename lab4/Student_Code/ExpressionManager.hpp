@@ -1,7 +1,19 @@
+#ifndef _EXPRESSIONMANAGER_HPP_
+#define _EXPRESSIONMANAGER_HPP_
+
+#include <iostream>
+#include <string>
 #include <stack>
-#include "ExpressionManager.hpp"
+#include "ExpressionManagerInterface.h"
 
 using namespace std;
+
+
+class ExpressionManager : public ExpressionManagerInterface
+{
+    public:
+        ExpressionManager(){}
+        virtual ~ExpressionManager(){}
 
     /*
     * Checks whether an expression is balanced on its parentheses
@@ -12,10 +24,7 @@ using namespace std;
     * @return false otherwise
     */
 
-bool ExpressionManager::isBalanced(string expression)
-{
-   stack<char> chstck;
-}
+virtual bool isBalanced(string expression);
 
     /**
      * Converts a postfix expression into an infix expression
@@ -29,7 +38,7 @@ bool ExpressionManager::isBalanced(string expression)
      * return the string "invalid" if postfixExpression is not a valid postfix expression.
      * otherwise, return the correct infix expression as a string.
      */
-string ExpressionManager::postfixToInfix(string postfixExpression);
+virtual string postfixToInfix(string postfixExpression);
     
     /*
      * Converts an infix expression into a postfix expression 
@@ -42,7 +51,7 @@ string ExpressionManager::postfixToInfix(string postfixExpression);
      * return the string "invalid" if infixExpression is not a valid infix expression.
      * otherwise, return the correct postfix expression as a string.
      */
-string ExpressionManager::infixToPostfix(string infixExpression);
+virtual string infixToPostfix(string infixExpression);
     
     /*
      * Evaluates a postfix expression returns the result as a string
@@ -53,6 +62,9 @@ string ExpressionManager::infixToPostfix(string infixExpression);
      * return the string "invalid" if postfixExpression is not a valid postfix Expression
      * otherwise, return the correct evaluation as a string
      */
-string ExpressionManager::postfixEvaluate(string postfixExpression);
+virtual string postfixEvaluate(string postfixExpression);
 
 
+};
+
+#endif //_EXPRESSIONMANAGER_HPP_
