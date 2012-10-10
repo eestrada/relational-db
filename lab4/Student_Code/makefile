@@ -12,3 +12,4 @@ build:
 # Clean up files
 clean:
 	rm -f ./test.bin
+

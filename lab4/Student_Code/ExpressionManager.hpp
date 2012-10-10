@@ -1,9 +1,7 @@
 #ifndef _EXPRESSIONMANAGER_HPP_
 #define _EXPRESSIONMANAGER_HPP_
 
-#include <iostream>
 #include <string>
-#include <stack>
 #include "ExpressionManagerInterface.h"
 
 using namespace std;
@@ -11,9 +9,14 @@ using namespace std;
 
 class ExpressionManager : public ExpressionManagerInterface
 {
-    public:
-        ExpressionManager(){}
-        virtual ~ExpressionManager(){}
+private:
+    void process_operator(char op, stack<char> &op_stack);
+    int precedence(char op);
+    bool is_operator(char ch);
+
+public:
+    ExpressionManager(){}
+    virtual ~ExpressionManager(){}
 
     /*
     * Checks whether an expression is balanced on its parentheses
@@ -24,7 +27,7 @@ class ExpressionManager : public ExpressionManagerInterface
     * @return false otherwise
     */
 
-virtual bool isBalanced(string expression);
+    virtual bool isBalanced(string expression);
 
     /**
      * Converts a postfix expression into an infix expression
@@ -38,7 +41,7 @@ virtual bool isBalanced(string expression);
      * return the string "invalid" if postfixExpression is not a valid postfix expression.
      * otherwise, return the correct infix expression as a string.
      */
-virtual string postfixToInfix(string postfixExpression);
+    virtual string postfixToInfix(string postfixExpression);
     
     /*
      * Converts an infix expression into a postfix expression 
@@ -51,7 +54,7 @@ virtual string postfixToInfix(string postfixExpression);
      * return the string "invalid" if infixExpression is not a valid infix expression.
      * otherwise, return the correct postfix expression as a string.
      */
-virtual string infixToPostfix(string infixExpression);
+    virtual string infixToPostfix(string infixExpression);
     
     /*
      * Evaluates a postfix expression returns the result as a string
@@ -62,7 +65,7 @@ virtual string infixToPostfix(string infixExpression);
      * return the string "invalid" if postfixExpression is not a valid postfix Expression
      * otherwise, return the correct evaluation as a string
      */
-virtual string postfixEvaluate(string postfixExpression);
+    virtual string postfixEvaluate(string postfixExpression);
 
 
 };
