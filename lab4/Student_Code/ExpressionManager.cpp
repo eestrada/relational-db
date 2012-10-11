@@ -4,10 +4,23 @@
 
 using namespace std;
 
+const string OPEN = "([{";
+const string CLOSE = ")]}";
+
+bool is_open(char ch)
+{
+    return OPEN.find(ch) != string::npos;
+}
+
+bool is_close(char ch)
+{
+    return CLOSE.find(ch) != string::npos;
+}
+
     /*
     * Checks whether an expression is balanced on its parentheses
     * 
-    * - The given expression will have a space between every number or operator
+    * - The expression will have a space between every number or operator
     * 
     * @return true if expression is balanced
     * @return false otherwise
@@ -16,49 +29,27 @@ using namespace std;
 bool ExpressionManager::isBalanced(string expression)
 {
     stack<char> chstck;
-
     bool balanced = true;
-
     string::const_iterator iter = expression.begin();
 
     while (balanced && (iter != expression.end()))
     {
-        char test = *iter;
-        switch (test)
+        char next_ch = *iter;
+
+        if(is_open(next_ch)) {chstck.push(next_ch);}
+        else if (is_close(next_ch))
         {
-            case '(':
-            case '{':
-            case '[':
-                chstck.push(*iter);
-                ++iter;
-                break;
-
-            case ')': 
-                if(chstck.top() == '(') {chstck.pop();}
-                else {balanced = false;}
-                ++iter;
-                break;
-
-            case '}': 
-                if(chstck.top() == '{') {chstck.pop();}
-                else {balanced = false;}
-                ++iter;
-                break;
-
-            case ']': 
-                if(chstck.top() == '[') {chstck.pop();}
-                else {balanced = false;}
-                ++iter;
-                break;
-
-            default:
-                ++iter;
-        }        
+            if (chstck.empty()) {balanced = false;}
+            else
+            {
+                char top_ch = chstck.top();
+                chstck.pop();
+                balanced = OPEN.find(top_ch) == CLOSE.find(next_ch);
+            }
+        }
+        ++iter;
     }
-
-    if(chstck.size() > 0) {balanced = false;}
-
-    return balanced;
+    return (balanced && chstck.empty());
 }
 
 
