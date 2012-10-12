@@ -2,17 +2,38 @@
 #define _EXPRESSIONMANAGER_HPP_
 
 #include <string>
+#include <exception>
 #include "ExpressionManagerInterface.h"
 
 using namespace std;
+
+class Syntax_Error : public exception
+{
+private:
+    string whatStr;
+
+public:
+    Syntax_Error(const char* whatErr)
+    {
+        whatStr = whatErr;
+    }
+    ~Syntax_Error() throw() {}
+
+    virtual const char* what() const throw()
+    {
+        return whatStr.c_str();
+    }
+};
 
 
 class ExpressionManager : public ExpressionManagerInterface
 {
 private:
-    void process_operator(char op, stack<char> &op_stack);
+    void process_operator(char op);
     int precedence(char op);
     bool is_operator(char ch);
+    stack<char> operator_stack;
+    string postfix;
 
 public:
     ExpressionManager(){}

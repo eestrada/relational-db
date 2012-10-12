@@ -1,18 +1,23 @@
 #include <stack>
 #include <string>
+#include <sstream>
+#include <cctype>
 #include "ExpressionManager.hpp"
 
 using namespace std;
 
+// Useful Constants
 const string OPEN = "([{";
 const string CLOSE = ")]}";
+const string OPERATORS = "+-*/";
+const int PRECEDENCE[4] = { 1, 1, 2, 2 };
 
-bool is_open(char ch)
+inline bool is_open(char ch)
 {
     return OPEN.find(ch) != string::npos;
 }
 
-bool is_close(char ch)
+inline bool is_close(char ch)
 {
     return CLOSE.find(ch) != string::npos;
 }
@@ -52,22 +57,6 @@ bool ExpressionManager::isBalanced(string expression)
     return (balanced && chstck.empty());
 }
 
-
-
-void ExpressionManager::process_operator(char op, stack<char> &op_stack)
-{
-    return;
-}
-
-int ExpressionManager::precedence(char op)
-{
-    return -1;
-}
-
-bool ExpressionManager::is_operator(char ch)
-{
-    return false;
-}
     /**
      * Converts a postfix expression into an infix expression
      * and returns the infix expression.
@@ -82,20 +71,46 @@ bool ExpressionManager::is_operator(char ch)
      */
 string ExpressionManager::postfixToInfix(string postfixExpression)
 {
-    stack<char> operator_stack;
-    string postfix;
-
-    string::const_iterator iter = postfixExpression.begin();
-
-    while(iter != postfixExpression.end())
-    {
-        continue;
-    }
-
     string retstr = "invalid";
     return retstr;
 }
-    
+
+
+int ExpressionManager::precedence(char op)
+{
+    return PRECEDENCE[OPERATORS.find(op)];
+}
+
+bool ExpressionManager::is_operator(char ch)
+{
+    return OPERATORS.find(ch) != string::npos;
+}
+
+void ExpressionManager::process_operator(char op)
+{
+    if(operator_stack.empty())
+    {
+        operator_stack.push(op);
+    }
+    else if(precedence(op) > precedence(operator_stack.top()))
+    {
+        operator_stack.push(op);
+    }
+    else
+    {
+        while (!operator_stack.empty() &&
+                (precedence(op) <= precedence(operator_stack.top())))
+        {
+           postfix += operator_stack.top();
+           postfix += " ";
+           operator_stack.pop();
+        }
+
+        operator_stack.push(op);
+    }
+    return;
+}
+
     /*
      * Converts an infix expression into a postfix expression 
      * and returns the postfix expression
@@ -108,9 +123,47 @@ string ExpressionManager::postfixToInfix(string postfixExpression)
      * otherwise, return the correct postfix expression as a string.
      */
 string ExpressionManager::infixToPostfix(string infixExpression)
-{ 
-    string retstr = "invalid";
-    return retstr;
+{
+    bool valid = true;
+    postfix.clear();
+
+    istringstream infix_tokens(infixExpression);
+    string next_token;
+
+    while (infix_tokens >> next_token)
+    {
+        if(isalnum(next_token[0]))
+        {
+           postfix += next_token;
+           postfix += " ";
+        }
+        else if (is_operator(next_token[0]))
+        {
+            process_operator(next_token[0]);
+        }
+        else
+        {
+            postfix = "invalid";
+            valid = false;
+            break;
+            //throw Syntax_Error("Unexpected Character Encountered");
+        }
+    }
+
+    while (valid && !operator_stack.empty())
+    {
+        char op = operator_stack.top();
+        operator_stack.pop();
+        postfix += op;
+        postfix += " ";
+    }
+
+    while(!operator_stack.empty())
+    {
+        operator_stack.pop();
+    }
+
+    return postfix;
 }   
     /*
      * Evaluates a postfix expression returns the result as a string
@@ -122,7 +175,7 @@ string ExpressionManager::infixToPostfix(string infixExpression)
      * otherwise, return the correct evaluation as a string
      */
 string ExpressionManager::postfixEvaluate(string postfixExpression)
-{ 
+{
     string retstr = "invalid";
     return retstr;
 }

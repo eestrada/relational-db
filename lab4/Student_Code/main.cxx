@@ -15,7 +15,7 @@ int main(void)
 
     ExpressionManager em;
 
-    bool t1=true,t2=false,t3=false,t4=false;
+    bool t1=false,t2=true,t3=false,t4=false;
 
     if(t1 && test1.is_open())
     {
