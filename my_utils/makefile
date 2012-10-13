@@ -2,7 +2,8 @@ run: build
 	./test.bin
 
 build:
-	g++ -o test.bin *.cpp
+	g++ -Wall -o test.bin *.cpp
 
 clean:
 	rm -vf ./test.bin
+
