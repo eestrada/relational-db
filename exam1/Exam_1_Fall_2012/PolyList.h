@@ -23,8 +23,8 @@ public:
 	 * 		Variable = x
 	 * 		Exponent = 7
 	 */
-	PolynomialListInterface(void){}
-	virtual ~PolynomialListInterface(void){}
+	PolyList(void);
+	virtual ~PolyList(void);
 	
 	/*
 		insert
@@ -36,14 +36,14 @@ public:
 			the node should be added after 2x^8. Your updated list should look like 2x^8, 3x^5, x^4, 11x^2.
 
 	 */
-	virtual void insert(std::string term) = 0;
+	virtual void insert(std::string term);
 
 	/*
 		clear
 
 		Remove all nodes from the list.
 	 */
-	virtual void clear() = 0;
+	virtual void clear();
 
 	/*
 		at
@@ -53,14 +53,14 @@ public:
 
 		If the given index is out of range of the list, return "invalid";
 	 */
-	virtual std::string at(int index) = 0;
+	virtual std::string at(int index);
 
 	/*
 		size
 
 		Returns the number of nodes in the list.
 	 */
-	virtual int size() = 0;
+	virtual int size();
 
 	/*
 	 * This function should string together all of the nodes and print out the entire polynomial separated with '+' signs.
@@ -68,7 +68,7 @@ public:
 	 * i.e. list of Nodes = (2x^4)->(4x^2)->(3x^1)->(11x^0)
 	 * 		printList() = return "2 x ^ 4 + 4 x ^ 2 + 3 x + 11";
 	 */
-	virtual std::string printList() = 0;
+	virtual std::string printList();
 
 };
 
