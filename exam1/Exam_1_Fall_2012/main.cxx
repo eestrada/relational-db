@@ -8,6 +8,8 @@ using std::cin;
 
 int main(void)
 {
+    PolyList pltest;
+    PolyMan pmtest;
     cout << "This is a test." << endl;
     return 0;
 }

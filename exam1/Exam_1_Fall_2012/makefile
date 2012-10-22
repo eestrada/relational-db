@@ -4,7 +4,7 @@ run: build
 	./test.bin
 
 build:
-	g++ -o test.bin *.cpp *.cxx
+	g++ -Wall -o test.bin *.cpp *.cxx
 
 clean:
 	rm -f ./test.bin

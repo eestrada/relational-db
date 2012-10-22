@@ -7,9 +7,44 @@
 #define _POLYLIST_H_
 
 #include "PolynomialListInterface.h"
+#include "ede_list.hpp"
 #include <string>
+#include <sstream>
 
-class PolyList : public PolynomialListInterface
+struct PolyNode
+{
+    std::string pstr;
+    char var;
+    int coefficient, exponent;
+
+    void genStr()
+    {
+        std::ostringstream parse;
+        parse << coefficient << var << "^"<< exponent;
+    };
+
+    PolyNode & operator = (std::string expression)
+    {
+        pstr = expression;
+        std::istringstream in(pstr);
+
+        char c = in.peek();
+
+        // Check to see if we start with a number
+        if((c > '0') && (c<= '9'))
+            in >> coefficient;
+        else
+            coefficient = 1;
+
+        in >> var;
+        in.ignore(1); // ignore '^' character
+        in >> exponent;
+
+        return *this;
+    };
+};
+
+class PolyList : public ede::list<PolyNode>, public PolynomialListInterface
 {
 
 public:
