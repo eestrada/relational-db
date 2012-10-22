@@ -24,7 +24,7 @@ public:
         return sequence.size();
     };
 
-    T& top()
+    T top()
     {
         return sequence.back();
     };

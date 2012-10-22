@@ -81,9 +81,13 @@ public:
             head = head->next;
             delete removed_node;
             if (head != NULL)
+            {
                 head->prev = NULL;
+            }
             else
+            {
                 tail = NULL;
+            }
             --nodecount;
 
             return true;
@@ -102,21 +106,25 @@ public:
             tail = tail->prev;
             delete removed_node;
             if (tail != NULL)
+            {
                 tail->next = NULL;
+            }
             else
+            {
                 head = NULL;
+            }
             --nodecount;
 
             return true;
         }
     };
 
-    virtual T& front()
+    virtual T front()
     {
         return head->data;
     };
 
-    virtual T& back()
+    virtual T back()
     {
         return tail->data;
     };

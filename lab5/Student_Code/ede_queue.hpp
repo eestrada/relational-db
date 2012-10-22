@@ -24,12 +24,12 @@ public:
         return sequence.size();
     };
 
-    T& front()
+    T front()
     {
         return sequence.back();
     };
 
-    T& back()
+    T back()
     {
         return sequence.front();
     };
