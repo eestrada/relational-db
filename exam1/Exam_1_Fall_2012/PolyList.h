@@ -10,6 +10,11 @@
 #include "ede_list.hpp"
 #include <string>
 #include <sstream>
+#include <iostream>
+#include "nullstream.hpp"
+
+using std::cout;
+using ede::nout;
 
 struct PolyNode
 {

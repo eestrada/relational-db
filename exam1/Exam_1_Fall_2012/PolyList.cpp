@@ -30,14 +30,18 @@ PolyList::~PolyList(void){}
         the node should be added after 2x^8. Your updated list should look like 2x^8, 3x^5, x^4, 11x^2.
 
  */
-void PolyList::insert(std::string term){}
+void PolyList::insert(std::string term)
+{
+}
 
 /*
     clear
 
     Remove all nodes from the list.
  */
-void PolyList::clear(){}
+void PolyList::clear()
+{
+}
 
 /*
     at
@@ -47,14 +51,18 @@ void PolyList::clear(){}
 
     If the given index is out of range of the list, return "invalid";
  */
-std::string PolyList::at(int index){}
+std::string PolyList::at(int index)
+{
+}
 
 /*
     size
 
     Returns the number of nodes in the list.
  */
-int PolyList::size(){}
+int PolyList::size()
+{
+}
 
 /*
  * This function should string together all of the nodes and print out the entire polynomial separated with '+' signs.
@@ -62,6 +70,8 @@ int PolyList::size(){}
  * i.e. list of Nodes = (2x^4)->(4x^2)->(3x^1)->(11x^0)
  * 		printList() = return "2 x ^ 4 + 4 x ^ 2 + 3 x + 11";
  */
-std::string PolyList::printList(){}
+std::string PolyList::printList()
+{
+}
 
 
