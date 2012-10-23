@@ -9,9 +9,6 @@
 #include <iostream>
 #include "nullstream.hpp"
 
-using std::cout;
-using ede::nout;
-
 std::ostream &pout = std::cout;
 
 

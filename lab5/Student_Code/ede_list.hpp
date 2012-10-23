@@ -178,8 +178,8 @@ public:
 
     virtual T & operator[](int index)
     {
-        T tmp;
-        return tmp;
+        T *tmp = NULL;
+        return *tmp;
     };
 
     virtual bool empty()
