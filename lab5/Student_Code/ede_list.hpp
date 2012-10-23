@@ -1,6 +1,8 @@
 #ifndef _EDELIST_HPP_
 #define _EDELIST_HPP_
 
+#include <stdexcept>
+
 namespace ede
 {
 
@@ -14,7 +16,7 @@ private:
         llnode *prev, *next;
 
         llnode(): data(T()), prev(NULL), next(NULL){};
-        llnode(T value, llnode *prevnode, llnode *nextnode):
+        llnode(T &value, llnode *prevnode, llnode *nextnode):
             data(value), prev(prevnode), next(nextnode){};
         friend class list<T>;
     };
@@ -119,12 +121,12 @@ public:
         }
     };
 
-    virtual T front()
+    virtual T & front()
     {
         return head->data;
     };
 
-    virtual T back()
+    virtual T & back()
     {
         return tail->data;
     };
@@ -132,6 +134,52 @@ public:
     virtual int size()
     {
         return nodecount;
+    };
+
+    virtual void insert(int index, T &val)
+    {
+        llnode * current = this->head;
+        int i = 0;
+
+        if(index >= 0 && index < this->size())
+        {
+            while(current != NULL)
+            {
+                if(i == index)
+                { break;}
+                else
+                {
+                    ++i;
+                    current = current->next;
+                }
+            }
+        }
+        else
+        {
+            throw std::out_of_range("Unable to access non-existent index.");
+        }
+
+        llnode *tmp = new llnode(val, current->prev, current);
+
+        if(current->prev != NULL)
+        {
+            current->prev->next = tmp;
+        }
+        
+        if(this->head == current)
+        {
+            this->head = tmp;
+        }
+
+        current->prev = tmp;
+
+ 
+    };
+
+    virtual T & operator[](int index)
+    {
+        T tmp;
+        return tmp;
     };
 
     virtual bool empty()

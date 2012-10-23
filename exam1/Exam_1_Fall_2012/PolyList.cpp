@@ -6,6 +6,14 @@
 
 #include "PolyList.h"
 #include <string>
+#include <iostream>
+#include "nullstream.hpp"
+
+using std::cout;
+using ede::nout;
+
+std::ostream &pout = std::cout;
+
 
 /*
  * You must create a Node class that will hold each polynomial segment and will be used to create the
@@ -32,6 +40,7 @@ PolyList::~PolyList(void){}
  */
 void PolyList::insert(std::string term)
 {
+
 }
 
 /*
@@ -53,6 +62,7 @@ void PolyList::clear()
  */
 std::string PolyList::at(int index)
 {
+    return std::string();
 }
 
 /*
@@ -62,6 +72,7 @@ std::string PolyList::at(int index)
  */
 int PolyList::size()
 {
+    return 0;
 }
 
 /*
@@ -72,6 +83,17 @@ int PolyList::size()
  */
 std::string PolyList::printList()
 {
+    std::ostringstream retstr;
+
+    for (int i = 0; i < this->size(); ++i)
+    {
+        if(i != 0)
+            retstr << '+';
+
+        retstr << this->at(i);
+    }
+
+    return retstr.str();
 }
 
 

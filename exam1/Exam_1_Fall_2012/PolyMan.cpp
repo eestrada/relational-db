@@ -18,7 +18,10 @@ PolyMan::~PolyMan(){}
  * i.e.
  * (2x^4)->(4x^2)->(3x^1)->(11x^0), not (2x^4)->(3x^1)->(11x^0)->(4x^2) or anything else.
  */
-PolynomialListInterface * PolyMan::addLists(){}
+PolynomialListInterface * PolyMan::addLists()
+{
+    return NULL;
+}
 
 /*
  * subtractLists()
@@ -28,7 +31,10 @@ PolynomialListInterface * PolyMan::addLists(){}
  * i.e.
  * (2x^4)->(4x^2)->(3x^1)->(11x^0), not (2x^4)->(3x^1)->(11x^0)->(4x^2) or anything else.
  */
-PolynomialListInterface * PolyMan::subtractLists(){}
+PolynomialListInterface * PolyMan::subtractLists()
+{
+    return NULL;
+}
 
 /*
  * fillListOne(std::string term)
@@ -71,11 +77,17 @@ void PolyMan::clearListTwo(){}
  * getListOne()
  * Returns a pointer to the first list.
  */
-PolynomialListInterface * PolyMan::getListOne(){}
+PolynomialListInterface * PolyMan::getListOne()
+{
+    return NULL;
+}
 
 /*
  * getListTwo()
  * Returns a pointer to the second list.
  */
-PolynomialListInterface * PolyMan::getListTwo(){}
+PolynomialListInterface * PolyMan::getListTwo()
+{
+    return NULL;
+}
 

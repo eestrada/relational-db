@@ -1,4 +1,4 @@
-ARGS=-I ./ede_utils/inc -I ../../lab5/Student_Code/
+ARGS=-Wall -I ./ede_utils/inc -I ../../lab5/Student_Code/
 
 .PHONY: run build clean
 

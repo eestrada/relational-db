@@ -10,6 +10,8 @@ int main(void)
 {
     PolyList pltest;
     PolyMan pmtest;
+
+    pltest.printList();
     cout << "This is a test." << endl;
     return 0;
 }
