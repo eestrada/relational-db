@@ -9,7 +9,8 @@
 #include <iostream>
 #include "nullstream.hpp"
 
-std::ostream &pout = std::cout;
+ede::nostream null_plout;
+std::ostream &plout = std::cout;
 
 
 /*
@@ -25,6 +26,28 @@ std::ostream &pout = std::cout;
 PolyList::PolyList(void){}
 PolyList::~PolyList(void){}
 
+
+bool isValid(std::string term)
+{
+    char var;
+    int coefficient, exponent;
+    std::istringstream in(term);
+
+    char c = in.peek();
+
+    // Check to see if we start with a number
+    if((c > '0') && (c<= '9'))
+        in >> coefficient;
+    else
+        coefficient = 1;
+
+    in >> var;
+    in.ignore(1); // ignore '^' character
+    in >> exponent;
+
+    return !in.fail(); // If string was poorly formatted this will fail.
+}
+
 /*
     insert
 
@@ -37,7 +60,24 @@ PolyList::~PolyList(void){}
  */
 void PolyList::insert(std::string term)
 {
+    if(isValid(term)) // Only insert if the formatting is valid.
+    {
+        plout << "Insertion accepted!\n";
 
+        PolyNode tmpNode(term);
+
+        this->push_front(tmpNode);
+
+        this->sort();
+    }
+    else
+    {
+        plout << "Insertion FAILED! \"" << term << "\" is not a properly formatted string.\n";
+    }
+
+    
+    plout << this->printList() << std::endl;
+    
 }
 
 /*
@@ -47,6 +87,7 @@ void PolyList::insert(std::string term)
  */
 void PolyList::clear()
 {
+    ede::list<PolyNode>::erase();
 }
 
 /*
@@ -69,7 +110,7 @@ std::string PolyList::at(int index)
  */
 int PolyList::size()
 {
-    return 0;
+    return ede::list<PolyNode>::size();
 }
 
 /*
@@ -82,15 +123,53 @@ std::string PolyList::printList()
 {
     std::ostringstream retstr;
 
-    for (int i = 0; i < this->size(); ++i)
-    {
-        if(i != 0)
-            retstr << '+';
+    llnode *current = this->head;
 
-        retstr << this->at(i);
+    //for (int i = 0; i < this->size(); ++i)
+    while( current != NULL )
+    {
+        if(current != this->head)
+            retstr << " + ";
+
+        retstr << current->data.pstr;
+
+        current = current->next;
     }
 
     return retstr.str();
 }
 
+void PolyList::sort()
+{
 
+    llnode *current = this->head, *tmp;
+
+    bool stop = false;
+
+    while(!stop && this->size() > 0)
+    {
+        // We only set this back to false if we swap values on this iteration.
+        stop = true;
+
+        while( current != NULL )
+        {
+            tmp = current->next;
+
+            if(tmp != NULL && current->data < tmp->data) // Items need to be swapped
+            {
+                tmp->prev = current->prev;
+                current->next = tmp->next;
+                tmp->next = current;
+                current->prev = tmp;
+
+                this->head = ( this->head == current ) ? tmp : this->head;
+
+                stop = false;
+            }
+            else
+            {
+                current = current->next;
+            }
+        }
+    }
+}

@@ -9,10 +9,14 @@
 
 #include "PolynomialManagerInterface.h"
 #include "PolynomialListInterface.h"
+#include "PolyList.h"
 #include <string>
 
 class PolyMan : public PolynomialManagerInterface
 {
+private:
+    PolyList listOne, listTwo;
+
 public:
 	PolyMan();
 	virtual ~PolyMan();

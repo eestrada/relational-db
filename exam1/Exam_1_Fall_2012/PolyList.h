@@ -17,16 +17,30 @@ struct PolyNode
     char var;
     int coefficient, exponent;
 
-    void genStr()
+    PolyNode(){}
+
+    PolyNode(const std::string &expression)
+    {
+        this->operator=(expression);
+    }
+
+    void formatStr()
     {
         std::ostringstream parse;
-        parse << coefficient << var << "^"<< exponent;
+
+        if(coefficient != 1)
+             parse << coefficient << " ";
+
+        if( exponent != 0)
+            parse << var << " ^ " << exponent;
+
+        pstr = parse.str();
     };
 
-    PolyNode & operator = (std::string expression)
+    PolyNode & operator=(const std::string &expression)
     {
         pstr = expression;
-        std::istringstream in(pstr);
+        std::istringstream in(expression);
 
         char c = in.peek();
 
@@ -40,8 +54,20 @@ struct PolyNode
         in.ignore(1); // ignore '^' character
         in >> exponent;
 
+        this->formatStr();
+
         return *this;
     };
+
+    bool operator > (const PolyNode &other)
+    {
+        return this->exponent > other.exponent;
+    }
+    
+    bool operator < (const PolyNode &other)
+    {
+        return this->exponent < other.exponent;
+    }
 };
 
 class PolyList : public ede::list<PolyNode>, public PolynomialListInterface
@@ -104,6 +130,8 @@ public:
 	 * 		printList() = return "2 x ^ 4 + 4 x ^ 2 + 3 x + 11";
 	 */
 	virtual std::string printList();
+
+    void sort();
 
 };
 

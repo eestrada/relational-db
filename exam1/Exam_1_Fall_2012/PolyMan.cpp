@@ -6,6 +6,12 @@
 
 #include "PolyMan.h"
 #include <string>
+#include <iostream>
+#include "nullstream.hpp"
+
+ede::nostream null_pmout;
+//When I am done debugging, simply swap null_pmout for cout.
+std::ostream &pmout = std::cout; 
 
 PolyMan::PolyMan(){}
 PolyMan::~PolyMan(){}
@@ -20,6 +26,9 @@ PolyMan::~PolyMan(){}
  */
 PolynomialListInterface * PolyMan::addLists()
 {
+    pmout << "Add lists and returning NULL." << std::endl;
+    this->listOne.sort();
+    this->listTwo.sort();
     return NULL;
 }
 
@@ -33,6 +42,9 @@ PolynomialListInterface * PolyMan::addLists()
  */
 PolynomialListInterface * PolyMan::subtractLists()
 {
+    pmout << "Subtract lists and returning NULL." << std::endl;
+    this->listOne.sort();
+    this->listOne.sort();
     return NULL;
 }
 
@@ -47,7 +59,11 @@ PolynomialListInterface * PolyMan::subtractLists()
  * If the term is not valid, it should not be added to the list.
  *
  */
-void PolyMan::fillListOne(std::string term){}
+void PolyMan::fillListOne(std::string term)
+{
+    pmout << "Attempting to fill list one." << std::endl;
+    this->listOne.insert(term); 
+}
 
 /*
  * fillListTwo(std::string term)
@@ -59,19 +75,31 @@ void PolyMan::fillListOne(std::string term){}
  * i.e. x^6 is valid, but 2x is not.
  * If the term is not valid, it should not be added to the list.
  */
-void PolyMan::fillListTwo(std::string term){}
+void PolyMan::fillListTwo(std::string term)
+{
+    pmout << "Attempting to fill list two." << std::endl;
+    this->listTwo.insert(term); 
+}
 
 /*
  * clearListOne()
  * This function should empty your first list entirely.
  */
-void PolyMan::clearListOne(){}
+void PolyMan::clearListOne()
+{
+    pmout << "Trying to clear list one." << endl;
+    this->listOne.erase();
+}
 
 /*
  * clearListTwo()
  * This function should empty your second list entirely.
  */
-void PolyMan::clearListTwo(){}
+void PolyMan::clearListTwo()
+{
+    pmout << "Trying to clear list two." << endl;
+    this->listTwo.erase();
+}
 
 /*
  * getListOne()
@@ -79,6 +107,7 @@ void PolyMan::clearListTwo(){}
  */
 PolynomialListInterface * PolyMan::getListOne()
 {
+    pmout << "Currently returning NULL." << std::endl;
     return NULL;
 }
 
@@ -88,6 +117,7 @@ PolynomialListInterface * PolyMan::getListOne()
  */
 PolynomialListInterface * PolyMan::getListTwo()
 {
+    pmout << "Currently returning NULL." << std::endl;
     return NULL;
 }
 

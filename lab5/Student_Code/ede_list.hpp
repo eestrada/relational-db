@@ -9,7 +9,7 @@ namespace ede
 template <class T >
 class list 
 {
-private:
+protected:
     struct llnode
     {
         T data;

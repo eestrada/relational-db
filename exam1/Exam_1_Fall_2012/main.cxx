@@ -8,11 +8,19 @@ using std::cin;
 
 int main(void)
 {
-    PolyList pltest;
     PolyMan pmtest;
 
-    pltest.printList();
-    cout << "This is a test." << endl;
+
+    pmtest.fillListOne("3x^7");
+    pmtest.fillListOne("2x^2");
+    pmtest.fillListTwo("2x^9");
+    pmtest.addLists();
+    pmtest.subtractLists();
+    pmtest.clearListOne();
+
+    pmtest.fillListOne("fjdasio;");
+
+//    cout << "This is a test." << endl;
     return 0;
 }
 
