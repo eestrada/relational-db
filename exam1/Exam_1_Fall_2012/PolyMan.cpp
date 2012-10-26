@@ -10,8 +10,9 @@
 #include "nullstream.hpp"
 
 ede::nostream null_pmout;
-//When I am done debugging, simply swap null_pmout for cout.
-std::ostream &pmout = std::cout; 
+// When I am done debugging, simply swap null_pmout for cout. Then all
+// output statements will no longer print anything.
+std::ostream &pmout = null_pmout; 
 
 PolyMan::PolyMan(){}
 PolyMan::~PolyMan(){}
@@ -26,10 +27,59 @@ PolyMan::~PolyMan(){}
  */
 PolynomialListInterface * PolyMan::addLists()
 {
+    PolyList * leak = new PolyList();
     pmout << "Add lists and returning NULL." << std::endl;
+
+    bool added;
+
+    for( int i = 0; i < listOne.size(); ++i )
+    {
+        added = false;
+        PolyNode cur1 = listOne.nodeAt(i);
+        for (int j = 0; j < listTwo.size(); ++j )
+        {
+            PolyNode cur2 = listTwo.nodeAt(j);
+            if ( cur1.exponent == cur2.exponent )
+            {
+                added = true;
+
+                leak->insert( (cur1 + cur2).pstr );
+            }
+        }
+
+        if (!added)
+        {
+            leak->insert(listOne.at(i));
+        }
+    }
+
+    for (int i = 0; i < listTwo.size(); ++i)
+    {
+        bool exists = false;
+
+        PolyNode cur1 = listTwo.nodeAt(i);
+        for (int j = 0; j < leak->size(); ++j)
+        {
+            PolyNode cur2 = leak->nodeAt(j);
+            if(cur1.exponent == cur2.exponent)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if(!exists)
+        {
+            leak->insert(cur1.pstr);
+        }
+    }
+
     this->listOne.sort();
     this->listTwo.sort();
-    return NULL;
+
+    leak->printList();
+
+    return leak;
 }
 
 /*
@@ -42,10 +92,61 @@ PolynomialListInterface * PolyMan::addLists()
  */
 PolynomialListInterface * PolyMan::subtractLists()
 {
-    pmout << "Subtract lists and returning NULL." << std::endl;
+
+
+    PolyList * leak = new PolyList();
+    pmout << "Add lists and returning NULL." << std::endl;
+
+    bool added;
+
+    for( int i = 0; i < listOne.size(); ++i )
+    {
+        added = false;
+        PolyNode cur1 = listOne.nodeAt(i);
+        for (int j = 0; j < listTwo.size(); ++j )
+        {
+            PolyNode cur2 = listTwo.nodeAt(j);
+            if ( cur1.exponent == cur2.exponent )
+            {
+                added = true;
+
+                leak->insert( (cur1 - cur2).pstr );
+            }
+        }
+
+        if (!added)
+        {
+            leak->insert(listOne.at(i));
+        }
+    }
+
+    for (int i = 0; i < listTwo.size(); ++i)
+    {
+        bool exists = false;
+
+        PolyNode cur1 = listTwo.nodeAt(i);
+        for (int j = 0; j < leak->size(); ++j)
+        {
+            PolyNode cur2 = leak->nodeAt(j);
+            if(cur1.exponent == cur2.exponent)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if(!exists)
+        {
+            leak->insert(cur1.pstr);
+        }
+    }
+
     this->listOne.sort();
-    this->listOne.sort();
-    return NULL;
+    this->listTwo.sort();
+
+    leak->printList();
+
+    return leak;
 }
 
 /*
@@ -107,8 +208,8 @@ void PolyMan::clearListTwo()
  */
 PolynomialListInterface * PolyMan::getListOne()
 {
-    pmout << "Currently returning NULL." << std::endl;
-    return NULL;
+    pmout << "Currently returning address of list one." << std::endl;
+    return &(this->listOne);
 }
 
 /*
@@ -117,7 +218,7 @@ PolynomialListInterface * PolyMan::getListOne()
  */
 PolynomialListInterface * PolyMan::getListTwo()
 {
-    pmout << "Currently returning NULL." << std::endl;
-    return NULL;
+    pmout << "Currently returning address of list two." << std::endl;
+    return &(this->listTwo);
 }
 

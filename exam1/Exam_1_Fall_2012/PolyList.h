@@ -68,6 +68,32 @@ struct PolyNode
     {
         return this->exponent < other.exponent;
     }
+
+    PolyNode operator+(PolyNode &other)
+    {
+        PolyNode retval;
+
+        retval.coefficient = this->coefficient + other.coefficient;
+        retval.exponent = this->exponent;
+        retval.var = this->var;
+
+        retval.formatStr();
+
+        return retval;
+    }
+
+    PolyNode operator-(PolyNode &other)
+    {
+        PolyNode retval;
+
+        retval.coefficient = this->coefficient - other.coefficient;
+        retval.exponent = this->exponent;
+        retval.var = this->var;
+
+        retval.formatStr();
+
+        return retval;
+    }
 };
 
 class PolyList : public ede::list<PolyNode>, public PolynomialListInterface
@@ -115,6 +141,8 @@ public:
 		If the given index is out of range of the list, return "invalid";
 	 */
 	virtual std::string at(int index);
+
+    PolyNode nodeAt(int index);
 
 	/*
 		size

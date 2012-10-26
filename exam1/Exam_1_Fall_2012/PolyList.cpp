@@ -10,8 +10,7 @@
 #include "nullstream.hpp"
 
 ede::nostream null_plout;
-std::ostream &plout = std::cout;
-
+std::ostream &plout = null_plout;
 
 /*
  * You must create a Node class that will hold each polynomial segment and will be used to create the
@@ -98,9 +97,38 @@ void PolyList::clear()
 
     If the given index is out of range of the list, return "invalid";
  */
+
+
+PolyNode PolyList::nodeAt(int index)
+{
+    int i = 0;
+
+    llnode * current = this->head;
+
+    while(current != NULL)
+    {
+        if( i == index )
+        {
+            plout << "Polynomial at index " << index << " is: " << current->data.pstr << std::endl;
+            return current->data;
+        }
+
+        current = current->next;
+        ++i;
+    }
+
+    plout << "Polynomial at index " << index << " is: " << "invalid." << std::endl;
+    PolyNode empty;
+    return empty;
+
+}
+
 std::string PolyList::at(int index)
 {
-    return std::string();
+    if(index < this->size() && index > -1)
+        {return this->nodeAt(index).pstr;}
+    else
+        {return std::string("invalid");}
 }
 
 /*
@@ -109,7 +137,8 @@ std::string PolyList::at(int index)
     Returns the number of nodes in the list.
  */
 int PolyList::size()
-{
+{   
+    plout << "PolyList size is: " << ede::list<PolyNode>::size() << std::endl;
     return ede::list<PolyNode>::size();
 }
 
@@ -136,9 +165,15 @@ std::string PolyList::printList()
         current = current->next;
     }
 
+    plout << retstr.str() << std::endl;
+
     return retstr.str();
 }
 
+
+/*
+ * A simple bubble sort. Slow, but easy to implement.
+ */
 void PolyList::sort()
 {
 

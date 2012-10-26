@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "PolyList.h"
 #include "PolyMan.h"
 
@@ -14,13 +15,18 @@ int main(void)
     pmtest.fillListOne("3x^7");
     pmtest.fillListOne("2x^2");
     pmtest.fillListTwo("2x^9");
-    pmtest.addLists();
+    PolynomialListInterface * mine = pmtest.addLists();
+
+    mine->printList();
     pmtest.subtractLists();
-    pmtest.clearListOne();
+//    pmtest.clearListOne();
+
+    PolynomialListInterface * tmp = pmtest.getListTwo();
+
+    std::string atstr = tmp->at(9);
 
     pmtest.fillListOne("fjdasio;");
 
-//    cout << "This is a test." << endl;
     return 0;
 }
 
