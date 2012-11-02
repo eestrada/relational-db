@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include "MimicInterface.h"
-#include "Map.hpp"
+#include "map.hpp"
 
 class Mimic : public MimicInterface
 {

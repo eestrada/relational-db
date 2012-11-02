@@ -1,8 +1,9 @@
-#include "Mimic.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
+#include "Mimic.hpp"
+#include "map.hpp"
 #include "pair.hpp"
 
 using namespace std;
@@ -34,22 +35,61 @@ void Mimic::createMap(string input)
 {
     istringstream sstr(input);
 
-    string harold;
+    string first, second, third;
+    
+    sstr >> first >> second >> third;
+    
+    // Empty out map in case it has something in it.
+    _wordmap = ede::map();
 
-    vector<string> strvec;
-   
     while (sstr.good())
     {
-        string first, second, third;
         stringstream tmpkey, tmpval;
-        sstr >> first >> second >> third;
+        
         tmpkey << first << ' ' << second;
+        
         if(third == "")
+        {
             tmpval << "THE_END";
+        }
         else
+        {
             tmpval << third;
+        }
 
         _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+        
+        first = second;
+        second = third;
+        sstr >> third;
+
+        // Do this once we have hit the end of the string.
+        if(!sstr.good())
+        {
+            // Clear out the output streams
+            tmpkey.str("");
+            tmpval.str("");
+           
+            // Fill the output streams
+            tmpkey << first << ' ' << second;
+            tmpval << third;
+            // Add the new data to the map
+            _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+
+            // Set vars to their final values
+            first = second;
+            second = third;
+            third = "THE_END";
+            
+            // Clear out the output streams
+            tmpkey.str("");
+            tmpval.str("");
+            
+            // Fill the output streams
+            tmpkey << first << ' ' << second;
+            tmpval << third;
+            _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+        }
     }
 }
 
@@ -75,7 +115,6 @@ vector<string> Mimic::getSuffixList(string prefix)
     // If the key does not exist, and return an empty vector.
     catch(out_of_range e)
     {
-        cout << "Caught out_of_range exception: " << e.what() << endl;
         return vector<string>();
     }
 }
@@ -98,7 +137,11 @@ vector<string> Mimic::getSuffixList(string prefix)
  */
 string Mimic::generateText()
 {
-    return string();
+    // Temp code for debugging
+    ostringstream retval;
+    retval << _wordmap;
+        
+    return retval.str();
 }
 
 

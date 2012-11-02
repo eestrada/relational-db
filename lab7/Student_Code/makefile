@@ -6,14 +6,12 @@ ARGS =
 CPP_FILES = Mimic.cpp main.cxx
 DEPS = Mimic.hpp
 
-.PHONY : all run bin test clean touch memcheck
+.PHONY : all run test clean touch memcheck dirs
 
 all : touch run
 
-run: bin
+run: $(BIN)
 	./$(BIN)
-
-bin : $(BIN)
 
 test : clean memcheck
 
@@ -23,8 +21,8 @@ clean :
 	rm -rf bin
 	@ echo
 
-touch :
-	@ touch $(BIN) $(CPP_FILES) $(DEPS)
+touch : dirs
+	@- touch $(CPP_FILES) $(DEPS) $(BIN)
 
 memcheck : bin
 	@ echo "Running valgrind to check for memory leaks"
@@ -32,9 +30,11 @@ memcheck : bin
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 
-$(BIN) : $(CPP_FILES) $(DEPS)
-	@ echo "Compiling binary"
+dirs :
 	@- mkdir -p bin
+
+$(BIN) : dirs $(CPP_FILES) $(DEPS)
+	@ echo "Compiling binary"
 	$(CC) $(CFLAGS) -o $@ *.cpp *.cxx 
 	@ echo
 

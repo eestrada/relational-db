@@ -24,7 +24,6 @@ struct pair
         pair (const pair< U, V > &p) : first(p.first), second(p.second) {}
 };
 
-
 template < typename T1, typename T2 >
 bool operator==(const pair<T1, T2> &a, const pair<T1, T2> &b)
 {
@@ -50,6 +49,16 @@ bool operator<(const pair<T1, T2> &a, const pair<T1, T2> &b)
 }
 
 };
+
+template < typename T1 , typename T2>
+ostream & operator<<(ostream &stream, const ede::pair<T1, T2> &somepair)
+{
+    string delim = " ";
+
+    stream << somepair.first << delim << somepair.second;
+
+    return stream;
+}
 
 #endif // define _PAIR_HPP_
 

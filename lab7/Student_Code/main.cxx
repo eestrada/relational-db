@@ -3,20 +3,9 @@
 #include <iostream>
 #include "Mimic.hpp"
 
-using std::string;
-using std::vector;
-using std::ostream;
+using namespace std;
 
-template < typename T >
-ostream & operator<<(ostream &stream, const vector<T> &somevec)
-{
-    for(unsigned int i = 0; i < somevec.size(); ++i)
-    {
-        stream << somevec[i] << '\n';
-    }
 
-    return stream;
-}
 
 
 int main(void)
@@ -24,11 +13,16 @@ int main(void)
     Mimic test;
 
     string teststr = "I want to swing I want to boat Boat wants me"; 
+    string testkey = "want to";
 
     test.createMap(teststr);
 
-    vector<string> list = test.getSuffixList("want to");
+    vector<string> slist = test.getSuffixList(testkey);
 
-    std::cout << "This is the default program" << test.generateText() << std::endl;
+    string funinsun = test.generateText();
+
+    cout << funinsun << endl;
+
+    //cout << "Values for \"" << testkey << "\" key:\n" << slist << endl;
 }
 
