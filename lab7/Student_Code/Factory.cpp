@@ -1,5 +1,5 @@
 #include "Factory.h"
-#include "Maze.hpp"
+#include "Mimic.hpp"
 
 //You may add #include statments here
 using namespace std;
@@ -9,15 +9,15 @@ using namespace std;
 */
 //=======================================================================================
 /*
-	getMaze()
+	createMimic()
 
-	Creates and returns an object whose class extends MazeInterface.
+	Creates and returns an object whose class extends MimicInterface.
 	This should be an object of a class you have created.
 
-	Example: If you made a class called "Maze", you might say, "return new Maze();".
+	Example: If you made a class called "Mimic", you might say, "return new Mimic();".
 */
-MazeInterface* Factory::getMaze()
+MimicInterface* Factory::createMimic()
 {
-	return new Maze();//Modify this line
+	return new Mimic();//Modify this line
 }
 //=======================================================================================

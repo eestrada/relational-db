@@ -12,8 +12,8 @@ class Maze : public MazeInterface
 {
 
 public:
-	Maze(){}
-	virtual ~Maze(){}
+	Maze();
+	virtual ~Maze();
 	/**
 	 * Create and store a random maze with an entry and exit point. (location [0,0,0] and [7,7,7] must have 1's in those spots.  The rest of the spots can be randomly 0 or 1.
 	 */
