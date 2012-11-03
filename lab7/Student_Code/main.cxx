@@ -6,8 +6,6 @@
 using namespace std;
 
 
-
-
 int main(void)
 {
     Mimic test;
@@ -19,10 +17,20 @@ int main(void)
 
     vector<string> slist = test.getSuffixList(testkey);
 
+    // Generate some random string
     string funinsun = test.generateText();
 
     cout << funinsun << endl;
 
-    //cout << "Values for \"" << testkey << "\" key:\n" << slist << endl;
+    funinsun = test.generateText();
+    
+    // Check that random seed is working
+    cout << funinsun << endl;
+
+    funinsun = test.generateText();
+    
+    // Check that random seed is working
+    cout << funinsun << endl;
+
 }
 

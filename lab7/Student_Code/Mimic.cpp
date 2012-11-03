@@ -2,13 +2,17 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <cstdlib>
 #include "Mimic.hpp"
 #include "map.hpp"
 #include "pair.hpp"
 
 using namespace std;
 
-Mimic::Mimic(){}
+Mimic::Mimic()
+{
+    srand(0);
+}
 Mimic::~Mimic(){}
 
 //Part 1--------------------------------------------------------------
@@ -137,10 +141,47 @@ vector<string> Mimic::getSuffixList(string prefix)
  */
 string Mimic::generateText()
 {
+    if(_wordmap.size() == 0)
+        return string();
     // Temp code for debugging
     ostringstream retval;
-    retval << _wordmap;
+    string first, second;
+
+    ede::mapnode tmp = _wordmap[0];
+
+
+    istringstream keyin(tmp.first);
+    
+    keyin >> first >> second;
+
+    string newkey;
+
+    while(second != "THE_END")
+    {
+        // update return value
+        retval << first << " ";
+       
+        // Now do a bunch of crap to create a new key and get the next value
+        ostringstream tmpkey;
+
+        string tmpstr;
+
+        tmpkey << first << " " << second;
+
+        int index = rand() % _wordmap[tmpkey.str()].size();
         
+        tmpstr = _wordmap[tmpkey.str()][index];
+
+/*        
+        retval << first << " " << second;
+
+        if(tmpstr != "THE_END")
+            {retval << " " << tmpstr << " ";}
+*/
+        first = second;
+        second = tmpstr;
+    }
+
     return retval.str();
 }
 
