@@ -8,6 +8,7 @@
 #include "pair.hpp"
 
 using namespace std;
+using ede::mapnode;
 
 Mimic::Mimic()
 {
@@ -37,24 +38,28 @@ Mimic::~Mimic(){}
  */
 void Mimic::createMap(string input)
 {
-    istringstream sstr(input);
+    stringstream sstr(input);
 
     string first, second, third;
     
-    sstr >> first >> second >> third;
+    sstr >> skipws >> first >> second >> third;
     
     // Empty out map in case it has something in it.
     _wordmap = ede::map();
 
-    while (sstr.good())
+    // Test for the case where we have a string with only two or three words
+    if(!sstr.good())
     {
-        stringstream tmpkey, tmpval;
+        ostringstream tmpkey, tmpval;
         
         tmpkey << first << ' ' << second;
-        
+       
+        bool donealready = false;
+
         if(third == "")
         {
             tmpval << "THE_END";
+            donealready = true;
         }
         else
         {
@@ -62,37 +67,74 @@ void Mimic::createMap(string input)
         }
 
         _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
-        
-        first = second;
-        second = third;
-        sstr >> third;
-
-        // Do this once we have hit the end of the string.
-        if(!sstr.good())
+       
+        if(!donealready)
         {
-            // Clear out the output streams
-            tmpkey.str("");
-            tmpval.str("");
-           
-            // Fill the output streams
-            tmpkey << first << ' ' << second;
-            tmpval << third;
-            // Add the new data to the map
-            _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+            tmpkey = ostringstream();
+            tmpval = ostringstream();
 
-            // Set vars to their final values
             first = second;
             second = third;
-            third = "THE_END";
-            
-            // Clear out the output streams
-            tmpkey.str("");
-            tmpval.str("");
-            
-            // Fill the output streams
             tmpkey << first << ' ' << second;
-            tmpval << third;
+            tmpval << "THE_END";
+            
             _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+        }
+    }
+    // If the string has more than three words, then run a loop to 
+    // create all the key/value pairs in our map.
+    else
+    {
+        while (sstr.good())
+        {
+            ostringstream tmpkey, tmpval;
+            
+            tmpkey << first << ' ' << second;
+            
+            if(third == "")
+            {
+                tmpval << "THE_END";
+            }
+            else
+            {
+                tmpval << third;
+            }
+
+            _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+            
+            first = second;
+            second = third;
+            sstr >> third;
+
+
+            // Do this once we have hit the end of the string.
+            if(!sstr.good())
+            {
+                // Clear out the output streams
+                tmpkey = ostringstream();
+                tmpval = ostringstream();
+
+                // Fill the output streams
+                tmpkey << first << ' ' << second;
+
+                tmpval << third;
+                // Add the new data to the map
+                _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+
+                // Set vars to their final values
+                first = second;
+                second = third;
+                third = "THE_END";
+                
+                // Clear out the output streams
+                tmpkey.str("");
+                tmpval.str("");
+                
+                // Fill the output streams
+                tmpkey << first << ' ' << second;
+                tmpval << third;
+                _wordmap.addKeyValPair(tmpkey.str(), tmpval.str());
+            }
         }
     }
 }
@@ -116,7 +158,7 @@ vector<string> Mimic::getSuffixList(string prefix)
         vector<string> retval = _wordmap[prefix];
         return retval;
     }
-    // If the key does not exist, and return an empty vector.
+    // If the key does not exist then return an empty vector.
     catch(out_of_range e)
     {
         return vector<string>();
@@ -141,20 +183,18 @@ vector<string> Mimic::getSuffixList(string prefix)
  */
 string Mimic::generateText()
 {
+    // If there isn't anything in our map, then return an empty string.
     if(_wordmap.size() == 0)
         return string();
-    // Temp code for debugging
-    ostringstream retval;
-    string first, second;
+    
+    ostringstream retval; // Stream to hold return value in
+    string first, second; // Strings to hold keys and values
 
-    ede::mapnode tmp = _wordmap[0];
-
+    mapnode tmp = _wordmap[0]; // Grab the first value in the map
 
     istringstream keyin(tmp.first);
     
-    keyin >> first >> second;
-
-    string newkey;
+    keyin >> first >> second; // separate the two words in the key string
 
     while(second != "THE_END")
     {

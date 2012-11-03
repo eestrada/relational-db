@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include "pair.hpp"
 
@@ -26,27 +27,23 @@ ostream & operator<<(ostream &stream, const vector<T> &somevec)
     return stream;
 }
 
-
 namespace ede
 {
 
-typedef vector<string> strvec;
-
-typedef pair< string , strvec > mapnode;
-
+typedef pair< string , vector<string> > mapnode;
 
 class map : public vector < mapnode >
 {
 
 private:
-    typedef typename ede::map::iterator myiter;
 
 public:
 
-    strvec & operator[](const string &key)
+    vector<string> & operator[](const string &key)
     {
         int num = this->size();
-
+        
+        // Loop though the values of this until we find a key that matches
         for(int i = 0; i < num; ++i)
         {
             if(vector<mapnode>::operator[](i).first == key)
@@ -54,7 +51,9 @@ public:
                 return vector<mapnode>::operator[](i).second;
             }
         }
-
+        
+        // If we have made it this far, then no value exists with this key
+        // So throw an exception to indicate this.
         throw out_of_range("The supplied key does not exist.");
     };
 
@@ -68,19 +67,20 @@ public:
         bool exists = false;
         try
         {
-            strvec &tmpsv = this->operator[](key);
+            // If this key exists, then add this value to it
+            vector<string> &tmpsv = this->operator[](key);
             
             tmpsv.push_back(val);
 
         }
         catch(out_of_range e)
         {
-            strvec tmpsv;
+            //Otherwise, create a new key/value pair
+            vector<string> tmpsv;
             tmpsv.push_back(val);
             mapnode tmpnode(key, tmpsv);
 
             this->push_back(tmpnode);
-
         }
 
         return exists;
