@@ -8,10 +8,10 @@ using namespace std;
 int main(void)
 {
     string line;
-    ifstream test1 ("test_part1.txt");
-    ifstream test2 ("test_part2.txt");
-    ifstream test3 ("test_part3.txt");
-    ifstream test4 ("test_part4.txt");
+    ifstream test1 ("./Student_Code/testfiles/test_part1.txt");
+    ifstream test2 ("./Student_Code/testfiles/test_part2.txt");
+    ifstream test3 ("./Student_Code/testfiles/test_part3.txt");
+    ifstream test4 ("./Student_Code/testfiles/test_part4.txt");
 
     ExpressionManager em;
 
