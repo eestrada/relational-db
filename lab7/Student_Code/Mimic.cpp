@@ -172,17 +172,17 @@ string Mimic::generateText()
         
         tmpstr = _wordmap[tmpkey.str()][index];
 
-/*        
-        retval << first << " " << second;
-
-        if(tmpstr != "THE_END")
-            {retval << " " << tmpstr << " ";}
-*/
         first = second;
         second = tmpstr;
+
+        // If we have hit the end, then we have one more thing to tack onto the end
+        if(second == "THE_END")
+        {
+            retval << first;
+        }
     }
 
+    // Return the string we have constructed
     return retval.str();
 }
-
 
