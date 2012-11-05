@@ -10,6 +10,7 @@ using namespace std;
 const string OPEN = "([{";
 const string CLOSE = ")]}";
 const string OPERATORS = "+-*/";
+const string NUMBERS = "0123456789";
 const int PRECEDENCE[4] = { 1, 1, 2, 2 };
 
 inline bool is_open(char ch)
@@ -20,6 +21,11 @@ inline bool is_open(char ch)
 inline bool is_close(char ch)
 {
     return CLOSE.find(ch) != string::npos;
+}
+
+inline bool is_num(char ch)
+{
+    return NUMBERS.find(ch) != string::npos;
 }
 
     /*

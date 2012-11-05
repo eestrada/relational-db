@@ -6,7 +6,7 @@ run : build
 	./bin/test.bin
 
 # Run test program from class
-test : build
+test : 
 	./Run_Test_Driver.sh
 
 ./bin :
