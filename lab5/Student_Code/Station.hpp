@@ -4,25 +4,32 @@
 #include <iostream>
 #include <string>
 #include "StationInterface.h"
+#include "StationInterfaceExtra.h"
 #include "ede_stack.hpp"
 #include "ede_queue.hpp"
 #include "ede_deque.hpp"
+#include "ede_ordeque.hpp"
+#include "ede_irdeque.hpp"
 
 using namespace std;
 
 using ede::stack;
 using ede::queue;
 using ede::deque;
+using ede::ordeque;
+using ede::irdeque;
 
 /*
 	WARNING: It is expressly forbidden to modify any part of this document, including its name
 */
-class Station : public StationInterface
+class Station : public StationInterfaceExtra
 {
     private:
         stack<int> carStack;
         queue<int> carQueue;
         deque<int> carDeque;
+        ordeque<int> carOrdeque;
+        irdeque<int> carIrdeque;
         int current;
 
 	public:
@@ -173,6 +180,104 @@ class Station : public StationInterface
 		 * @return the number of cars in the deque
 		 */
 		virtual int showSizeOfDeque();
+
+
+        /** 
+         * *********************************
+         * Extra credit
+         * Extend StationInterfaceExtra class
+         * **********************************
+         */
+
+
+		//Input-Restricted Deque----------------------------------------------
+		/**
+		 * Adds the current car to the IRDeque on the left side.  After this operation, there should be no current car.
+		 * Does nothing if there is no current car or if the IRDeque is already full.
+		 *
+		 * @return true if the car is successfully added to the IRDeque; false otherwise
+		 */
+		virtual bool addToIRDequeLeft();
+
+		/**
+		 * Removes the leftmost car in the IRDeque and makes it the current car.
+		 * Does nothing if there is already a current car or if the IRDeque already empty.
+		 *
+		 * @return true if the car is successfully removed from the IRDeque; false otherwise
+		 */
+		virtual bool removeFromIRDequeLeft();
+
+		/**
+		 * Removes the rightmost car in the IRDeque and makes it the current car.
+		 * Does nothing if there is already a current car or if the IRDeque already empty.
+		 *
+		 * @return true if the car is successfully removed from the IRDeque; false otherwise
+		 */
+		virtual bool removeFromIRDequeRight();
+
+		/**
+		 * Returns the ID of the leftmost car in the IRDeque.
+		 *
+		 * @return the ID of the leftmost car in the IRDeque; -1 if the IRDeque is empty
+		 */
+		virtual int showTopOfIRDequeLeft();
+
+		/**
+		 * Returns the ID of the rightmost car in the IRDeque.
+		 *
+		 * @return the ID of the rightmost car in the IRDeque; -1 if the IRDeque is empty
+		 */
+		virtual int showTopOfIRDequeRight();
+
+		/**
+		 * Returns the number of cars in the IRDeque.
+		 *
+		 * @return the number of cars in the IRDeque
+		 */
+		virtual int showSizeOfIRDeque();
+
+
+
+
+		//Output-Restricted Deque---------------------------------------------
+		/**
+		 * Adds the current car to the ORDeque on the left side.  After this operation, there should be no current car.
+		 * Does nothing if there is no current car or if the ORDeque is already full.
+		 *
+		 * @return true if the car is successfully added to the ORDeque; false otherwise
+		 */
+		virtual bool addToORDequeLeft();
+
+		/**
+		 * Adds the current car to the ORDeque on the right side.  After this operation, there should be no current car.
+		 * Does nothing if there is no current car or if the ORDeque is already full.
+		 *
+		 * @return true if the car is successfully added to the ORDeque; false otherwise
+		 */
+		virtual bool addToORDequeRight();
+
+		/**
+		 * Removes the leftmost car in the ORDeque and makes it the current car.
+		 * Does nothing if there is already a current car or if the ORDeque already empty.
+		 *
+		 * @return true if the car is successfully removed from the ORDeque; false otherwise
+		 */
+		virtual bool removeFromORDequeLeft();
+
+		/**
+		 * Returns the ID of the leftmost car in the ORDeque.
+		 *
+		 * @return the ID of the leftmost car in the ORDeque; -1 if the ORDeque is empty
+		 */
+		virtual int showTopOfORDequeLeft();
+
+		/**
+		 * Returns the number of cars in the ORDeque.
+		 *
+		 * @return the number of cars in the ORDeque
+		 */
+		virtual int showSizeOfORDeque();
+
 };
 
 #endif //__STATION_HPP__

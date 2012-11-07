@@ -1,16 +1,28 @@
+# variables
+
+BINDIR = bin
+BIN = $(BINDIR)/test.bin
+
 # Name phony targets
-.PHONY: run build clean
+.PHONY: run drvr235 mkdirs build clean
 
 # Run test program
-run: build
-	./test.bin
+run : build
+	./$(BIN)
+
+drvr235 :
+	./Run_Test_Driver.sh
+
+mkdirs : 
+	mkdir -p bin
 
 # Build source program
-build:
-	g++ -Wall -o test.bin Student_Code/*.cpp Student_Code/*.cxx
+build : mkdirs
+	g++ -Wall -o ./$(BIN) Student_Code/*.cpp Student_Code/*.cxx
 
 # Clean up files
-clean:
-	rm -f ./test.bin
+clean :
+	@-rm -vrf $(BINDIR)
+	@-rm -vf ./dont_run_me
 
 
