@@ -18,6 +18,6 @@ using namespace std;
 */
 MazeInterface* Factory::getMaze()
 {
-	return new Maze();//Modify this line
+	return new ede::Maze();//Modify this line
 }
 //=======================================================================================

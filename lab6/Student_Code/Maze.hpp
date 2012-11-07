@@ -4,16 +4,24 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
+#include "MazeInterface.h"
 
 namespace ede
 {
 
 class Maze : public MazeInterface
 {
+public:
 
 public:
-	Maze();
+	Maze()
+    {
+        srand(0);
+    }
+
 	virtual ~Maze();
+
 	/**
 	 * Create and store a random maze with an entry and exit point. (location [0,0,0] and [7,7,7] must have 1's in those spots.  The rest of the spots can be randomly 0 or 1.
 	 */
@@ -26,7 +34,7 @@ public:
 	 * 
 	 * @return true if the file was successfully read/imported, false if an error occurred when parsing/reading the file
 	 */
-	virtual bool importMaze(std::std::string fileName);
+	virtual bool importMaze(std::string fileName);
 	
 	/**
 	 * Traverses the current maze in storage, storing the path taken to solve the maze if the maze was solvable.
