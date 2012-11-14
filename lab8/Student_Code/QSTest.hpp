@@ -1,15 +1,26 @@
 #pragma once
 #include <iostream>
 #include <string>
+
+#if defined(USING_EDE_MAIN_CXX)
+/* 
+ * Include my quicksort class if I am compiling with my main file, 
+ * other wise just include the QSInterface.
+ *
+ */
+#include "QuickSort.hpp"
+#else
 #include "QSInterface.h"
+#endif
+
 #include "QSTestInterface.h"
 using namespace std;
 
 class QSTest : public QSTestInterface
 {
 	public:
-		QSTest(){}
-		virtual ~QSTest(){}
+		QSTest();
+		virtual ~QSTest();
 
 		/*
 		 * For all methods below, the correctness of an operation is defined in QSInterface.h.

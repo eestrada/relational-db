@@ -8,9 +8,16 @@ CPP_FILES = Student_Code/*.cpp Student_Code/*.cxx
 
 DEPS = Student_Code/Factory.h
 
-.PHONY : run drvr235 bin test clean memcheck
+.PHONY : runalways run touchall drvr235 bin test clean memcheck
 
-run: $(BIN)
+runalways : touchall $(BIN)
+	./$(BIN)
+
+run : $(BIN)
+	./$(BIN)
+
+touchall :
+	touch -c $(BIN) $(CPP_FILES) $(DEPS)
 
 drvr235 :
 	./Run_Test_Driver.sh

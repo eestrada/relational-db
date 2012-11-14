@@ -4,7 +4,7 @@
 #include "QSInterface.h"
 using namespace std;
 
-class QS : public QSInterface
+class QuickSort : public QSInterface
 {
 	public:
 		QuickSort(){}
@@ -27,7 +27,10 @@ class QS : public QSInterface
 		 * @param size
 		 * 		the correct size of the given array
 		 */
-		virtual void sortAll(int data[], int size);
+		virtual void sortAll(int data[], int size)
+        {
+            cout << "Trying to run sortAll..." << endl;
+        }
 
 		/*
 		 * sort()
@@ -49,7 +52,9 @@ class QS : public QSInterface
 		 * @param right
 		 * 		the right boundary for the subarray to sort
 		 */
-		virtual void sort(int data[], int size, int left, int right);
+		virtual void sort(int data[], int size, int left, int right)
+        {
+        }
 
 		/*
 		 * medianOfThree()
@@ -74,7 +79,9 @@ class QS : public QSInterface
 		 * @param right
 		 * 		the right boundary for the subarray from which to find a pivot
 		 */
-		virtual void medianOfThree(int data[], int size, int left, int right);
+		virtual void medianOfThree(int data[], int size, int left, int right)
+        {
+        }
 
 		/*
 		 * Partitions a subarray around a pivot value selected according to
@@ -99,7 +106,10 @@ class QS : public QSInterface
 		 * @return the pivot's ending index after the partition completes; -1 if
 		 * 		provided with bad input
 		 */
-		virtual int partition(int data[], int size, int left, int right);
+		virtual int partition(int data[], int size, int left, int right)
+        {
+            return int();
+        }
 
 		/*
 		 * Swaps the values at the given indices within the given array.
@@ -119,5 +129,7 @@ class QS : public QSInterface
 		 * @param j
 		 * 		the second index
 		 */
-		virtual void swap(int data[], int size, int i, int j);
+		virtual void swap(int data[], int size, int i, int j)
+        {
+        }
 };
