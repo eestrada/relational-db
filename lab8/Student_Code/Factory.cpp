@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "QSTest.hpp"
 //You may add #include statments here
 using namespace std;
 
@@ -16,6 +17,6 @@ using namespace std;
 */
 QSTestInterface* Factory::createQSTest()
 {
-	return NULL;//Modify this line
+	return new QSTest();//Modify this line
 }
 //=======================================================================================

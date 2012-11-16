@@ -29,7 +29,6 @@ class QuickSort : public QSInterface
 		 */
 		virtual void sortAll(int data[], int size)
         {
-            cout << "Trying to run sortAll..." << endl;
         }
 
 		/*

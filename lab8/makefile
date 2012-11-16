@@ -10,7 +10,7 @@ DEPS = Student_Code/Factory.h
 
 .PHONY : runalways run touchall drvr235 bin test clean memcheck
 
-runalways : touchall $(BIN)
+runalways : clean $(BIN)
 	./$(BIN)
 
 run : $(BIN)
@@ -18,9 +18,13 @@ run : $(BIN)
 
 touchall :
 	touch -c $(BIN) $(CPP_FILES) $(DEPS)
+	sleep 5
 
 drvr235 :
-	./Run_Test_Driver.sh
+	@ g++ -o dont_run_me Student_Code/*.cpp ignoreme.a
+	@ ./dont_run_me
+	@ rm ./dont_run_me
+	@ read -p "Press any key to exit..."
 
 test : clean memcheck
 

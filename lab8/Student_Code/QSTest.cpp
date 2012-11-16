@@ -1,5 +1,9 @@
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
 #include "QSTest.hpp"
 
 using std::cout;
@@ -7,11 +11,15 @@ using std::endl;
 using std::cerr;
 using std::string;
 
+using namespace std;
 
 /*
  * Constructor.
  */
-QSTest::QSTest(){}
+QSTest::QSTest() : testcases("./Student_Code/testcases_SortAll.txt")
+{
+    srand(0);
+}
 
 /*
  * Destructor.
@@ -36,18 +44,40 @@ QSTest::~QSTest(){}
  */
 bool QSTest::testSortAll(QSInterface* test)
 {
-    int *iarr = new int[20];
-    QSInterface &qsref = *test;
+    vector<int> unsorted, sorted;
 
-    for (int i = 0; i < 20; ++i)
+    // Initialize vector with random content.
+    int middle = RAND_MAX/2;
+    for(int i = 0; i < 1000; ++i)
     {
-        cout << "Index " << i << ':' << iarr[i] << '\n';
+        unsorted.push_back(rand() - middle);
     }
 
-    delete &qsref;
+    // Fill sorted with the contents of unsorted
+    sorted = unsorted;
 
-    cout << "Member function \'testSortAll\' has been called!";
-    return bool();
+    // Sort sorted.
+    sort(sorted.begin(), sorted.end());
+   
+    // Send a pointer to the beginning of my vector, along with its size.
+    test->sortAll(&unsorted.front(), unsorted.size());
+
+/*
+    // Innocent until proved guilty.
+    bool passed = true;
+    for (unsigned int i = 0; i < sorted.size(); ++i)
+    {
+        // To be a correct implementation, sorted and unsorted should always equal eachother.
+        if(unsorted[i] != sorted[i])
+        {
+            // Guess you're guilty.
+            passed = false;
+            break;
+        }
+    }
+*/
+
+    return (sorted == unsorted);
 }
 
 /*
