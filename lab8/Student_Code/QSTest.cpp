@@ -13,6 +13,48 @@ using std::string;
 
 using namespace std;
 
+
+const int sortAllCase01[] = {6, -4, 5, -5, 10, 4, -1, 8, 7, 3};
+const int sortAllTrue01[] = {-5, -4, -1, 3, 4, 5, 6, 7, 8, 10};
+const int sortAllCase02[] = {-7, 1, -4, 10, -3, 9, -10, 2, -8, -1};
+const int sortAllTrue02[] = {-10, -8, -7, -4, -3, -1, 1, 2, 9, 10};
+
+const int sortCase01[] = {-6, -4, 1, 3, 0, -10, -1, -2, -3, 8};
+const int sortTrue01[] = {-6, -4, -10, -2, -1, 0, 1, 3, -3, 8};
+const int sortCase02[] = {-7, -8, 5, -4, -6, -2, 6, 9, 8, -5};
+const int sortTrue02[] = {-7, -8, 5, -4, -6, -2, 6, 9, 8, -5};
+
+const int medianOfThreeCase01[] = {-6, 1, -1, -10, -11, -2, 10, -5, -3, 2};
+const int medianOfThreeTrue01[] = {-6, 1, -1, -10, -11, -2, 10, -5, -3, 2};
+const int medianOfThreeCase02[] = {3, -9, 3, 9, -9, 10, 5, 4, 10, -2};
+const int medianOfThreeTrue02[] = {3, -9, 3, 9, -9, 10, 5, 4, 10, -2};
+
+const int partitionCase01[] = {-2, -1, -9, -3, -8, 8, -4, -7, -10, -6};
+const int partitionTrue01[] = {-2, -1, -9, -3, -8, 8, -4, -7, -10, -6};
+const int partitionCase02[] = {-5, 2, -2, -4, 10, 9, -7, -10, 5, 0};
+const int partitionTrue02[] = {-5, 2, -2, -4, 10, 9, -7, -10, 5, 0};
+
+const int swapCase01[] = {4, -9, 4, 9, 7, -5, -1, -10, -4, -3};
+const int swapTrue01[] = {4, -1, 4, 9, 7, -5, -9, -10, -4, -3};
+const int swapCase02[] = {5, -8, 0, 0, 6, 5, 6, 3, 6, -10};
+const int swapTrue02[] = {5, -8, 0, 0, 6, 5, 6, 3, 6, -10};
+
+
+ostream & operator<<(ostream &out, const vector<int> &intvec)
+{
+    for(unsigned int i = 0; i < intvec.size(); ++i)
+    {
+        if(i != 0)
+            out << ", "<< intvec[i];
+        else
+            out << intvec[i];
+    }
+
+    out << "\n";
+
+    return out;
+}
+
 /*
  * Constructor.
  */
@@ -46,36 +88,11 @@ bool QSTest::testSortAll(QSInterface* test)
 {
     vector<int> unsorted, sorted;
 
-    // Initialize vector with random content.
-    int middle = RAND_MAX/2;
-    for(int i = 0; i < 1000; ++i)
-    {
-        unsorted.push_back(rand() - middle);
-    }
-
-    // Fill sorted with the contents of unsorted
-    sorted = unsorted;
-
-    // Sort sorted.
-    sort(sorted.begin(), sorted.end());
-   
+    unsorted.assign(&sortAllCase01[0], &sortAllCase01[10]);
+    sorted.assign(&sortAllTrue01[0], &sortAllTrue01[10]);
+  
     // Send a pointer to the beginning of my vector, along with its size.
     test->sortAll(&unsorted.front(), unsorted.size());
-
-/*
-    // Innocent until proved guilty.
-    bool passed = true;
-    for (unsigned int i = 0; i < sorted.size(); ++i)
-    {
-        // To be a correct implementation, sorted and unsorted should always equal eachother.
-        if(unsorted[i] != sorted[i])
-        {
-            // Guess you're guilty.
-            passed = false;
-            break;
-        }
-    }
-*/
 
     return (sorted == unsorted);
 }
@@ -94,7 +111,17 @@ bool QSTest::testSortAll(QSInterface* test)
  */
 bool QSTest::testSort(QSInterface* test)
 {
-    return bool();
+    vector<int> unsorted, sorted;
+
+    unsorted.assign(&sortCase01[0], &sortCase01[10]);
+    sorted.assign(&sortTrue01[0], &sortTrue01[10]);
+  
+    // Send a pointer to the beginning of my vector, along with its size.
+    test->sort(&unsorted.front(), unsorted.size(), 2, 7);
+
+//    cout << sorted << unsorted << endl;
+
+    return (sorted == unsorted);
 }
 
 /*
@@ -111,7 +138,25 @@ bool QSTest::testSort(QSInterface* test)
  */
 bool QSTest::testMedianOfThree(QSInterface* test)
 {
-    return bool();
+    vector<int> unsorted;
+
+    unsorted.assign(&medianOfThreeCase01[0], &medianOfThreeCase01[10]);
+  
+    // Send a pointer to the beginning of my vector, along with its size.
+    test->medianOfThree(&unsorted.front(), unsorted.size(), 1, 8);
+
+    int left, right, middle;
+    
+    left = unsorted[1];
+    right = unsorted[8];
+    middle = unsorted[(1+8)/2];
+   
+//    cout << left << ", " << middle << ", " << right << endl;
+
+    if(left <= middle && middle <= right)
+        return true;
+    else
+        return false;
 }
 
 /*
@@ -128,7 +173,45 @@ bool QSTest::testMedianOfThree(QSInterface* test)
  */
 bool QSTest::testPartition(QSInterface* test)
 {
-    return bool();
+    vector<int> unsorted;
+
+    unsorted.assign(&partitionCase01[0], &partitionCase01[10]);
+  
+    int left = 1, right = 8, middle;
+    
+    // Send a pointer to the beginning of my vector, along with its size.
+    int pivot = test->partition(&unsorted.front(), unsorted.size(), left, right);
+    
+    middle = unsorted[pivot];
+
+//    cout << "The pivot index is: " << pivot << "\n";
+//    cout << "The pivot value is: " << middle << "\n";
+
+    bool passed = true;
+
+    for(int i = left; i < pivot; ++i)
+    {
+//        cout << "Compare " << unsorted[i] << " with " << middle << "\n";
+        if(unsorted[i] > middle)
+        {
+//            cout << "Make passed false.\n";
+            passed = false;
+        }
+    }
+
+    for(int i = right; i > pivot; --i)
+    {
+//        cout << "Compare " << middle << " with " << unsorted[i] << "\n";
+        if(middle > unsorted[i])
+        {
+//            cout << "Make passed false.\n";
+            passed = false;
+        }
+    }
+   
+//    cout << unsorted << endl;
+    
+    return passed;
 }
 
 /*
@@ -145,6 +228,18 @@ bool QSTest::testPartition(QSInterface* test)
  */
 bool QSTest::testSwap(QSInterface* test)
 {
-    return bool();
+    vector<int> unsorted, sorted;
+
+    unsorted.assign(&swapCase01[0], &swapCase01[10]);
+    sorted.assign(&swapTrue01[0], &swapTrue01[10]);
+    
+    int left = 1, right = 6;
+
+    // Send a pointer to the beginning of my vector, along with its size.
+    test->swap(&unsorted.front(), unsorted.size(), left, right);
+
+//    cout << sorted << unsorted << endl;
+
+    return (sorted == unsorted);
 }
 
