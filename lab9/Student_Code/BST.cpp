@@ -33,7 +33,7 @@ bool BST::addNode(Node *current, int val)
         if(current->left == NULL)
         {
             current->left = new Node(val, NULL, NULL, current);
-            return current->left;
+            return true;
         }
         else
         {
@@ -45,7 +45,7 @@ bool BST::addNode(Node *current, int val)
         if(current->right == NULL)
         {
             current->right = new Node(val, NULL, NULL, current);
-            return current->right;
+            return true;
         }
         else
         {
@@ -53,7 +53,8 @@ bool BST::addNode(Node *current, int val)
         }
     }
 
-    return NULL;
+    throw(-20);
+    return false;
 }
 
 /*
@@ -134,6 +135,8 @@ bool BST::removeNode(Node *current, int val)
                 current->right->parent = current;
             }
             
+            tmp->left = NULL;
+            tmp->right = NULL;
             delete(tmp);
             
             return true;
@@ -147,8 +150,13 @@ bool BST::removeNode(Node *current, int val)
             if(tmp->right == NULL)
             {
                 current->data = tmp->data;
-                current->left = NULL;
+                current->left = tmp->left;
 
+                if(current->left != NULL)
+                    current->left->parent = current;
+
+                tmp->left = NULL;
+                tmp->right = NULL;
                 delete(tmp);
 
                 return true;
@@ -171,6 +179,8 @@ bool BST::removeNode(Node *current, int val)
                 tmp->parent->right = tmp->left;
                 tmp->left->parent = tmp->parent;
 
+                tmp->left = NULL;
+                tmp->right = NULL;
                 delete(tmp);
 
                 return true;
@@ -184,6 +194,8 @@ bool BST::removeNode(Node *current, int val)
                 // "deleted" node.
                 tmp->parent->right = NULL;
 
+                tmp->left = NULL;
+                tmp->right = NULL;
                 delete(tmp);
 
                 return true;
@@ -208,11 +220,7 @@ bool BST::removeNode(Node *current, int val)
  */
 bool BST::remove(int data)
 {
-    cout << "Attempting to remove: " << data << endl;
-    bool result =  this->removeNode(this->root, data);
-    cout << "Result: " << boolalpha << result << endl;
-
-    return result;
+    return this->removeNode(this->root, data);
 }
 
 };

@@ -8,7 +8,7 @@ CPP_FILES = Student_Code/*.cpp Student_Code/*.cxx
 
 DEPS = Student_Code/Factory.h
 
-.PHONY : runalways run touchall drvr235 bin test clean memcheck
+.PHONY : runalways run touchall drvr235 bin test clean
 
 runalways : clean $(BIN)
 	./$(BIN)
@@ -21,23 +21,14 @@ touchall :
 	sleep 5
 
 drvr235 :
-	@ g++ -o dont_run_me Student_Code/*.cpp ignoreme.a
-	@ ./dont_run_me
-	@ rm ./dont_run_me
-	@ read -p "Press any key to exit..."
+	@ ./Run_Test_Driver.sh
 
-test : clean memcheck
+test : clean
 
 clean :
 	@ echo "Removing generated files"
 	rm -rf obj
 	rm -rf bin
-	@ echo
-
-memcheck : bin
-	@ echo "Running valgrind to check for memory leaks"
-	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
-	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 
 $(BIN) : $(CPP_FILES) $(DEPS)
