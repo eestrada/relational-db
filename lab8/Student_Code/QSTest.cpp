@@ -13,31 +13,20 @@ using std::string;
 
 using namespace std;
 
+const int START = 0, END = 24;
 
-const int sortAllCase01[] = {6, -4, 5, -5, 10, 4, -1, 8, 7, 3};
-const int sortAllTrue01[] = {-5, -4, -1, 3, 4, 5, 6, 7, 8, 10};
-const int sortAllCase02[] = {-7, 1, -4, 10, -3, 9, -10, 2, -8, -1};
-const int sortAllTrue02[] = {-10, -8, -7, -4, -3, -1, 1, 2, 9, 10};
+const int sortAllCase01[] = {-9, 7, -3, -5, 6, 5, -4, 9, -11, -1, -6, 4, 11, -2, -8, -10, -12, 2, 1, 0, 8, -7, 3, 10};
+const int sortAllTrue01[] = {-12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
-const int sortCase01[] = {-6, -4, 1, 3, 0, -10, -1, -2, -3, 8};
-const int sortTrue01[] = {-6, -4, -10, -2, -1, 0, 1, 3, -3, 8};
-const int sortCase02[] = {-7, -8, 5, -4, -6, -2, 6, 9, 8, -5};
-const int sortTrue02[] = {-7, -8, 5, -4, -6, -2, 6, 9, 8, -5};
+const int sortCase01[] = {7, 8, -8, -7, 5, -12, -10, 3, 6, 1, 9, 2, -9, -1, -6, 4, -4, 0, -5, -2, 11, -3, -11, 10};
+const int sortTrue01[] = {7, 8, -8, -7, -12, -10, -9, -6, -4, -1, 0, 1, 2, 3, 4, 5, 6, 9, -5, -2, 11, -3, -11, 10};
 
-const int medianOfThreeCase01[] = {-6, 1, -1, -10, -11, -2, 10, -5, -3, 2};
-const int medianOfThreeTrue01[] = {-6, 1, -1, -10, -11, -2, 10, -5, -3, 2};
-const int medianOfThreeCase02[] = {3, -9, 3, 9, -9, 10, 5, 4, 10, -2};
-const int medianOfThreeTrue02[] = {3, -9, 3, 9, -9, 10, 5, 4, 10, -2};
+const int medianOfThreeCase01[] = {11, -8, -3, -10, 7, 6, -9, 1, 5, -5, -2, 2, 3, 4, 9, -4, -11, 0, 8, -12, 10, -1, -6, -7};
 
-const int partitionCase01[] = {-2, -1, -9, -3, -8, 8, -4, -7, -10, -6};
-const int partitionTrue01[] = {-2, -1, -9, -3, -8, 8, -4, -7, -10, -6};
-const int partitionCase02[] = {-5, 2, -2, -4, 10, 9, -7, -10, 5, 0};
-const int partitionTrue02[] = {-5, 2, -2, -4, 10, 9, -7, -10, 5, 0};
+const int partitionCase01[] = {-6, 3, 0, -5, 4, 2, 1, -7, -3, -4, 10, 5, -12, 11, 7, -11, -1, -8, 9, -10, 8, -2, -9, 6};
 
-const int swapCase01[] = {4, -9, 4, 9, 7, -5, -1, -10, -4, -3};
-const int swapTrue01[] = {4, -1, 4, 9, 7, -5, -9, -10, -4, -3};
-const int swapCase02[] = {5, -8, 0, 0, 6, 5, 6, 3, 6, -10};
-const int swapTrue02[] = {5, -8, 0, 0, 6, 5, 6, 3, 6, -10};
+const int swapCase01[] = {8, -7, 1, 11, 3, 9, -6, -8, -3, -5, 4, -12, -11, 5, 0, 7, -4, 2, -9, 10, -10, -1, 6, -2};
+const int swapTrue01[] = {8, -7, 1, 11, 3, 9, 0, -8, -3, -5, 4, -12, -11, 5, -6, 7, -4, 2, -9, 10, -10, -1, 6, -2};
 
 
 ostream & operator<<(ostream &out, const vector<int> &intvec)
@@ -88,8 +77,8 @@ bool QSTest::testSortAll(QSInterface* test)
 {
     vector<int> unsorted, sorted;
 
-    unsorted.assign(&sortAllCase01[0], &sortAllCase01[10]);
-    sorted.assign(&sortAllTrue01[0], &sortAllTrue01[10]);
+    unsorted.assign(&sortAllCase01[START], &sortAllCase01[END]);
+    sorted.assign(&sortAllTrue01[START], &sortAllTrue01[END]);
   
     // Send a pointer to the beginning of my vector, along with its size.
     test->sortAll(&unsorted.front(), unsorted.size());
@@ -113,14 +102,15 @@ bool QSTest::testSort(QSInterface* test)
 {
     vector<int> unsorted, sorted;
 
-    unsorted.assign(&sortCase01[0], &sortCase01[10]);
-    sorted.assign(&sortTrue01[0], &sortTrue01[10]);
+    unsorted.assign(&sortCase01[START], &sortCase01[END]);
+    sorted.assign(&sortTrue01[START], &sortTrue01[END]);
+
+    int left = 4, right = 17;
   
     // Send a pointer to the beginning of my vector, along with its size.
-    test->sort(&unsorted.front(), unsorted.size(), 2, 7);
+    test->sort(&unsorted.front(), unsorted.size(), left, right);
 
-//    cout << sorted << unsorted << endl;
-
+    
     return (sorted == unsorted);
 }
 
@@ -140,20 +130,16 @@ bool QSTest::testMedianOfThree(QSInterface* test)
 {
     vector<int> unsorted;
 
-    unsorted.assign(&medianOfThreeCase01[0], &medianOfThreeCase01[10]);
-  
+    unsorted.assign(&medianOfThreeCase01[START], &medianOfThreeCase01[END]);
+ 
+    int left = 1, right = 8, middle = (left + right)/2;
+
     // Send a pointer to the beginning of my vector, along with its size.
-    test->medianOfThree(&unsorted.front(), unsorted.size(), 1, 8);
-
-    int left, right, middle;
-    
-    left = unsorted[1];
-    right = unsorted[8];
-    middle = unsorted[(1+8)/2];
+    test->medianOfThree(&unsorted.front(), unsorted.size(), left, right);
    
-//    cout << left << ", " << middle << ", " << right << endl;
+//    cout << unsorted[left] << ", " << unsorted[middle] << ", " << unsorted[right] << endl;
 
-    if(left <= middle && middle <= right)
+    if(unsorted[left] <= unsorted[middle] && unsorted[middle] <= unsorted[right])
         return true;
     else
         return false;
@@ -173,44 +159,37 @@ bool QSTest::testMedianOfThree(QSInterface* test)
  */
 bool QSTest::testPartition(QSInterface* test)
 {
-    vector<int> unsorted;
+    vector<int> unsorted, original;
 
-    unsorted.assign(&partitionCase01[0], &partitionCase01[10]);
-  
-    int left = 1, right = 8, middle;
+    unsorted.assign(&partitionCase01[START], &partitionCase01[END]);
+ 
+    original = unsorted;
+
+    int left = 4, right = 15;
     
     // Send a pointer to the beginning of my vector, along with its size.
-    int pivot = test->partition(&unsorted.front(), unsorted.size(), left, right);
+    int pivot = test->partition(&unsorted.front(), unsorted.size(), left, right+1);
     
-    middle = unsorted[pivot];
-
-//    cout << "The pivot index is: " << pivot << "\n";
-//    cout << "The pivot value is: " << middle << "\n";
-
     bool passed = true;
 
-    for(int i = left; i < pivot; ++i)
+    if (pivot <= left || pivot >= right) passed = false;
+
+    for(int i = left; passed && i < pivot; ++i)
     {
-//        cout << "Compare " << unsorted[i] << " with " << middle << "\n";
-        if(unsorted[i] > middle)
+        if(unsorted[i] > unsorted[pivot])
         {
-//            cout << "Make passed false.\n";
             passed = false;
         }
     }
 
-    for(int i = right; i > pivot; --i)
-    {
-//        cout << "Compare " << middle << " with " << unsorted[i] << "\n";
-        if(middle > unsorted[i])
+    for(int i = right; passed && i > pivot; --i)
+    {   
+        if( unsorted[i] < unsorted[pivot] )
         {
-//            cout << "Make passed false.\n";
             passed = false;
         }
     }
-   
-//    cout << unsorted << endl;
-    
+
     return passed;
 }
 
@@ -230,16 +209,16 @@ bool QSTest::testSwap(QSInterface* test)
 {
     vector<int> unsorted, sorted;
 
-    unsorted.assign(&swapCase01[0], &swapCase01[10]);
-    sorted.assign(&swapTrue01[0], &swapTrue01[10]);
+    unsorted.assign(&swapCase01[START], &swapCase01[END]);
+    sorted.assign(&swapTrue01[START], &swapTrue01[END]);
     
-    int left = 1, right = 6;
+    int left = 6, right = 14;
 
     // Send a pointer to the beginning of my vector, along with its size.
     test->swap(&unsorted.front(), unsorted.size(), left, right);
 
-//    cout << sorted << unsorted << endl;
+    bool passed = (sorted[left] == unsorted[left] && sorted[right] == unsorted[right]) ? true : false;
 
-    return (sorted == unsorted);
+    return passed;
 }
 
