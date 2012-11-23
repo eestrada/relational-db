@@ -1,23 +1,47 @@
-# Name phony targets
-.PHONY: run dirs test build clean
+CC = g++
+CFLAGS = -Wall -g -I . -I Student_Code/
 
-# Run test program
-run : build
-	./bin/test.bin
+BIN = bin/test.bin
+DRVR = dont_run_me
+ARGS = 
+OBJ_FILES = obj/main.o
+CPP_FILES = Student_Code/*.cpp Student_Code/*.cxx
 
-# Run test program from class
-test : 
-	./Run_Test_Driver.sh
+DEPS = Student_Code/Factory.h
 
-./bin :
-	mkdir -p bin
+.PHONY : runalways run touchall drvr235 bin test clean
 
-# Build source program
-build : ./bin
-	g++ -Wall -o ./bin/test.bin Student_Code/*.cpp Student_Code/*.cxx 
+runalways : clean $(BIN)
+	./$(BIN)
 
-# Clean up files
+run : $(BIN)
+	./$(BIN)
+
+touchall :
+	touch -c $(BIN) $(CPP_FILES) $(DEPS)
+	sleep 5
+
+drvr235 :
+	g++ -o $(DRVR) Student_Code/*.cpp ignoreme.a
+	chmod 755 $(DRVR)
+	#valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
+	#--show-reachable=yes --suppressions=DONT_DELETE.supp ./$(DRVR)
+	./$(DRVR)
+	rm ./$(DRVR)
+	read -p "Press any key to exit..."
+
+test : clean
+
 clean :
+	@ echo
+	rm -f ./$(DRVR)
+	rm -rf obj
 	rm -rf bin
-	rm -f ./dont_run_me
+	@ echo
+
+$(BIN) : $(CPP_FILES) $(DEPS)
+	@ echo "Compiling binary"
+	@- mkdir -p bin
+	$(CC) -o $@ $(CFLAGS) $(CPP_FILES)
+	@ echo
 
