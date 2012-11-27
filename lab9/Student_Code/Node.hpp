@@ -1,26 +1,36 @@
 #ifndef _NODE_HPP_
 #define _NODE_HPP_
 #include "NodeInterface.h"
+#include <iostream>
 
 #ifndef NULL
 #define NULL 0
 #endif
+
 namespace ede
 {
+
+using namespace std;
 
 class Node : public NodeInterface 
 {
 
-typedef NodeInterface ni;
+private:
 
 public:
+    static long nodecount;
+    
     int data;
-    Node *left, *right, *parent;
+    Node *parent, *left, *right;
 
 public:
-	Node(): data(), left(NULL), right(NULL), parent(NULL){}
-	Node(int val, Node *l=NULL, Node *r=NULL, Node *p=NULL): 
-        data(val), left(l), right(r), parent(p){}
+	Node(): data(), parent(NULL), left(NULL), right(NULL)
+    {
+    }
+	Node(int val, Node *p=NULL, Node *l=NULL, Node *r=NULL): 
+        data(val), parent(p), left(l), right(r)
+    {
+    }
 
 	virtual ~Node()
     {
@@ -60,7 +70,6 @@ public:
 
 };
 
-};
-
+}
 
 #endif // Defined _NODE_HPP_

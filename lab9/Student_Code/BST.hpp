@@ -21,7 +21,7 @@ public:
 	
     virtual ~BST()
     {
-        delete root;
+        delete(root);
     }
 
 	//Please note that the class that implements this interface must be made
@@ -51,7 +51,7 @@ public:
 	virtual bool remove(int data);
 };
 
-};
+}
 
 #endif // defined _BST_HPP_
 

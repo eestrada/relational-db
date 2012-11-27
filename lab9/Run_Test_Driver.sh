@@ -9,8 +9,7 @@ then
 	read -p "Press enter to exit";
 else 
 	chmod 755 $EXE;
-	./$EXE; 
-	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 --show-reachable=yes --suppressions=DONT_DELETE.supp ./$EXE
+	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 --show-reachable=yes --suppressions=string.supp ./$EXE
 	rm ./$EXE
 	read -p "Press any key to exit..."
 fi;

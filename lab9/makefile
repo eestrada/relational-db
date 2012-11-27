@@ -1,7 +1,8 @@
 CC = g++
-CFLAGS = -Wall -g -I . -I Student_Code/
+CFLAGS = -Wall -ansi -pedantic -g -I . -I Student_Code/
 
 BIN = bin/test.bin
+EXE=dont_run_me
 ARGS = 
 OBJ_FILES = obj/main.o
 CPP_FILES = Student_Code/*.cpp Student_Code/*.cxx
@@ -21,7 +22,13 @@ touchall :
 	sleep 5
 
 drvr235 :
-	@ ./Run_Test_Driver.sh
+	@$(CC) $(CFLAGS) -o$(EXE) Student_Code/*.cpp ignoreme.a
+	@chmod 755 $(EXE);
+	@#./$(EXE); 
+	@valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
+	--show-reachable=yes --suppressions=DONT_DELETE.supp ./$(EXE)
+	@rm -f ./$(EXE)
+	@read -p "Press any key to exit..."
 
 test : clean
 

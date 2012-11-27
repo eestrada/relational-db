@@ -7,6 +7,7 @@ using namespace std;
 namespace ede
 {
 
+long Node::nodecount = 0;
 //Please note that the class that implements this interface must be made
 //of objects which implement the NodeInterface
 
@@ -32,7 +33,7 @@ bool BST::addNode(Node *current, int val)
     {
         if(current->left == NULL)
         {
-            current->left = new Node(val, NULL, NULL, current);
+            current->left = new Node(val, current);
             return true;
         }
         else
@@ -44,7 +45,7 @@ bool BST::addNode(Node *current, int val)
     {
         if(current->right == NULL)
         {
-            current->right = new Node(val, NULL, NULL, current);
+            current->right = new Node(val, current);
             return true;
         }
         else
@@ -223,7 +224,7 @@ bool BST::remove(int data)
     return this->removeNode(this->root, data);
 }
 
-};
+}
 
 
 
