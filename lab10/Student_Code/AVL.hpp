@@ -3,15 +3,24 @@
 
 #include "AVLInterface.h"
 #include "Node.hpp"
+#include <string>
 
 namespace ede
 {
 
 class AVL : public AVLInterface
 {
+private:
+    Node *root, *head, *tail;
+
+	virtual bool addNode(Node *current, int data);
+	virtual bool removeNode(Node *current, int data);
+
 public:
 	AVL();
 	virtual ~AVL();
+
+    virtual std::string recurse();
 
 	//Please note that the class that implements this interface must be made
 	//of objects which implement the NodeInterface

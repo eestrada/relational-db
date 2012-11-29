@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -ansi -pedantic -g -I . -I Student_Code/
+CFLAGS = -Wall -ansi -pedantic -O0 -g -I . -I Student_Code/
 
 BIN = bin/test.bin
 EXE=dont_run_me
