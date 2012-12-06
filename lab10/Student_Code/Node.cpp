@@ -1,8 +1,17 @@
 #include "Node.hpp"
-//#include <iostream>
+#include <algorithm>
+#include <ostream>
 
 namespace ede
 {
+
+void Node::outRecurse(std::ostream &out)
+{
+    out << "Node val: " << this->data << "\n";
+    out << "Node height: " << this->getHeight(this) << "\n\n";
+    if(this->left != NULL){this->left->outRecurse(out);}
+    if(this->right != NULL){this->right->outRecurse(out);}
+}
 
 Node::Node(int val, Node *p, Node *l, Node *r)
     : data(val), parent(p), left(l), right(r){}
@@ -43,13 +52,18 @@ NodeInterface * Node::getRightChild()
     return static_cast<NodeInterface*>(this->right);
 }
 
+int Node::getHeight(Node* current)
+{
+    if(current == NULL){return -1;}
+    return std::max(this->getHeight(current->left),this->getHeight(current->right)) + 1;
+}
 /*
  * Returns the height of this node. The height is the number of edges
  * from this node to this nodes farthest child.
  */
 int Node::getHeight()
 {
-    return int();
+    return this->getHeight(this);
 }
 
 }

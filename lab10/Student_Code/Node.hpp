@@ -3,6 +3,7 @@
 
 #include "NodeInterface.h"
 #include <iostream>
+#include <string>
 
 #ifndef NULL
 #define NULL 0
@@ -17,7 +18,8 @@ class Node : public NodeInterface
 private:
 
 public:
-    
+    void outRecurse(std::ostream &out);
+
     int data;
     Node *parent, *left, *right;
 
@@ -50,6 +52,7 @@ public:
 	 */
 	virtual NodeInterface * getRightChild();
 
+	virtual int getHeight(Node* current);
 	/*
 	 * Returns the height of this node. The height is the number of edges
 	 * from this node to this nodes farthest child.

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 namespace ede
 {
@@ -9,10 +10,28 @@ namespace ede
 AVL::AVL() : root(NULL), head(NULL), tail(NULL){}
 AVL::~AVL() {delete(root);}
 
+class right{};
+class left{};
+
+void AVL::balanceTree(Node *current)
+{
+    if(current != NULL)
+    {
+        int hr = current->right == NULL ? 0 : current->right->getHeight();
+        int hl = current->left == NULL ? 0 : current->left->getHeight();
+
+        if(hr - hl < -1) throw(left());
+        if(hr - hl >  1) throw(right());
+
+        return;
+    }
+}
+
 std::string AVL::recurse()
 {
     std::ostringstream retout;
-    retout.str("Testing recurse function.");
+
+    this->root->outRecurse(retout);
 
     return retout.str();
 }
@@ -79,8 +98,10 @@ bool AVL::add(int data)
         this->root = new Node(data);
         return true;
     }
-    
-    return this->addNode(root, data);
+   
+    bool added = this->addNode(root, data);
+    if(added) this->balanceTree(this->root);
+    return added;
 }
 
 /* 
@@ -229,7 +250,9 @@ bool AVL::removeNode(Node *current, int val)
  */
 bool AVL::remove(int data)
 {
-    return this->removeNode(this->root, data);
+    bool removed = this->removeNode(this->root, data);
+    if(removed) this->balanceTree(this->root);
+    return removed;
 }
 
 }

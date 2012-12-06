@@ -15,6 +15,7 @@ private:
 
 	virtual bool addNode(Node *current, int data);
 	virtual bool removeNode(Node *current, int data);
+    virtual void balanceTree(Node *current);
 
 public:
 	AVL();

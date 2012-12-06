@@ -9,13 +9,20 @@ int main(void)
 
     ede::AVL &tmpavl = *(static_cast<ede::AVL*>(factest.getAVL()));
 
-    std::cout << "AVL's root address is: " << tmpavl.getRootNode() << std::endl;
-
+    tmpavl.add(5);
+    std::cout << "Added 5" << std::endl;
     tmpavl.add(10);
-    std::cout << "AVL's root address is: " << tmpavl.getRootNode() << std::endl;
-    std::cout << "AVL's root value is: " << tmpavl.getRootNode()->getData() << std::endl;
+    std::cout << "Added 10" << std::endl;
+    tmpavl.add(3);
+    std::cout << "Added 3" << std::endl;
+    tmpavl.add(2);
+    std::cout << "Added 2" << std::endl;
+    tmpavl.add(1);
+    std::cout << "Added 1" << std::endl;
+    tmpavl.add(6);
+    tmpavl.add(-5);
 
-    std::cout << "AVL's tree is: " << tmpavl.recurse() << std::endl;
+    std::cout << "AVL's tree is:\n\n" << tmpavl.recurse() << std::endl;
 
     delete(&tmpavl);
     return 0;
