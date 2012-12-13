@@ -22,7 +22,7 @@ int main(void)
     tmpavl.add(6);
     tmpavl.add(-5);
 
-    std::cout << "AVL's tree is:\n\n" << tmpavl.recurse() << std::endl;
+    //std::cout << "AVL's tree is:\n\n" << tmpavl.recurse() << std::endl;
 
     delete(&tmpavl);
     return 0;

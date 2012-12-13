@@ -16,6 +16,9 @@ private:
 	virtual bool addNode(Node *current, int data);
 	virtual bool removeNode(Node *current, int data);
     virtual void balanceTree(Node *current);
+    virtual void rotateRight(Node *parent, Node *child);
+    virtual void rotateLeft(Node *parent, Node *child);
+    virtual void syncParents(Node *curParent);
 
 public:
 	AVL();
