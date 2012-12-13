@@ -1,0 +1,7 @@
+{
+   Driver Suppressions
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN19RedBlackTreeFactory15getRedBlackTreeEv
+   fun:main
+}
