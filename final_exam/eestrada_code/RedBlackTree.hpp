@@ -10,12 +10,13 @@ private:
     RedBlackNode *root;
     bool insert(rbn *current, const std::string &data);
     bool remove(rbn *current, const std::string &word);
+    bool removeLeaf(rbn *node);
     void balance(RedBlackNode *current);
     void printTree(std::ostream &out, rbn *current, const std::string &ws);
 
 public:
-	RedBlackTree() : root(NULL) {}
-	virtual ~RedBlackTree() { delete root;}
+	RedBlackTree();
+	virtual ~RedBlackTree();
 
 	//Please note that the class that implements this interface must be made
 	//of objects which implement the NodeInterface

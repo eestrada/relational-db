@@ -25,6 +25,13 @@ private:
 	 *
 	 * @param c Color to set as the node color.
 	 */
+    void setData(const std::string &w){data = w;}
+	
+    /*
+	 * Set color of this node.
+	 *
+	 * @param c Color to set as the node color.
+	 */
     void setColor(color c){clr = c;}
 
 	/*
@@ -70,6 +77,7 @@ public:
 	 * @return The word that is stored in this node.
 	 */
 	virtual std::string getWord(){return data;}
+	virtual std::string getData(){return data;}
 
 	/*
 	 * Returns the color of the node. A red node should return 0

@@ -85,7 +85,7 @@ int main()
 		else if(choice == 4)
 		{
 			cout << "Your tree:" << endl;
-			cout << "\t" << redBlackTree->printTree() << endl;
+			cout << "" << redBlackTree->printTree() << endl;
 		}
 		else if(choice == 5 && twoThreeTree == NULL)
 		{
@@ -119,7 +119,7 @@ int main()
 		else if(choice == 8)
 		{
 			cout << "Your tree:" << endl;
-			cout << "\t" << twoThreeTree->printTree() << endl;
+			cout << "" << twoThreeTree->printTree() << endl;
 		}
 		else
 		{

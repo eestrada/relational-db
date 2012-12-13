@@ -3,9 +3,8 @@
 #include <iostream>
 #include <sstream>
 
-//RedBlackTree::RedBlackTree() {}
-//RedBlackTree::~RedBlackTree() {}
-
+RedBlackTree::RedBlackTree() : root(NULL) {}
+RedBlackTree::~RedBlackTree() { delete root;}
 
 //Please note that the class that implements this interface must be made
 //of objects which implement the NodeInterface
@@ -20,10 +19,9 @@ RedBlackNodeInterface * RedBlackTree::getRootNode(void)
     return static_cast<RedBlackNodeInterface*>(root);
 }
 
-
 void RedBlackTree::balance(rbn *current)
 {
-    throw ede::unimplemented("void RedBlackTree::balance(rbn*)");
+    //throw ede::unimplemented("void RedBlackTree::balance(rbn*)");
 }
 
 bool RedBlackTree::insert(rbn *current, const std::string &val)
@@ -81,9 +79,10 @@ void RedBlackTree::add(std::string data)
     {
         this->insert(root, data);
     }
-    catch(ede::unimplemented &ue)
+    catch(ede::unimplemented &e)
     {
-        std::cerr << "Exception while trying to add value: " << data << "\n";
+        //std::cerr << "While adding value \"" << data << "\" an exception occured:\n\t";
+        std::cerr << e.what() << std::endl;
         //throw ue;
     }
 }
@@ -118,75 +117,73 @@ void RedBlackTree::addPhrase(std::string words)
 void RedBlackTree::remove(std::string word)
 {
     // Make sure we know this isn't working yet;
-    throw ede::unimplemented("void RedBlackTree::remove(std::string)");
-    
-
+    //throw ede::unimplemented("void RedBlackTree::remove(std::string)");
+    this->remove(this->root, word);
 }
+
+
+bool RedBlackTree::removeLeaf(rbn *node)
+{
+    if(node == this->root)// Fringe case of leaf node being root.
+    {
+        this->root = NULL;
+    }
+    else
+    {
+        if(node->getParent()->getLeftChild() == node)
+            node->getParent()->setLeftChild(NULL);
+        else if(node->getParent()->getRightChild() == node)
+            node->getParent()->setRightChild(NULL);
+    }
+    
+    this->balance(node->getParent());
+
+    delete(node);
+    return true;
+}
+
+//bool RedBlackTree::removeMissingPredecessor(rbn *node, const std::string &val){}
 
 bool RedBlackTree::remove(rbn *current, const std::string &val)
 {
     // If current is NULL we have hit an empty leaf node. The value to remove 
     // doesn't exist. Return false.
-    if (current == NULL)
-    {
-        return false;
-    }
+    if(current == NULL) return false;
     
     // Value is smaller than current node. Traverse tree to the left.
-    if(val < current->data)
-    {
-        return this->remove(current->left, val);
-        
-    }
+    else if(val < current->getData()) return this->remove(current->getLeftChild(), val);
+
     // Value is smaller than current node. Traverse tree to the right.
-    else if(val > current->data)
-    {
-        return this->remove(current->right, val);
-        
-    }
-    // Value is the same as current node. Remove current node.
-    else if(val == current->data)
+    else if(val > current->getData()) return this->remove(current->getRightChild(), val);
+
+    // Value is the same as current node. Remove it.
+    else if(val == current->getData())
     {
         // Leaf node.
-        if(current->left == NULL && current->right == NULL)
+        if(current->getLeftChild() == NULL && current->getRightChild() == NULL)
         {
-            if(current == this->root)// Fringe case of leaf node being root.
-            {
-                this->root = NULL;
-            }
-            else
-            {
-                if(current->parent->left == current)
-                    current->parent->left = NULL;
-                else
-                    current->parent->right = NULL;
-            }
-            
-            this->balance(current->getParent());
-
-            delete(current);
-            return true;
+            return this->removeLeaf(current);
         }
         // Missing Predecessor
-        else if(current->left == NULL && current->right != NULL)
+        else if(current->getLeftChild() == NULL && current->getRightChild() != NULL)
         {
-            rbn *tmp = current->right;
+            rbn *tmp = current->getRightChild();
 
-            current->data = tmp->data;
-            current->right = tmp->right;
-            current->left = tmp->left;
+            current->setData(tmp->getData());
+            current->setRightChild(tmp->getRightChild());
+            current->setLeftChild(tmp->getLeftChild());
             
-            if(current->left != NULL)
+            if(current->getLeftChild() != NULL)
             {
-                current->left->parent = current;
+                current->getLeftChild()->setParent(current);
             }
             if(current->right != NULL)
             {
-                current->right->parent = current;
+                current->getRightChild()->setParent(current);
             }
             
-            tmp->left = NULL;
-            tmp->right = NULL;
+            tmp->setLeftChild(NULL);
+            tmp->setRightChild(NULL);
             
             this->balance(tmp->getParent());
             
@@ -195,21 +192,21 @@ bool RedBlackTree::remove(rbn *current, const std::string &val)
             return true;
         }
         // Check for "Inorder Predecessor"
-        else if(current->left != NULL)
+        else if(current->getLeftChild() != NULL)
         {
-            rbn *tmp = current->left;
+            rbn *tmp = current->getLeftChild();
 
             // Check for "predecessor is left child"
-            if(tmp->right == NULL)
+            if(tmp->getRightChild() == NULL)
             {
-                current->data = tmp->data;
-                current->left = tmp->left;
+                current->setData(tmp->getData());
+                current->setLeftChild(tmp->getLeftChild());
 
-                if(current->left != NULL)
-                    current->left->parent = current;
+                if(current->getLeftChild() != NULL)
+                    current->getLeftChild()->setParent(current);
 
-                tmp->left = NULL;
-                tmp->right = NULL;
+                tmp->setLeftChild(NULL);
+                tmp->setRightChild(NULL);
                 
                 this->balance(current);
                 
@@ -219,28 +216,25 @@ bool RedBlackTree::remove(rbn *current, const std::string &val)
             }
 
             // Keep moving to the right until we hit the end of the chain.
-            while(tmp->right != NULL)
+            while(tmp->getRightChild() != NULL)
             {
-                tmp->right->parent = tmp;
-                tmp = tmp->right;
+                //tmp->getRightChild()->setParent(tmp);
+                tmp = tmp->getRightChild();
             }
 
-            //rbn *locPar = tmp->getParent();
-
             // Move value to "deleted" node.
-            current->data = tmp->data;
+            current->setData(tmp->getData());
 
             // Check for "Inorder predecessor with a left child"
-            if(tmp->left != NULL)
+            if(tmp->getLeftChild() != NULL)
             {
                 // Remove the node whose value was moved to the space of the
                 // "deleted" node.
-                tmp->parent->right = tmp->left;
-                tmp->left->parent = tmp->getParent();
+                tmp->getParent()->setRightChild(tmp->getLeftChild());
+                tmp->getLeftChild()->setParent(tmp->getParent());
 
-                tmp->left = NULL;
-                tmp->right = NULL;
-
+                tmp->setLeftChild( NULL );
+                tmp->setRightChild( NULL );
                 
                 this->balance(tmp->getParent());
                 delete(tmp);
@@ -249,15 +243,15 @@ bool RedBlackTree::remove(rbn *current, const std::string &val)
             }
 
             // Only option left is plain old "inorder predecessor"
-            if(tmp->left == NULL)
+            if(tmp->getLeftChild() == NULL)
             {
                 // Remove the node whose value was moved to the space of the
                 // "deleted" node.
                 
-                tmp->parent->right = NULL;
+                tmp->getParent()->setRightChild(NULL);
 
-                tmp->left = NULL;
-                tmp->right = NULL;
+                tmp->setLeftChild(NULL);
+                tmp->setRightChild(NULL);
                 
                 this->balance(tmp->getParent());
                 
@@ -270,6 +264,7 @@ bool RedBlackTree::remove(rbn *current, const std::string &val)
     }
     
     // this should never get called
+    throw std::exception();
     return false;
 }
 
@@ -300,16 +295,14 @@ bool RedBlackTree::remove(rbn *current, const std::string &val)
  * 			quick(r)
  * 				over(b)
  * 					lazy(r)
-{
-}
  * 				the(b)
  *
  */
 std::string RedBlackTree::printTree(void)
 {
     std::ostringstream out;
-    std::string ws;
-    this->printTree(out, this->root, ws);
+    
+    this->printTree(out, this->root, "");
     return out.str();
 }
 
@@ -317,8 +310,8 @@ void RedBlackTree::printTree(std::ostream &out, rbn *n, const std::string &ws)
 {
     if(n == NULL) return;
     
-    out << ws << n->getWord() <<'('<< (!n->getColor()?'r':'b') << ")\n";
-    std::string new_ws = ws + '\t';
+    out << ws << n->getData() <<'('<< (!n->getColor()?'r':'b') << ")\n";
+    std::string new_ws = ws + "  ";
 
     this->printTree(out, static_cast<rbn*>(n->getLeftChild()), new_ws);
     this->printTree(out, static_cast<rbn*>(n->getRightChild()), new_ws);
