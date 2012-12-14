@@ -9,6 +9,7 @@
 int main(int argc, char** argv)
 {
     using namespace std;
+    
     RedBlackTree test;
     ifstream testfile("./eestrada_code/test_cases.txt");
     vector<string> strvec;
@@ -25,8 +26,12 @@ int main(int argc, char** argv)
     vector<string>::iterator iter;
 
     tmp = "";
+    unsigned int num;
 
-    for(iter = strvec.begin(); iter != strvec.begin() + 20; ++iter)
+    cout << "Enter the number of items to add: ";
+    cin >> num;
+
+    for(iter = strvec.begin(); iter != strvec.begin() + num; ++iter)
     {
        tmp += *iter + ' '; 
     }
