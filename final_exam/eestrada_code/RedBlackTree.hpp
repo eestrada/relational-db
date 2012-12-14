@@ -10,9 +10,18 @@ private:
     RedBlackNode *root;
     bool insert(rbn *current, const std::string &data);
     bool remove(rbn *current, const std::string &word);
+    bool removeValue(rbn *node);
+    
     bool removeLeaf(rbn *node);
+    bool removeMissingPred(rbn *node);
+    bool rmPredIsLeftChild(rbn *node);
+    bool rmPredHasLeftChild(rbn *node);
+    bool removeInorderPred(rbn *node);
+
     void balance(RedBlackNode *current);
-    void printTree(std::ostream &out, rbn *current, const std::string &ws);
+    void rotateLeft(rbn *node);
+    void rotateRight(rbn *node);
+    void printTree(std::ostream &out, rbn *current, const std::string &ws, int depth);
 
 public:
 	RedBlackTree();
@@ -81,5 +90,6 @@ public:
 	 * 				the(b)
 	 *
 	 */
-	virtual std::string printTree();
+	virtual std::string printTree(bool printside);
+	virtual std::string printTree(void);
 };

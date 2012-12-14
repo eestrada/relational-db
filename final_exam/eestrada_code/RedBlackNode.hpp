@@ -3,10 +3,6 @@
 #include <string>
 #include "RedBlackNodeInterface.h"
 
-//using namespace std;
-//using namespace ::;
-//using namespace ;
-
 class RedBlackNode;
 typedef RedBlackNode rbn;
 

@@ -5,20 +5,33 @@ BIN = bin/test.bin
 EXE=dont_run_me
 ARGS = 
 OBJ_FILES = obj/main.o
+TA=exam_code/*.cpp
+MINE=eestrada_code/*.cpp
 CPP_FILES = exam_code/*.cpp eestrada_code/*.cpp
+EMAIN=eestrada_code/ethan_main.cxx
 
 DEPS = exam_code/*.h eestrada_code/*.hpp
 
-.PHONY : test ccdata compile mem clean bin
+.PHONY : test other ccdata compile emain mem clean bin
 
-test : $(BIN)
-	./$(BIN)
+test : emain
+	@./$(BIN)
+
+other : $(BIN)
+	@./$(BIN)
 
 ccdata :
 	$(CXX) --version
 
 compile : clean $(BIN)
 
+emain : $(MINE) $(DEPS)
+	@ echo "Compiling binary"
+	@- mkdir -p bin
+	$(CXX) -o $(BIN) $(CXXFLAGS) $(MINE) $(EMAIN)
+	@chmod 755 $(BIN);
+	@ echo
+	
 mem : $(BIN)
 	@valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
 	--show-reachable=yes --suppressions=suppressions.supp ./$(BIN)
@@ -29,10 +42,10 @@ clean :
 	rm -rf bin
 	@ echo
 
-$(BIN) : $(CPP_FILES) $(DEPS)
+$(BIN) : $(MINE) $(DEPS)
 	@ echo "Compiling binary"
 	@- mkdir -p bin
-	$(CXX) -o $@ $(CXXFLAGS) $(CPP_FILES)
+	$(CXX) -o $@ $(CXXFLAGS) $(MINE) $(TA)
 	@chmod 755 $(BIN);
 	@ echo
 
