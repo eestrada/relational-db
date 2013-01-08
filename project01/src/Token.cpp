@@ -53,9 +53,10 @@ string Token::toString() const {
 };
 
 bool Token::operator==(const Token& token) {
-    bool result = lineNumber == token.lineNumber &&
+    return  (lineNumber == token.lineNumber &&
                   value == token.value &&
-                  tokenType == token.tokenType;
+                  tokenType == token.tokenType);
+
 }
 
 void Token::setTokenType(const TokenType newTokenType) {

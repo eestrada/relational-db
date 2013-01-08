@@ -1,21 +1,22 @@
-CXX ?= g++
+CXX ?= c++
 CXXFLAGS = -ansi -Wall -I./ -I./inc/ 
 
 BINDIR = ./bin
 BIN = $(BINDIR)/Lex.bin
 ARGS = ./test/TestFile4
 
-OBJDIR = ./obj
-# OBJS = $(OBJDIR)/*.o
-OBJS = $(OBJDIR)/Input.o $(OBJDIR)/Lex.o $(OBJDIR)/State.o $(OBJDIR)/Token.o $(OBJDIR)/TokenType.o $(OBJDIR)/Utils.o
 INCDIR = ./inc
-DEPS = $(INCDIR)/Input.h $(INCDIR)/Lex.h $(INCDIR)/State.h $(INCDIR)/Token.h $(INCDIR)/TokenType.h $(INCDIR)/Utils.h
 SRCDIR = ./src
-SRCS = $(SRCDIR)/Input.cpp $(SRCDIR)/Lex.cpp $(SRCDIR)/State.cpp $(SRCDIR)/Token.cpp $(SRCDIR)/TokenType.cpp $(SRCDIR)/Utils.cpp
+OBJDIR = ./obj
+
+INCS = $(wildcard $(INCDIR)/*.h)
+SRCS = $(wildcard $(SRCDIR)/*.cpp)
+OBJS := $(patsubst %.cpp,%.o,$(SRCS))
+OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
 # MAINCPP = src/main.cpp
 MAINCPP = 
 
-.PHONY : bin test clean memcheck
+.PHONY : echome bin test clean memcheck
 
 bin : $(BIN)
 
@@ -25,7 +26,6 @@ clean :
 	@ echo "Removing generated files"
 	rm -rf $(OBJDIR)
 	rm -rf $(BINDIR)
-	@ echo
 
 memcheck : bin 
 	@ echo "Running valgrind to check for memory leaks"
@@ -33,15 +33,15 @@ memcheck : bin
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 
-$(BIN) : $(OBJS) $(SRCS) $(DEPS)
+$(BIN) : $(OBJS) $(SRCS) $(INCS)
 	@- mkdir -p $(BINDIR)
 	@ echo "Compiling binary"
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(MAINCPP) $(OBJS) $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(MAINCPP) $(OBJS)
 	@ echo
 
-$(OBJDIR)/%.o : ./src/%.cpp $(DEPS)
+$(OBJDIR)/%.o : $(SRCDIR)/%.cpp $(INCS)
 	@- mkdir -p $(OBJDIR)
-	@ echo "Creating object file: " $@
+	@ #echo 'Creating object file "'$@'" From source file "'$<'".'
 	$(CXX) -c -o $@ $< $(CXXFLAGS) 
 	@ echo
 
