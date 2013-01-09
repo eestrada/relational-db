@@ -1,5 +1,5 @@
 CXX ?= c++
-CXXFLAGS = -ansi -Wall -I./ -I./inc/ 
+CXXFLAGS = -ansi -Wall -I./ -I./inc/
 
 BINDIR = ./bin
 BIN = $(BINDIR)/Lex.bin
@@ -14,7 +14,7 @@ SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
 # MAINCPP = src/main.cpp
-MAINCPP = 
+# MAINCPP = 
 
 .PHONY : echome bin test clean memcheck
 
@@ -42,6 +42,6 @@ $(BIN) : $(OBJS) $(SRCS) $(INCS)
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp $(INCS)
 	@- mkdir -p $(OBJDIR)
 	@ #echo 'Creating object file "'$@'" From source file "'$<'".'
-	$(CXX) -c -o $@ $< $(CXXFLAGS) 
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 	@ echo
 
