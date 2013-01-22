@@ -115,20 +115,26 @@ State Lex::processKeyword(TokenType t)
         case FACTS:     kindex = 1; break;
         case RULES:     kindex = 2; break;
         case QUERIES:   kindex = 3; break;
-        default:    break;
+        default:    throw logic_error("ERROR: Type given is not keyword.");
         }
 
     char character = input->getCurrentCharacter();
 
-    for(unsigned int i = 1; i < keywords[kindex].size() && isKeyword; ++i){
-        if(character == keywords[kindex][i])
-            {input->advance(); character = input->getCurrentCharacter();}
-        else if(character == EOF)
-            {isKeyword = false;result = Undefined;}
-        else
-            {isKeyword = false;result = ProcessingID;}}
+    size_t j = 1;//Start on the second character since we already know what the first was.
+    while(isalnum(character))
+    {
+        if(j >= keywords[kindex].size() || character != keywords[kindex][j++])
+        {
+            isKeyword = false;
+        }
 
-    if(isKeyword) {emit(t); result = getNextState();}
+        input->advance();
+        character = input->getCurrentCharacter();
+    }
+
+    if(isKeyword && j == keywords[kindex].size()) {emit(t);}
+    else {emit(ID);}
+    result = getNextState();
 
     return result;
 }
@@ -150,7 +156,6 @@ State Lex::nextState() {
                 result = Colon_Dash;
                 input->advance();
             } else { //Every other character
-                //throw logic_error("ERROR:: in case SawColon:, Expecting  '-' but found " + character + '.');
                 emit(COLON);
                 result = getNextState(); }
             break;
@@ -220,11 +225,11 @@ State Lex::nextState() {
         case WhiteSpace:  
             character = input->getCurrentCharacter();
             if(!isspace(character)) {
-                input->mark(); //Mark start of next token. Do not tokenize whitespace.
+                input->mark();//Mark start of next token. Do not tokenize whitespace.
                 result = getNextState();
             } else { //Still parsing white space
-                result = WhiteSpace;
-                input->advance(); }
+                input->advance(); 
+                result = WhiteSpace; }
             break;
         case Undefined:           emit(UNDEFINED); result = getNextState(); break;
         case End:
@@ -245,8 +250,6 @@ State Lex::getNextState() {
     //if statements rather then the switch statement.
 
     if(currentCharacter == ',') { result = Comma; }
-    else if(currentCharacter == '.') { result = Comma; }
-    else if(currentCharacter == ',') { result = Comma; }
     else if(currentCharacter == '.') { result = Period; }
     else if(currentCharacter == '?') { result = Q_Mark; }
     else if(currentCharacter == '(') { result = Left_Paren; }
@@ -259,7 +262,6 @@ State Lex::getNextState() {
     else if(currentCharacter == 'R') { result = PossiblySawRules; }
     else if(currentCharacter == 'Q') { result = PossiblySawQueries; }
     else if(currentCharacter == '#') { result = CommentStartGeneric; }
-    else if(currentCharacter == '|') { result = CommentMultiLine; }
     else if(currentCharacter == '\'') { result = ProcessingString; }
     else if(isalpha(currentCharacter)){result = ProcessingID;}
     else if(isspace(currentCharacter)){ result = WhiteSpace; }

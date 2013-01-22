@@ -1,5 +1,5 @@
 CXX ?= c++
-CXXFLAGS = -ansi -Wall -I./ -I./inc/
+CXXFLAGS = -ansi -g -Wall -I./ -I./inc/
 
 PN=lab1
 BINDIR = ./bin
