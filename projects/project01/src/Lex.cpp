@@ -115,20 +115,26 @@ State Lex::processKeyword(TokenType t)
         case FACTS:     kindex = 1; break;
         case RULES:     kindex = 2; break;
         case QUERIES:   kindex = 3; break;
-        default:    break;
+        default:    throw logic_error("ERROR: Type given is not keyword.");
         }
 
     char character = input->getCurrentCharacter();
 
-    for(unsigned int i = 1; i < keywords[kindex].size() && isKeyword; ++i){
-        if(character == keywords[kindex][i])
-            {input->advance(); character = input->getCurrentCharacter();}
-        else if(character == EOF)
-            {isKeyword = false;result = Undefined;}
-        else
-            {isKeyword = false;result = ProcessingID;}}
+    size_t j = 1;//Start on the second character since we already know what the first was.
+    while(isalnum(character))
+    {
+        if(j >= keywords[kindex].size() || character != keywords[kindex][j++])
+        {
+            isKeyword = false;
+        }
 
-    if(isKeyword) {emit(t); result = getNextState();}
+        input->advance();
+        character = input->getCurrentCharacter();
+    }
+
+    if(isKeyword && j == keywords[kindex].size()) {emit(t);}
+    else {emit(ID);}
+    result = getNextState();
 
     return result;
 }
@@ -245,8 +251,6 @@ State Lex::getNextState() {
     //if statements rather then the switch statement.
 
     if(currentCharacter == ',') { result = Comma; }
-    else if(currentCharacter == '.') { result = Comma; }
-    else if(currentCharacter == ',') { result = Comma; }
     else if(currentCharacter == '.') { result = Period; }
     else if(currentCharacter == '?') { result = Q_Mark; }
     else if(currentCharacter == '(') { result = Left_Paren; }
