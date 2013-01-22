@@ -156,7 +156,6 @@ State Lex::nextState() {
                 result = Colon_Dash;
                 input->advance();
             } else { //Every other character
-                //throw logic_error("ERROR:: in case SawColon:, Expecting  '-' but found " + character + '.');
                 emit(COLON);
                 result = getNextState(); }
             break;
@@ -226,11 +225,11 @@ State Lex::nextState() {
         case WhiteSpace:  
             character = input->getCurrentCharacter();
             if(!isspace(character)) {
-                input->mark(); //Mark start of next token. Do not tokenize whitespace.
+                input->mark();//Mark start of next token. Do not tokenize whitespace.
                 result = getNextState();
             } else { //Still parsing white space
-                result = WhiteSpace;
-                input->advance(); }
+                input->advance(); 
+                result = WhiteSpace; }
             break;
         case Undefined:           emit(UNDEFINED); result = getNextState(); break;
         case End:
@@ -263,7 +262,6 @@ State Lex::getNextState() {
     else if(currentCharacter == 'R') { result = PossiblySawRules; }
     else if(currentCharacter == 'Q') { result = PossiblySawQueries; }
     else if(currentCharacter == '#') { result = CommentStartGeneric; }
-    else if(currentCharacter == '|') { result = CommentMultiLine; }
     else if(currentCharacter == '\'') { result = ProcessingString; }
     else if(isalpha(currentCharacter)){result = ProcessingID;}
     else if(isspace(currentCharacter)){ result = WhiteSpace; }
