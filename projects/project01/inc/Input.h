@@ -2,8 +2,7 @@
 #define Input_h
 
 #include <istream>
-
-using namespace std;
+#include <string>
 
 /**
  * Constains the sequence of characters read in from the input file. It also
@@ -68,7 +67,7 @@ class Input {
          *     lineNumber = 1                                            AND
          *     currentTokensLineNumber = 1
          */
-        Input(istream& istream);
+        Input(std::istream& in);
 
          /**
           * Copy Constructor.  Not really needed in this application since Input is a singleton but
@@ -130,7 +129,7 @@ class Input {
           *     "lineNumber = " + LineNumber.toString() + '\n'
           *     "currentTokenLineNumber = " + currentTokensLineNumber.toString() + '\n'
           */
-         string toString() const;
+         std::string toString() const;
 
          /**
           * Returns the character at the currentCharacterLocation
@@ -140,6 +139,8 @@ class Input {
           * PostCondition: result = characters[currentCharacterLocation]
           */
          char getCurrentCharacter() const;
+
+         std::string slice(int n) const;
        
          /**
           * The getter for the currentTokensLineNumber.
@@ -169,7 +170,7 @@ class Input {
           *   result =
           *     characters[currentCharacterLocation..currentCharacterLocation-1]
           */
-         string getTokensValue() const;
+         std::string getTokensValue() const;
 
     //Commands
 
@@ -203,7 +204,7 @@ class Input {
 
     private:
         //Domain Implementation
-            string       characters;
+            std::string       characters;
             unsigned int currentCharacterLocation;
             unsigned int currentTokensLineNumber;
             unsigned int currentTokensStartLocation;
@@ -211,6 +212,6 @@ class Input {
 
         //Auxiliary Methods
             //Code common to both constructors.
-            void init(istream& in);
+            void init(std::istream& in);
 };
 #endif

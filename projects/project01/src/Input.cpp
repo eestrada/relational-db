@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 void Input::init(istream& in) {
@@ -77,6 +78,14 @@ string Input::toString() const{
 
 char Input::getCurrentCharacter() const {
     return characters[currentCharacterLocation];
+};
+
+string Input::slice(int n) const {
+    string rstr;
+
+    for(int i = 0; i < n ; ++i)
+        {rstr += characters[currentCharacterLocation + i];}
+    return rstr;
 };
 
 unsigned int Input::getCurrentTokensLineNumber() const {

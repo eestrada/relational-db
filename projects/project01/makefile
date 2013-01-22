@@ -1,9 +1,10 @@
 CXX ?= c++
 CXXFLAGS = -ansi -Wall -I./ -I./inc/
 
+PN=lab1
 BINDIR = ./bin
 BIN = $(BINDIR)/Lex.bin
-ARGS = ./test/TestFile4
+ARGS = ./test/TestFile5
 
 INCDIR = ./inc
 SRCDIR = ./src
@@ -16,7 +17,10 @@ OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
 # MAINCPP = src/main.cpp
 # MAINCPP = 
 
-.PHONY : echome bin test clean memcheck
+.PHONY : run bin test clean memcheck packproj
+
+run : bin
+	$(BIN) $(ARGS)
 
 bin : $(BIN)
 
@@ -24,6 +28,7 @@ test : clean memcheck
 
 clean :
 	@ echo "Removing generated files"
+	rm -rf $(PN).zip
 	rm -rf $(OBJDIR)
 	rm -rf $(BINDIR)
 
@@ -32,6 +37,9 @@ memcheck : bin
 	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
+
+packproj :
+	@ ./packproj.sh
 
 $(BIN) : $(OBJS) $(SRCS) $(INCS)
 	@- mkdir -p $(BINDIR)

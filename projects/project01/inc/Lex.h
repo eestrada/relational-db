@@ -7,8 +7,6 @@
 #include <vector>
 #include <istream>
 
-using namespace std;
-
 /**
  * The lexical analyzer for project 1 in CS 236.
  *
@@ -71,7 +69,7 @@ class Lex {
          * PreCondition: istream is syntatically correct.
          * PostCondition: tokens contains sequence of tokens parsed from the input stream AND currentToken = 0.
          */
-        Lex(istream& istream);
+        Lex(std::istream& in);
 
         /**
          * The constructor for the lexical analyzer. Does the same as the Lex(istream&) constructor after opening
@@ -160,6 +158,7 @@ class Lex {
             std::vector<Token*>* tokens;
             int index;
             State state;
+            std::string tmpword;
 
         //Auxiliary Methods
             void generateTokens(Input* input);
@@ -167,5 +166,6 @@ class Lex {
             void storeToken(Token* token);
             State getNextState();
             void emit(TokenType tokenType);
+            State processKeyword(TokenType t);
 };
 #endif

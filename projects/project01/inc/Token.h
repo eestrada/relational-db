@@ -2,6 +2,7 @@
 #define Token_h
 
 #include "TokenType.h"
+#include <string>
 /**
  * The lexical analyzer provides access to a list of tokens.  This defines what
  * a token is.

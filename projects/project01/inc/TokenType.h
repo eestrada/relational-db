@@ -6,7 +6,9 @@
 /**
  * The token types declared as an enumerated type.
  */
-enum TokenType {COMMA, PERIOD, COLON_DASH, STRING, NUL};
+enum TokenType {COMMA, PERIOD, Q_MARK, LEFT_PAREN, RIGHT_PAREN, COLON,
+                COLON_DASH, MULTIPLY, ADD, SCHEMES, FACTS, RULES, QUERIES,
+                ID, STRING, COMMENT, WHITESPACE, UNDEFINED, NUL, END};
     
     /**
      * Converts a token type to a string.
@@ -16,5 +18,5 @@ enum TokenType {COMMA, PERIOD, COLON_DASH, STRING, NUL};
      * Postcondition: result = the string representation of the token type which
      *                         looks exactly like its TokenType name.
      */
-    std::string TokenTypeToString(TokenType tokenType);
+    std::string TokenTypeToString(TokenType tt);
 #endif

@@ -4,6 +4,9 @@
 #include "TokenType.h"
 #include "Utils.h"
 #include <iostream>
+#include <stdexcept>
+#include <cstdio>
+#include <cctype>
 
 using namespace std;
 
@@ -84,6 +87,8 @@ void Lex::generateTokens(Input* input) {
     while(state != End) {
         state = nextState();
     }
+
+    emit(END);
 }
 
 Token* Lex::getCurrentToken() {
@@ -98,43 +103,74 @@ bool Lex::hasNext() {
     return index < int(tokens->size());
 }
 
+State Lex::processKeyword(TokenType t)
+{
+    State result;
+    const static string keywords[] = {"Schemes", "Facts", "Rules", "Queries"};
+    int kindex;
+    bool isKeyword = true;
+
+    switch(t){
+        case SCHEMES:   kindex = 0; break;
+        case FACTS:     kindex = 1; break;
+        case RULES:     kindex = 2; break;
+        case QUERIES:   kindex = 3; break;
+        default:    break;
+        }
+
+    char character = input->getCurrentCharacter();
+
+    for(unsigned int i = 1; i < keywords[kindex].size() && isKeyword; ++i){
+        if(character == keywords[kindex][i])
+            {input->advance(); character = input->getCurrentCharacter();}
+        else if(character == EOF)
+            {isKeyword = false;result = Undefined;}
+        else
+            {isKeyword = false;result = ProcessingID;}}
+
+    if(isKeyword) {emit(t); result = getNextState();}
+
+    return result;
+}
+
 State Lex::nextState() {
     State result;
     char character;
+
     switch(state) {
         case Start:               result = getNextState(); break;
         case Comma:               emit(COMMA); result = getNextState(); break;
         case Period:              emit(PERIOD); result = getNextState(); break;
+        case Q_Mark:              emit(Q_MARK); result = getNextState(); break;
+        case Left_Paren:          emit(LEFT_PAREN); result = getNextState(); break;
+        case Right_Paren:         emit(RIGHT_PAREN); result = getNextState(); break;
         case SawColon:
             character = input->getCurrentCharacter();
             if(character == '-') {
                 result = Colon_Dash;
                 input->advance();
             } else { //Every other character
-                throw "ERROR:: in case SawColon:, Expecting  '-' but found " + character + '.';
-            }
+                //throw logic_error("ERROR:: in case SawColon:, Expecting  '-' but found " + character + '.');
+                emit(COLON);
+                result = getNextState(); }
             break;
         case Colon_Dash:          emit(COLON_DASH); result = getNextState(); break;
-        case SawAQuote:  
+        case Multiply:            emit(MULTIPLY); result = getNextState(); break;
+        case Add:                 emit(ADD); result = getNextState(); break;
+        case PossiblySawSchemes:  result = this->processKeyword(SCHEMES); break;
+        case PossiblySawFacts:    result = this->processKeyword(FACTS); break;
+        case PossiblySawRules:    result = this->processKeyword(RULES); break;
+        case PossiblySawQueries:  result = this->processKeyword(QUERIES); break;
+        case ProcessingID:          
             character = input->getCurrentCharacter();
-            if(character == '\'') {
-                result = PossibleEndOfString;
-            } else if(character == -1) {
-                throw "ERROR:: in Saw_A_Quote::nextState, reached EOF before end of string.";
-            } else { //Every other character
-                result = ProcessingString;
-            }
-            input->advance();
+            if(isalnum(character)){input->advance();}
+            else{emit(ID); result = getNextState();}
             break;
         case ProcessingString:  
             character = input->getCurrentCharacter();
-            if(character == '\'') {
-                result = PossibleEndOfString;
-            } else if(character == -1) {
-                throw "ERROR:: in ProcessingString::nextState, reached EOF before end of string.";
-            } else { //Every other character
-                result = ProcessingString;
-            }
+            if(character == '\'') { result = PossibleEndOfString; }
+            else if(character == -1) { result = Undefined; }
+            else { result = ProcessingString; } /*Every other character*/
             input->advance();
             break;
         case PossibleEndOfString:
@@ -143,12 +179,59 @@ State Lex::nextState() {
                 result = ProcessingString;
             } else { //Every other character
                 emit(STRING);
-                result = getNextState();
+                result = getNextState(); }
+            break;
+        case CommentStartGeneric:
+            character = input->getCurrentCharacter();
+            if(character == '|') { input->advance(); result = CommentMultiLine; }
+            else { result = CommentSingleLine;}
+            break;
+        case CommentSingleLine:
+            character = input->getCurrentCharacter();
+            if(character == '\n' || character == EOF) { result = Comment; }
+            else { input->advance(); result = CommentSingleLine; }
+            break;
+        case CommentMultiLine:
+            character = input->getCurrentCharacter();
+            if(character == '|')
+            { 
+                input->advance();
+                character = input->getCurrentCharacter();
+                if(character == '#')
+                {
+                    input->advance();
+                    emit(COMMENT);
+                    result = getNextState();
+                }
+                else
+                {
+                    emit(UNDEFINED);
+                    result = getNextState();
+                }
             }
+            else if(character == EOF) { emit(UNDEFINED); result = getNextState(); }
+            else { input->advance(); result = CommentMultiLine; }
             break;
+        case Comment:
+            emit(COMMENT);
+            //input->advance();
+            result = getNextState(); 
+            break;
+        case WhiteSpace:  
+            character = input->getCurrentCharacter();
+            if(!isspace(character)) {
+                input->mark(); //Mark start of next token. Do not tokenize whitespace.
+                result = getNextState();
+            } else { //Still parsing white space
+                result = WhiteSpace;
+                input->advance(); }
+            break;
+        case Undefined:           emit(UNDEFINED); result = getNextState(); break;
         case End:
-            throw "ERROR:: in End state:, the Input should be empty once you reach the End state."; 
+            throw logic_error("ERROR:: in End state:, the Input should be empty once you reach the End state."); 
             break;
+        default:
+            throw logic_error("ERROR: Hit end of switch statement. Undefined state."); 
     };
     return result;
 }
@@ -157,35 +240,46 @@ State Lex::getNextState() {
     State result;
     char currentCharacter = input->getCurrentCharacter();
 
-    //The handling of checking for whitespace and setting the result to Whilespace and
+    //The handling of checking for whitespace and setting the result to Whitespace and
     //checking for letters and setting the result to Id will probably best be handled by
     //if statements rather then the switch statement.
-    switch(currentCharacter) {
-        case ','  : result = Comma; break;
-        case '.'  : result = Period; break;
-        case ':'  : result = SawColon; break;
-        case '\'' : result = ProcessingString; break;
-        case -1   : result = End; break;
-        default: 
-            string error = "ERROR:: in Lex::getNextState, Expecting  ";
-            error += "'\'', '.', '?', '(', ')', '+', '*', '=', '!', '<', '>', ':' but found ";
-            error += currentCharacter;
-            error += '.';
-            throw error.c_str();
-    }
+
+    if(currentCharacter == ',') { result = Comma; }
+    else if(currentCharacter == '.') { result = Comma; }
+    else if(currentCharacter == ',') { result = Comma; }
+    else if(currentCharacter == '.') { result = Period; }
+    else if(currentCharacter == '?') { result = Q_Mark; }
+    else if(currentCharacter == '(') { result = Left_Paren; }
+    else if(currentCharacter == ')') { result = Right_Paren; }
+    else if(currentCharacter == ':') { result = SawColon; }
+    else if(currentCharacter == '*') { result = Multiply; }
+    else if(currentCharacter == '+') { result = Add; }
+    else if(currentCharacter == 'S') { result = PossiblySawSchemes; }
+    else if(currentCharacter == 'F') { result = PossiblySawFacts; }
+    else if(currentCharacter == 'R') { result = PossiblySawRules; }
+    else if(currentCharacter == 'Q') { result = PossiblySawQueries; }
+    else if(currentCharacter == '#') { result = CommentStartGeneric; }
+    else if(currentCharacter == '|') { result = CommentMultiLine; }
+    else if(currentCharacter == '\'') { result = ProcessingString; }
+    else if(isalpha(currentCharacter)){result = ProcessingID;}
+    else if(isspace(currentCharacter)){ result = WhiteSpace; }
+    else if(currentCharacter == EOF) { result = End; }
+    else { result = Undefined; }
+
     input->advance();
     return result;
 }
 
 void Lex::emit(TokenType tokenType) {
-    Token* token = new Token(tokenType, input->getTokensValue(), input->getCurrentTokensLineNumber());
+    Token* token = new Token(tokenType,input->getTokensValue(),input->getCurrentTokensLineNumber());
     storeToken(token);
     input->mark();
 }
 
 void Lex::storeToken(Token* token) {
-    //This section shoud ignore whitespace and comments and change the token type to the appropriate value
-    //if the value of the token is "Schemes", "Facts", "Rules", or "Queries".
+    //This section shoud ignore whitespace and comments and change the token 
+    //type to the appropriate value if the value of the token is "Schemes", 
+    //"Facts", "Rules", or "Queries".
     tokens->push_back(token);
 }
 
