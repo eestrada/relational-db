@@ -1,4 +1,6 @@
 #include "Lex.h"
+#include "DatalogProgram.h"
+#include "Domain.h"
 
 #include <iostream>
 #include <stdexcept>
