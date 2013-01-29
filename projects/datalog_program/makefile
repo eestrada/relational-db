@@ -1,7 +1,7 @@
 CXX ?= c++
 CXXFLAGS = -ansi -g -Wall -I./ -I./inc/
 
-PN=lab1
+PN=cs236
 BINDIR = ./bin
 BIN = $(BINDIR)/Lex.bin
 ARGS = ./test/TestFile5

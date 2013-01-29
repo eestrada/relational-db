@@ -1,7 +1,7 @@
 #!/bin/sh
-PN=lab1
+PN=cs236
 
-FNAME=${TEMP}/cs236_${PN}
+FNAME=${TEMP}/${PN}
 
 mkdir -p ${FNAME}
 
@@ -14,3 +14,4 @@ zip ${PN}.zip * > /dev/null
 cp ${PN}.zip ${OLDPWD}
 
 cd ${OLDPWD}
+
