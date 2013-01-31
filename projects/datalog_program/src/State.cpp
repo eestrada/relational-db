@@ -3,9 +3,11 @@
 
 using namespace std;
 
-string StateToString(State tokenType){
+string StateToString(State tokenType)
+{
     string result = "";
-    switch(tokenType){
+    switch(tokenType)
+    {
         case Comma:                      result = "Comma"; break;
         case Period:                     result = "Period"; break;
         case Q_Mark:                     result = "Q_Mark"; break;

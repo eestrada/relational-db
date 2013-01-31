@@ -7,8 +7,10 @@
 
 using namespace std;
 
-void Input::init(istream& in) {
-    while(!in.eof()) {
+void Input::init(istream& in)
+{
+    while(!in.eof())
+    {
         char c = in.get();
     if(in.eof())break;
         characters += c;
@@ -21,7 +23,8 @@ void Input::init(istream& in) {
     currentTokensStartLocation = 0;
 };
 
-Input::Input() {
+Input::Input()
+{
     characters += -1;
     lineNumber = 1;
     currentTokensLineNumber = 1;
@@ -29,15 +32,18 @@ Input::Input() {
     currentTokensStartLocation = 0;
 }
 
-Input::Input(const char* fileName) {
+Input::Input(const char* fileName)
+{
     ifstream in(fileName, ios::in);
-    if(in.is_open()){
+    if(in.is_open())
+    {
         init(in);
     };
     in.close();
 };
 
-Input::Input(istream& in) {
+Input::Input(istream& in)
+{
     init(in);
 };
 
@@ -52,7 +58,8 @@ Input::Input(const Input& input)
 
 Input::~Input(){};
 
-bool Input::operator==(const Input& input) const {
+bool Input::operator==(const Input& input) const
+{
     bool result =
         characters.compare(input.characters) == 0                      &&
         currentCharacterLocation == input.currentCharacterLocation     &&
@@ -62,7 +69,8 @@ bool Input::operator==(const Input& input) const {
     return result;
 }
 
-string Input::toString() const{
+string Input::toString() const
+{
     string result; 
     string intString;
     result += "characters = \"";
@@ -76,32 +84,40 @@ string Input::toString() const{
 }
 
 
-char Input::getCurrentCharacter() const {
+char Input::getCurrentCharacter() const
+{
     return characters[currentCharacterLocation];
 };
 
-unsigned int Input::getCurrentTokensLineNumber() const {
+unsigned int Input::getCurrentTokensLineNumber() const
+{
     return currentTokensLineNumber;
 };
 
-bool Input::eof() const {
+bool Input::eof() const
+{
     return characters[currentCharacterLocation] == -1;
 };
 
-string Input::getTokensValue() const {
+string Input::getTokensValue() const
+{
     return characters.substr(currentTokensStartLocation, currentCharacterLocation - currentTokensStartLocation);
 };
 
-void  Input::advance() {
-    if (!eof()) {
-        if(characters[currentCharacterLocation] == '\n') {
+void  Input::advance()
+{
+    if (!eof())
+    {
+        if(characters[currentCharacterLocation] == '\n')
+        {
             lineNumber++;
         }
         currentCharacterLocation++;
     }
 };
 
-void Input::mark() {
+void Input::mark()
+{
     currentTokensStartLocation = currentCharacterLocation;
     currentTokensLineNumber = lineNumber;
 };

@@ -1,9 +1,9 @@
 #include "TokenType.h"
+#include <string>
 
-using namespace std;
-
-string TokenTypeToString(TokenType tokenType){
-    string result = "Token Type Missing!";
+std::string TokenTypeToString(TokenType tokenType)
+{
+    std::string result = "Token Type Missing!";
 
     switch(tokenType){
         case COMMA:              result = "COMMA"; break;

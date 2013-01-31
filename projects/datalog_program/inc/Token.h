@@ -3,6 +3,7 @@
 
 #include "TokenType.h"
 #include <string>
+#include <ostream>
 /**
  * The lexical analyzer provides access to a list of tokens.  This defines what
  * a token is.
@@ -12,7 +13,8 @@
  *     tokensValue           : string
  *     tokensLineNumber      : unsigned
  */
-class Token {
+class Token
+{
     public:
     //Constructors
         /**
@@ -35,7 +37,8 @@ class Token {
          *                tokensValue = newValue AND
          *                tokensLineNumber = newTokensLineNumber
          */
-        Token(TokenType newType, std::string newValue, unsigned newTokensLineNumber);
+        Token(TokenType newType, std::string newValue, 
+                unsigned newTokensLineNumber);
 
         /**
          * The copy constructor
@@ -121,10 +124,12 @@ class Token {
         
     private:
         //Domain Implementation
-            //The names used in the domain definition do not necessarily match the names used in the
-            //implementation but they often do.
-            TokenType    tokenType;
-            unsigned     lineNumber;
-            std::string  value;
+        //The names used in the domain definition do not necessarily match the 
+        //names used in the implementation, but they often do.
+        TokenType    tokenType;
+        unsigned     lineNumber;
+        std::string  value;
 };
+
+std::ostream & operator<<(std::ostream &out, const Token &tok);
 #endif

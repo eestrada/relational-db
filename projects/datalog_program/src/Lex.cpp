@@ -10,22 +10,26 @@
 
 using namespace std;
 
-Lex::Lex() {
+Lex::Lex()
+{
 	input = new Input();
     generateTokens(input);
 }
 
-Lex::Lex(const char* filename) {
+Lex::Lex(const char* filename)
+{
     input = new Input(filename);
     generateTokens(input);
 }
 
-Lex::Lex(istream& istream) {
+Lex::Lex(istream& istream)
+{
     input = new Input(istream);
     generateTokens(input);
 }
 
-Lex::Lex(const Lex& lex) {
+Lex::Lex(const Lex& lex)
+{
     input = new Input(*lex.input);
     tokens = new vector<Token*>();
 
@@ -39,7 +43,8 @@ Lex::Lex(const Lex& lex) {
     state = lex.state;
 }
 
-Lex::~Lex(){
+Lex::~Lex()
+{
     for (unsigned int i = 0; i < tokens->size(); i++) {
         delete (*tokens)[i];
     }
@@ -47,7 +52,8 @@ Lex::~Lex(){
     delete input;
 }
 
-bool Lex::operator==(const Lex& lex) {
+bool Lex::operator==(const Lex& lex)
+{
     bool result = (tokens->size() == lex.tokens->size()) && (index == lex.index);
     if(result) {
         vector<Token*>::iterator iter1;
@@ -64,7 +70,8 @@ bool Lex::operator==(const Lex& lex) {
     return result;
 }
 
-string Lex::toString() const {
+string Lex::toString() const
+{
     unsigned int count = 0;
     string result;
     while(count < tokens->size()) {
@@ -79,7 +86,8 @@ string Lex::toString() const {
     return result;
 }
 
-void Lex::generateTokens(Input* input) {
+void Lex::generateTokens(Input* input)
+{
     tokens = new vector<Token*>();
     index = 0;
 
@@ -91,15 +99,23 @@ void Lex::generateTokens(Input* input) {
     emit(END);
 }
 
-Token* Lex::getCurrentToken() {
+Token* Lex::getCurrentToken()
+{
     return (*tokens)[index];
 }
 
-void Lex::advance() {
+void Lex::advance()
+{
     index++;
 }
 
-bool Lex::hasNext() {
+Token Lex::operator[](unsigned i)
+{
+    return *(tokens->at(i));
+}
+
+bool Lex::hasNext()
+{
     return index < int(tokens->size());
 }
 
@@ -139,7 +155,8 @@ State Lex::processKeyword(TokenType t)
     return result;
 }
 
-State Lex::nextState() {
+State Lex::nextState()
+{
     State result;
     char character;
 
@@ -241,7 +258,8 @@ State Lex::nextState() {
     return result;
 }
 
-State Lex::getNextState() {
+State Lex::getNextState()
+{
     State result;
     char currentCharacter = input->getCurrentCharacter();
 
@@ -272,13 +290,15 @@ State Lex::getNextState() {
     return result;
 }
 
-void Lex::emit(TokenType tokenType) {
+void Lex::emit(TokenType tokenType)
+{
     Token* token = new Token(tokenType,input->getTokensValue(),input->getCurrentTokensLineNumber());
     storeToken(token);
     input->mark();
 }
 
-void Lex::storeToken(Token* token) {
+void Lex::storeToken(Token* token)
+{
     //This section shoud ignore whitespace and comments and change the token 
     //type to the appropriate value if the value of the token is "Schemes", 
     //"Facts", "Rules", or "Queries".

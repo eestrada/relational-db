@@ -17,7 +17,8 @@
  *      currentTokensLineNumber:    unsigned
  *      lineNumber:                 unsigned
  */
-class Input {
+class Input
+{
     public:
     //Constructors
         /**

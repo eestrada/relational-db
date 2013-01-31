@@ -7,19 +7,22 @@
 
 using namespace std;
 
-Token::Token() {
+Token::Token()
+{
     tokenType = NUL;
     lineNumber = 0;
     value = "";
 }
 
-Token::Token(TokenType newType, string newValue, unsigned newTokensLineNumber) {
+Token::Token(TokenType newType, string newValue, unsigned newTokensLineNumber)
+{
     tokenType = newType;
     lineNumber = newTokensLineNumber;
     value = newValue;
 }
 
-Token::Token(const Token& token) {
+Token::Token(const Token& token)
+{
     tokenType = token.tokenType;
     lineNumber = token.lineNumber;
     value = token.value;
@@ -27,38 +30,50 @@ Token::Token(const Token& token) {
 
 Token::~Token(){};
 
-TokenType Token::getTokenType() const {
+TokenType Token::getTokenType() const
+{
     return tokenType;
 }
 
-unsigned Token::getLineNumber() const {
+unsigned Token::getLineNumber() const
+{
     return lineNumber;
 }
 
-string Token::getTokensValue() const {
+string Token::getTokensValue() const
+{
     return value;
 }
 
-string Token::toString() const {
+string Token::toString() const
+{
     string lineNumberString;
     itoa(lineNumberString, lineNumber);
-    string string = "(";
-    string += TokenTypeToString(tokenType);
-    string += ",\"";
-    string += value;
-    string += "\",";
-    string += lineNumberString;
-    string += ")\n";
-    return string;
+    string retstr = "(";
+    retstr += TokenTypeToString(tokenType);
+    retstr += ",\"";
+    retstr += value;
+    retstr += "\",";
+    retstr += lineNumberString;
+    retstr += ")\n";
+    return retstr;
 };
 
-bool Token::operator==(const Token& token) {
+bool Token::operator==(const Token& token)
+{
     return  (lineNumber == token.lineNumber &&
                   value == token.value &&
                   tokenType == token.tokenType);
 
 }
 
-void Token::setTokenType(const TokenType newTokenType) {
+void Token::setTokenType(const TokenType newTokenType)
+{
     tokenType = newTokenType;
 }
+
+std::ostream & operator<<(std::ostream &out, const Token &tok)
+{
+    return (out << tok.toString());
+}
+

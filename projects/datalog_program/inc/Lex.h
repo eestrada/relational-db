@@ -10,7 +10,8 @@
 /**
  * The lexical analyzer for project 1 in CS 236.
  *
- * The alphabet for the Finite State Machine/Finite State Transducer/Lexical Analyzer is the ASCII alphabet union EOF
+ * The alphabet for the Finite State Machine/Finite State Transducer/Lexical 
+ * Analyzer is the ASCII alphabet union EOF.
  *
  * Regular Expresion Syntax:                                      TokenTypes
  *
@@ -32,7 +33,8 @@
  *       [\s\t\n\v\f\r]                                          //WHITESPACE -- defined in cctype::isspace(int)
  *     )*
  *
- *     The keyWords: "Schemes", "Facts", "Rules", and "Queries" are created after evaluating at Ids.
+ *     The keyWords: "Schemes", "Facts", "Rules", and "Queries" are created 
+ *     after evaluating at Ids.
  *
  *     See also: students.cs.byu.edu/~cs236ta/spring2012/project1/#tokenTypes
  *
@@ -48,7 +50,8 @@
  *         tokens       : sequence<Token>
  *         currentToken : int
  */
-class Lex {
+class Lex
+{
     public:
     //Constructors
         /**
@@ -61,25 +64,30 @@ class Lex {
 		Lex();
 
         /**
-         * The constructor for the lexical analyzer.  If the characters in the specified iostream are syntatically
-         * correct, it converts them into a sequence of tokens.
+         * The constructor for the lexical analyzer.  If the characters in the
+         * specified iostream are syntatically correct, it converts them into 
+         * a sequence of tokens.
          *
          * Errors: input is not syntatically correct
          * Parameters: istream -- the iostream we will read characters from
          * PreCondition: istream is syntatically correct.
-         * PostCondition: tokens contains sequence of tokens parsed from the input stream AND currentToken = 0.
+         * PostCondition: tokens contains sequence of tokens parsed from the 
+         * input stream AND currentToken = 0.
          */
         Lex(std::istream& in);
 
         /**
-         * The constructor for the lexical analyzer. Does the same as the Lex(istream&) constructor after opening
-         * the file identified by the file name as an istream. 
+         * The constructor for the lexical analyzer. Does the same as the 
+         * Lex(istream&) constructor after opening the file identified by the 
+         * file name as an istream. 
          *
-         * Errors: file does not exist, file cannot be read, file is not a text file, and
-         *         input is not syntatically correct
+         * Errors: file does not exist, file cannot be read, file is not a 
+         * text file, an input is not syntatically correct
+         *
          * Parameters: fileName -- name of the file we will read from.
          * PreCondition: istream is syntatically correct.
-         * PostCondition: tokens contains sequence of tokens parsed from the input stream AND currentToken = 0.
+         * PostCondition: tokens contains sequence of tokens parsed from the 
+         * input stream AND currentToken = 0.
          */
         Lex(const char* fileName);
 
@@ -109,17 +117,21 @@ class Lex {
          *
          * Parameters: lex -- the lexical analyzer we are going to compare to.
          * PreCondition: none
-         * PostCondition : result = tokens = lex.tokens AND currentToken = lex.currentToken
+         * PostCondition : result = tokens = lex.tokens AND 
+         * currentToken = lex.currentToken
          */
         bool operator==(const Lex& lex);
 
-        /** Returns the string representation of the lexical analyzer according to the syntax specified in
-         *  students.cs.byu.edu/~cs236ta/spring2012/project1/#outputFormat
+        /** 
+         * Returns the string representation of the lexical analyzer 
+         * according to the syntax specified in
+         * students.cs.byu.edu/~cs236ta/spring2012/project1/#outputFormat
          *
          *  Parameters: none
          *  PreCondition: none
-         *  PostCondition: result is the string representation of the lexical analyzer according to the syntax
-         *  described in students.cs.byu.edu/~cs236ta/spring2012/project1/#outputFormat
+         *  PostCondition: result is the string representation of the lexical 
+         *  analyzer according to the syntax described in 
+         *  students.cs.byu.edu/~cs236ta/spring2012/project1/#outputFormat
          */
         std::string toString() const;
 
@@ -151,21 +163,22 @@ class Lex {
          */
         void advance(); 
 
+        Token operator[](unsigned i);
 
     private:
         //Domain Implementation
-            Input* input;
-            std::vector<Token*>* tokens;
-            int index;
-            State state;
-            std::string tmpword;
+        Input* input;
+        std::vector<Token*> *tokens;
+        int index;
+        State state;
+        std::string tmpword;
 
         //Auxiliary Methods
-            void generateTokens(Input* input);
-            State nextState();
-            void storeToken(Token* token);
-            State getNextState();
-            void emit(TokenType tokenType);
-            State processKeyword(TokenType t);
+        void generateTokens(Input* input);
+        State nextState();
+        void storeToken(Token* token);
+        State getNextState();
+        void emit(TokenType tokenType);
+        State processKeyword(TokenType t);
 };
 #endif

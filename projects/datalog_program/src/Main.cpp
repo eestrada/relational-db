@@ -10,7 +10,8 @@ using namespace std;
 
 const string dash("-");
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     
     if(argc == 1)
     {
@@ -31,7 +32,33 @@ int main(int argc, char* argv[]) {
         lexer = new Lex(argv[1]);
     }
 
-    cout << lexer->toString();
+    Lex &lexref = *lexer;
+
+    //cout << lexer->toString();
+/*
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+    lexer->advance();
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+    cout << *(lexref.getCurrentToken());
+*/
+
+    try
+    {
+        int i = 0;
+        while(true)
+        {
+            cout << lexref[i];
+            ++i;
+        }
+    }
+    catch(...)
+    {
+    }
 
     delete lexer; lexer = NULL;
 

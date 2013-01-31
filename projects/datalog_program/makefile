@@ -4,7 +4,7 @@ CXXFLAGS = -ansi -g -Wall -I./ -I./inc/
 PN=cs236
 BINDIR = ./bin
 BIN = $(BINDIR)/Lex.bin
-ARGS = ./test/TestFile5
+ARGS = ./test/TestFile5.txt
 
 INCDIR = ./inc
 SRCDIR = ./src
