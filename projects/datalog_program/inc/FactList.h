@@ -1,10 +1,12 @@
 #if !defined(__FACTLIST_H__)
 #define __FACTLIST_H__
-#include <queue>
+
+#include <vector>
 #include <string>
+#include <ostream>
 #include "Fact.h"
 
-class FactList : public std::queue<Fact>
+class FactList : public std::vector<Fact>
 {
 private:
 public:
@@ -13,6 +15,8 @@ public:
 
     std::string toString();
 };
+
+std::ostream & operator<<(std::ostream &out, const FactList &flist);
 
 #endif //defined __FACTLIST_H__
 

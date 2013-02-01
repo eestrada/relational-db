@@ -1,10 +1,12 @@
 #if !defined(__QUERYLIST_H__)
 #define __QUERYLIST_H__
-#include <queue>
+
+#include <vector>
 #include <string>
+#include <ostream>
 #include "Query.h"
 
-class QueryList : public std::queue<Query>
+class QueryList : public std::vector<Query>
 {
 private:
 public:
@@ -13,6 +15,8 @@ public:
 
     std::string toString();
 };
+
+std::ostream & operator<<(std::ostream &out, const QueryList &qlist);
 
 #endif //defined __QUERYLIST_H__
 

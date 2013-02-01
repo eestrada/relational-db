@@ -1,10 +1,12 @@
 #if !defined(__SCHEMELIST_H__)
 #define __SCHEMELIST_H__
-#include <queue>
+
+#include <vector>
 #include <string>
+#include <ostream>
 #include "Scheme.h"
 
-class SchemeList : public std::queue<Scheme>
+class SchemeList : public std::vector<Scheme>
 {
 private:
 public:
@@ -13,5 +15,7 @@ public:
 
     std::string toString();
 };
+
+std::ostream & operator<<(std::ostream &out, const SchemeList &slist);
 
 #endif //defined __SCHEMELIST_H__
