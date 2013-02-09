@@ -28,4 +28,4 @@ std::string TokenTypeToString(TokenType tokenType)
         case NUL:                result = "NUL"; break;
     }
     return result;
-};
+}

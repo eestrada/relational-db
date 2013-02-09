@@ -28,7 +28,7 @@ Token::Token(const Token& token)
     value = token.value;
 }
 
-Token::~Token(){};
+Token::~Token(){}
 
 TokenType Token::getTokenType() const
 {
@@ -57,7 +57,7 @@ string Token::toString() const
     retstr += lineNumberString;
     retstr += ")\n";
     return retstr;
-};
+}
 
 bool Token::operator==(const Token& token)
 {

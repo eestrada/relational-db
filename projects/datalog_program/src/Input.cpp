@@ -21,7 +21,7 @@ void Input::init(istream& in)
     currentTokensLineNumber = 1;
     currentCharacterLocation = 0;
     currentTokensStartLocation = 0;
-};
+}
 
 Input::Input()
 {
@@ -40,12 +40,12 @@ Input::Input(const char* fileName)
         init(in);
     };
     in.close();
-};
+}
 
 Input::Input(istream& in)
 {
     init(in);
-};
+}
 
 Input::Input(const Input& input) 
 {
@@ -56,7 +56,7 @@ Input::Input(const Input& input)
     currentTokensStartLocation = input.currentTokensStartLocation;
 }
 
-Input::~Input(){};
+Input::~Input(){}
 
 bool Input::operator==(const Input& input) const
 {
@@ -87,22 +87,22 @@ string Input::toString() const
 char Input::getCurrentCharacter() const
 {
     return characters[currentCharacterLocation];
-};
+}
 
 unsigned int Input::getCurrentTokensLineNumber() const
 {
     return currentTokensLineNumber;
-};
+}
 
 bool Input::eof() const
 {
     return characters[currentCharacterLocation] == -1;
-};
+}
 
 string Input::getTokensValue() const
 {
     return characters.substr(currentTokensStartLocation, currentCharacterLocation - currentTokensStartLocation);
-};
+}
 
 void  Input::advance()
 {
@@ -114,10 +114,10 @@ void  Input::advance()
         }
         currentCharacterLocation++;
     }
-};
+}
 
 void Input::mark()
 {
     currentTokensStartLocation = currentCharacterLocation;
     currentTokensLineNumber = lineNumber;
-};
+}

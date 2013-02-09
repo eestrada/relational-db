@@ -35,5 +35,5 @@ string StateToString(State tokenType)
         case End:                        result = "End"; break;
     }
     return result;
-};
+}
 
