@@ -1,4 +1,4 @@
-#include "Lex.h"
+#include "Parser.h"
 #include "DatalogProgram.h"
 #include "Domain.h"
 
@@ -21,46 +21,22 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    Lex *lexer;
+    Parser *p;
 
     if(dash == argv[1])
     {
-        lexer = new Lex(cin);
+        p = new Parser(cin);
     }
     else
     {
-        lexer = new Lex(argv[1]);
+        p = new Parser(argv[1]);
     }
 
-    Lex &lexref = *lexer;
+    Parser &parse = *p;
 
-    //cout << lexer->toString();
-/*
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-    lexer->advance();
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-    cout << *(lexref.getCurrentToken());
-*/
+    cout << parse;//.toString();
 
-    try
-    {
-        int i = 0;
-        while(true)
-        {
-            cout << lexref[i];
-            ++i;
-        }
-    }
-    catch(...)
-    {
-    }
-
-    delete lexer; lexer = NULL;
+    delete p;
 
     return 0;
 }
