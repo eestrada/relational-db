@@ -6,6 +6,7 @@
 #include "State.hpp"
 #include <vector>
 #include <istream>
+#include <ostream>
 
 /**
  * The lexical analyzer for project 1 in CS 236.
@@ -163,7 +164,9 @@ class Lex
          */
         void advance(); 
 
-        Token operator[](unsigned i);
+        const Token* operator[](unsigned i) const;
+
+        std::vector<Token> getTokVec() const;
 
     private:
         //Domain Implementation
@@ -181,4 +184,8 @@ class Lex
         void emit(TokenType tokenType);
         State processKeyword(TokenType t);
 };
+
+
+std::ostream& operator<<(std::ostream & out, const Lex &l);
+
 #endif

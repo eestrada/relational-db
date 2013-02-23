@@ -10,12 +10,10 @@ INCDIR = ./inc
 SRCDIR = ./src
 OBJDIR = ./obj
 
-INCS = $(wildcard $(INCDIR)/*.h)
+INCS = $(wildcard $(INCDIR)/*.hpp) $(wildcard $(INCDIR)/*.h)
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
-# MAINCPP = src/main.cpp
-# MAINCPP = 
 
 .PHONY : run bin test clean memcheck packproj
 

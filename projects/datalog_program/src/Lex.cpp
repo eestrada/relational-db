@@ -109,11 +109,6 @@ void Lex::advance()
     index++;
 }
 
-Token Lex::operator[](unsigned i)
-{
-    return *(tokens->at(i));
-}
-
 bool Lex::hasNext()
 {
     return index < int(tokens->size());
@@ -303,5 +298,28 @@ void Lex::storeToken(Token* token)
     //type to the appropriate value if the value of the token is "Schemes", 
     //"Facts", "Rules", or "Queries".
     tokens->push_back(token);
+}
+
+const Token* Lex::operator[](unsigned i) const
+{
+    return tokens->at(i);
+}
+
+std::vector<Token> Lex::getTokVec() const
+{
+    vector<Token*>::iterator iter;
+    vector<Token> retvec;
+
+    for(iter=this->tokens->begin(); iter != this->tokens->end(); ++iter)
+    {
+        retvec.push_back(**iter);
+    }
+
+    return retvec;
+}
+
+std::ostream& operator<<(std::ostream & out, const Lex &l)
+{
+    return out << l.toString();
 }
 

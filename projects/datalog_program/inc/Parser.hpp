@@ -13,27 +13,19 @@ class Parser
 {
 private:
     Lex lexer;
+    std::vector<Token> tvec;
+    void ctor_helper();
+
 public:
-    Parser() : lexer() {}
-    Parser(std::istream &in) : lexer(in) {}
-    Parser(const Lex &l) : lexer(l) {}
-    Parser(const char* fileName) : lexer(fileName) {}
-
-    std::string toString() const
-    {
-        return lexer.toString();
-    }
-
-    operator std::string() const
-    {
-        return this->toString();
-    }
+    Parser();
+    Parser(std::istream &in);
+    Parser(const char* fileName);
+    Parser(const Lex &l);
+    std::string toString() const;
+    operator std::string() const;
 };
 
-std::ostream& operator<<(std::ostream & out, const Parser &p)
-{
-    return out << p.toString();
-}
+std::ostream& operator<<(std::ostream & out, const Parser &p);
 
 #endif // defined PARSER_H
 
