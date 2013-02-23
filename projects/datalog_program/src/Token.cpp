@@ -1,6 +1,6 @@
-#include "Token.h"
+#include "Token.hpp"
 
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <string>
 #include <sstream>

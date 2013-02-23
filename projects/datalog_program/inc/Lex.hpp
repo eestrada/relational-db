@@ -1,9 +1,9 @@
 #ifndef Lex_h
 #define Lex_h
 
-#include "Token.h"
-#include "Input.h"
-#include "State.h"
+#include "Token.hpp"
+#include "Input.hpp"
+#include "State.hpp"
 #include <vector>
 #include <istream>
 

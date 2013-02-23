@@ -1,10 +1,10 @@
 #if !defined(__DATALOGPROGRAM_H__)
 #define __DATALOGPROGRAM_H__
 
-#include "SchemeList.h"
-#include "QueryList.h"
-#include "FactList.h"
-#include "RuleList.h"
+#include "SchemeList.hpp"
+#include "QueryList.hpp"
+#include "FactList.hpp"
+#include "RuleList.hpp"
 #include <ostream>
 
 class DatalogProgram

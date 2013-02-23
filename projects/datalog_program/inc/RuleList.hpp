@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "Rule.h"
+#include "Rule.hpp"
 
 class RuleList : public std::vector<Rule>
 {

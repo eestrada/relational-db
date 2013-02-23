@@ -1,6 +1,6 @@
-#include "Input.h"
+#include "Input.hpp"
 
-#include "Utils.h"
+#include "Utils.hpp"
 
 #include <iostream>
 #include <fstream>

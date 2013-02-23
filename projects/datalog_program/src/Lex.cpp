@@ -1,8 +1,8 @@
-#include "Lex.h"
+#include "Lex.hpp"
 
-#include "Input.h"
-#include "TokenType.h"
-#include "Utils.h"
+#include "Input.hpp"
+#include "TokenType.hpp"
+#include "Utils.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstdio>

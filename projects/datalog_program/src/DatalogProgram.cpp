@@ -1,4 +1,4 @@
-#include "DatalogProgram.h"
+#include "DatalogProgram.hpp"
 
 std::ostream & operator<<(std::ostream &out, const DatalogProgram &dp)
 {

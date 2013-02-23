@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "Scheme.h"
+#include "Scheme.hpp"
 
 class SchemeList : public std::vector<Scheme>
 {

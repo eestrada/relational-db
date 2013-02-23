@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "Query.h"
+#include "Query.hpp"
 
 class QueryList : public std::vector<Query>
 {

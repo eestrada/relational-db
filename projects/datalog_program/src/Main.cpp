@@ -1,6 +1,6 @@
-#include "Parser.h"
-#include "DatalogProgram.h"
-#include "Domain.h"
+#include "Parser.hpp"
+#include "DatalogProgram.hpp"
+#include "Domain.hpp"
 
 #include <iostream>
 #include <stdexcept>

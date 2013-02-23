@@ -1,10 +1,10 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "Token.h"
-#include "Input.h"
-#include "State.h"
-#include "Lex.h"
+#include "Token.hpp"
+#include "Input.hpp"
+#include "State.hpp"
+#include "Lex.hpp"
 #include <string>
 #include <istream>
 #include <ostream>

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "Fact.h"
+#include "Fact.hpp"
 
 class FactList : public std::vector<Fact>
 {

@@ -1,4 +1,4 @@
-#include "TokenType.h"
+#include "TokenType.hpp"
 #include <string>
 
 std::string TokenTypeToString(TokenType tokenType)
