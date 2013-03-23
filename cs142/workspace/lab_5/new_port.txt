@@ -1,0 +1,2 @@
+bond bond1 1990 10 0.05
+bond bond1 2008 20 0.01 fdsadf

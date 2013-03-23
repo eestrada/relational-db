@@ -1,0 +1,20 @@
+import acm.graphics.*;
+import acm.program.*;
+import java.awt.*; // Provides colors
+
+/**
+ *
+ * @author Ethan
+ */
+public class Elf extends GraphicsProgram
+{
+    private GCompound elf_body;
+    private GRect body, arm_R, arm_L, leg_R, leg_L;
+    private GArc hat;
+    private GOval head;
+    Elf()
+    {
+        elf_body = new GCompound();
+    }
+
+}

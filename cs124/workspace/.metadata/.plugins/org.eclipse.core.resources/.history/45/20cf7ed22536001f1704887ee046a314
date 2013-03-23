@@ -1,0 +1,5 @@
+#Mon Mar 22 20:43:11 MDT 2010
+com.ti.ccstudio.buildDefinitions.MSP430.exe.Release.1252183317/internalBuilder/enabled=false
+com.ti.ccstudio.buildDefinitions.MSP430.exe.debug.40335967/internalBuilder/enabled=false
+com.ti.ccstudio.buildDefinitions.MSP430.exe.debug.40335967/internalBuilder/ignoreErr=true
+eclipse.preferences.version=1

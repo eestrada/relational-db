@@ -1,0 +1,39 @@
+!SESSION 2010-09-13 11:48:47.618 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_18
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.jee.product -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.jee.product -data F:\cs142\workspace -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.core.resources 4 2 2010-09-13 11:50:44.865
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.core.resources".
+!STACK 0
+java.lang.NullPointerException
+	at org.deved.antlride.core.resources.AntlrResourceTracker.resourceChanged(AntlrResourceTracker.java:87)
+	at org.eclipse.core.internal.events.NotificationManager$2.run(NotificationManager.java:291)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.NotificationManager.notify(NotificationManager.java:285)
+	at org.eclipse.core.internal.events.NotificationManager.handleEvent(NotificationManager.java:261)
+	at org.eclipse.core.internal.resources.Workspace.broadcastEvent(Workspace.java:307)
+	at org.eclipse.core.internal.resources.Resource.broadcastPreDeleteEvent(Resource.java:1813)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:701)
+	at org.eclipse.core.internal.resources.Project.delete(Project.java:309)
+	at org.eclipse.jdt.ui.wizards.NewJavaProjectWizardPageTwo.doRemoveProject(NewJavaProjectWizardPageTwo.java:535)
+	at org.eclipse.jdt.ui.wizards.NewJavaProjectWizardPageTwo.access$3(NewJavaProjectWizardPageTwo.java:521)
+	at org.eclipse.jdt.ui.wizards.NewJavaProjectWizardPageTwo$1.run(NewJavaProjectWizardPageTwo.java:506)
+	at org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation.execute(WorkspaceModifyDelegatingOperation.java:69)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:1800)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+!SESSION 2010-11-01 17:01:45.591 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_18
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.jee.product -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.jee.product -data F:\cs142\workspace -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.epp.usagedata.recording 1 0 2010-11-01 17:02:11.360
+!MESSAGE Usage data uploaded to http://udc.eclipse.org/upload.php in 2549 milliseconds.

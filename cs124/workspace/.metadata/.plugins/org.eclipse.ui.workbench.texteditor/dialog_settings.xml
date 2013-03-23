@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="0"/>
+		<item key="DIALOG_Y_ORIGIN" value="134"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<item key="selection" value="BYU"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<list key="findhistory">
+			<item value="byu"/>
+			<item value="lcd_init"/>
+			<item value="LED_A"/>
+			<item value="HD_X_MAX"/>
+			<item value="LCD_BL_wait"/>
+			<item value="lcd_clear"/>
+			<item value="P4"/>
+			<item value="P4SEL"/>
+		</list>
+		<list key="replacehistory">
+			<item value="twinDice"/>
+			<item value="quarterDelay"/>
+			<item value="cmp.w"/>
+			<item value="whichLEDTone"/>
+			<item value="cntISR"/>
+			<item value="return to address pointed to by stack"/>
+		</list>
+	</section>
+</section>
