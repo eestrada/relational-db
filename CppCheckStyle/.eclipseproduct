@@ -1,0 +1,5 @@
+#Eclipse Product File
+#Mon Feb 22 15:50:26 MST 2010
+version=1.0.0
+name=CppCheckStyle
+id=edu.byu.cs.cs240.cppcheckstyle.commandline

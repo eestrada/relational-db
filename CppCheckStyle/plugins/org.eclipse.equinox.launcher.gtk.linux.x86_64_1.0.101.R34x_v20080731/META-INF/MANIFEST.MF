@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Vendor: %providerName
+Fragment-Host: org.eclipse.equinox.launcher;bundle-version="[1.0.0,1.1
+ .0)"
+Bundle-Version: 1.0.101.R34x_v20080731
+Eclipse-PlatformFilter: (& (osgi.ws=gtk) (osgi.os=linux) (osgi.arch=x8
+ 6_64))
+Bundle-Localization: launcher.gtk.linux.x86_64
+Bundle-Name: %pluginName
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.equinox.launcher.gtk.linux.x86_64;sin
+ gleton:=true
+
