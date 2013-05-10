@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "LinkedList.hpp"
 
 //You may add #include statements here
 
@@ -16,5 +17,5 @@
 */
 LinkedListInterface * Factory::getLinkedList()
 {
-	return NULL;//Modify this line
+	return new LinkedList();//Modify this line
 }
