@@ -1,4 +1,6 @@
 #include "Factory.h"
+#include "Maze.hpp"
+
 //You may add #include statments here
 using namespace std;
 
@@ -16,6 +18,6 @@ using namespace std;
 */
 MazeInterface* Factory::getMaze()
 {
-	return NULL;//Modify this line
+	return new ede::Maze();//Modify this line
 }
 //=======================================================================================
