@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "Station.hpp"
 //You may add #include statments here
 using namespace std;
 
@@ -16,6 +17,6 @@ using namespace std;
 */
 StationInterface* Factory::createStation()
 {
-	return NULL;//Modify this line
+	return new Station();//Modify this line
 }
 //=======================================================================================
