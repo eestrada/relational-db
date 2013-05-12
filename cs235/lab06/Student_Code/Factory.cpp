@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "BST.hpp"
 //You may add #include statements here
 
 /*
@@ -15,5 +16,5 @@
 */
 BSTInterface * Factory::getBST()
 {
-	return 0;//Modify this line
+	return new ede::BST();//Modify this line
 }
