@@ -32,8 +32,8 @@ class ExpressionManager : public ExpressionManagerInterface
 {
 private:
     void process_operator(char op);
-    int precedence(char op);
-    bool is_operator(char ch);
+    //int precedence(char op);
+    //bool is_operator(char ch);
     stack<char> operator_stack;
     string postfix;
 

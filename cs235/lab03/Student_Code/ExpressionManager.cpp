@@ -31,6 +31,16 @@ inline bool is_num(char ch)
     return NUMBERS.find(ch) != string::npos;
 }
 
+bool is_operator(char ch)
+{
+    return OPERATORS.find(ch) != string::npos;
+}
+
+int precedence(char op)
+{
+    return PRECEDENCE[OPERATORS.find(op)];
+}
+
     /*
     * Checks whether an expression is balanced on its parentheses
     * 
@@ -84,16 +94,6 @@ string ExpressionManager::postfixToInfix(string postfixExpression)
     return retstr;
 }
 
-
-int ExpressionManager::precedence(char op)
-{
-    return PRECEDENCE[OPERATORS.find(op)];
-}
-
-bool ExpressionManager::is_operator(char ch)
-{
-    return OPERATORS.find(ch) != string::npos;
-}
 
 void ExpressionManager::process_operator(char op)
 {
