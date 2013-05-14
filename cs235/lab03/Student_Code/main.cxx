@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main(void)
+int main(int argc, char **argv)
 {
     string line;
     ifstream test1 ("./Student_Code/testfiles/test_part1.txt");
@@ -15,9 +15,11 @@ int main(void)
 
     ede::ExpressionManager em;
 
-    bool t1=false,t2=true,t3=false,t4=false;
+    if(argc != 2) return 1;
 
-    if(t1 && test1.is_open())
+    string tnum = string(argv[1]);
+
+    if(tnum == "1" && test1.is_open())
     {
         cout << "\nTEST FILE 1" << endl;
         while(test1.good())
@@ -26,11 +28,12 @@ int main(void)
             bool balanced = em.isBalanced(line);
 
             cout <<"Line: \""<< line <<"\" is ";
-            cout << (balanced ? "good" : "bad") << "." << endl;
+            cout << (balanced ? "balanced" : "NOT balanced") << "." << endl;
         }
+        return 0;
     }
 
-    if(t2 && test2.is_open())
+    else if(tnum == "2" && test2.is_open())
     {
         cout << "\nTEST FILE 2" << endl;
         while(test2.good())
@@ -41,9 +44,10 @@ int main(void)
             cout <<"Line: \""<< line <<"\" converted to Postfix is:\n\t";
             cout << converted << endl;
         }
+        return 0;
     }
 
-    if(t3 && test3.is_open())
+    else if(tnum == "3" && test3.is_open())
     { 
         cout << "\nTEST FILE 3" << endl;
         while(test3.good())
@@ -54,9 +58,10 @@ int main(void)
             cout <<"Line: \""<< line <<"\" converted to Infix is:\n\t";
             cout << converted << endl;
         }
+        return 0;
     }
 
-    if(t4 && test4.is_open())
+    else if(tnum == "4" && test4.is_open())
     { 
         cout << "\nTEST FILE 4" << endl;
         while(test4.good())
@@ -67,8 +72,9 @@ int main(void)
             cout <<"Line: \""<< line <<"\" evaluated is: ";
             cout << converted << endl;
         }
+        return 0;
     }
 
-    return 0;
+    return 1; //If we reached this, the input was not acceptable
 }
 
