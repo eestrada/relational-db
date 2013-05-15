@@ -92,7 +92,7 @@ void ExMan::balance_main(string &expression)
         }
     }
     if (not (balanced && chstck.empty()))
-        {throw invalid_argument("Expressions is not balanced");}
+        {throw invalid_argument("Expression is not balanced.");}
 }
     /*
     * Checks whether an expression is balanced on its parentheses
@@ -111,7 +111,7 @@ bool ExMan::isBalanced(string expression)
     }
     catch(invalid_argument &e)
     {
-        cerr << e.what();
+        //cerr << e.what();
         return false;
     }
 
@@ -251,12 +251,12 @@ string ExMan::infixToPostfix(string infixExpression)
     }
     catch (exception &e)
     {
-        cerr << e.what() << endl;
+        //cerr << e.what() << endl;
         return "invalid";
     }
     catch (...)
     {
-        cerr << "Unknown exception caught." << endl;
+        cerr << "Unknown exception caught!" << endl;
         return "invalid";
     }
 }   
