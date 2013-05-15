@@ -31,11 +31,13 @@ public:
 class ExpressionManager : public ExpressionManagerInterface
 {
 private:
-    void process_operator(char op);
+    void process_operator(char op, stack<char> &opstck, string &postfix);
+    string i2p_main(string &infixExpression);
+    void balance_main(string &expression);
     //int precedence(char op);
     //bool is_operator(char ch);
-    stack<char> operator_stack;
-    string postfix;
+    //stack<char> operator_stack;
+    //string postfix;
 
 public:
     ExpressionManager(){}
@@ -92,6 +94,8 @@ public:
 
 
 };
+
+typedef ExpressionManager ExMan;
 
 } // End namespace ede
 

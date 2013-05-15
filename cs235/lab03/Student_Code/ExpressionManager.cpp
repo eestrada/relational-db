@@ -1,7 +1,11 @@
 #include <stack>
 #include <string>
+#include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <cctype>
+#include <cstdlib>
+#include <cerrno>
 #include "ExpressionManager.hpp"
 
 namespace ede
@@ -10,11 +14,32 @@ namespace ede
 using namespace std;
 
 // Useful Constants
-const string OPEN = "([{";
-const string CLOSE = ")]}";
-const string OPERATORS = "+-*/";
+const string OPEN = "([{", CLOSE = ")]}";
 const string NUMBERS = "0123456789";
-const int PRECEDENCE[4] = { 1, 1, 2, 2 };
+const string OPERATORS = "+-*/%";
+const int PRECEDENCE[] = { 1, 1, 2, 2, 2 };
+
+inline long int stol(const string &str)
+{
+    if(str.find_first_not_of("0123456789") == str.npos)
+        return strtol(str.c_str(), NULL, 10);
+    else
+        throw invalid_argument("Argument not convertable to long int.");
+}
+
+inline bool is_int(const string &str)
+{
+    try
+    {
+        stol(str);
+    }
+    catch(exception &e)
+    {
+        //cerr << e.what() << endl;
+        return false;
+    }
+    return true;
+}
 
 inline bool is_open(char ch)
 {
@@ -26,21 +51,49 @@ inline bool is_close(char ch)
     return CLOSE.find(ch) != string::npos;
 }
 
+inline bool is_bracket(char ch)
+{
+    return is_open(ch) or is_close(ch);
+}
+
 inline bool is_num(char ch)
 {
     return NUMBERS.find(ch) != string::npos;
 }
 
-bool is_operator(char ch)
+inline bool is_operator(char ch)
 {
     return OPERATORS.find(ch) != string::npos;
 }
 
-int precedence(char op)
+inline int precedence(char op)
 {
     return PRECEDENCE[OPERATORS.find(op)];
 }
 
+void ExMan::balance_main(string &expression)
+{
+    stack<char> chstck;
+    bool balanced = true;
+    string::const_iterator iter;
+
+    for(iter=expression.begin(); balanced && (iter != expression.end()); ++iter)
+    {
+        if(is_open(*iter)) {chstck.push(*iter);}
+        else if (is_close(*iter))
+        {
+            if (chstck.empty()) {balanced = false;}
+            else
+            {
+                char top_ch = chstck.top();
+                chstck.pop();
+                balanced = OPEN.find(top_ch) == CLOSE.find(*iter);
+            }
+        }
+    }
+    if (not (balanced && chstck.empty()))
+        {throw invalid_argument("Expressions is not balanced");}
+}
     /*
     * Checks whether an expression is balanced on its parentheses
     * 
@@ -50,30 +103,19 @@ int precedence(char op)
     * @return false otherwise
     */
 
-bool ExpressionManager::isBalanced(string expression)
+bool ExMan::isBalanced(string expression)
 {
-    stack<char> chstck;
-    bool balanced = true;
-    string::const_iterator iter = expression.begin();
-
-    while (balanced && (iter != expression.end()))
+    try
     {
-        char next_ch = *iter;
-
-        if(is_open(next_ch)) {chstck.push(next_ch);}
-        else if (is_close(next_ch))
-        {
-            if (chstck.empty()) {balanced = false;}
-            else
-            {
-                char top_ch = chstck.top();
-                chstck.pop();
-                balanced = OPEN.find(top_ch) == CLOSE.find(next_ch);
-            }
-        }
-        ++iter;
+        balance_main(expression);
     }
-    return (balanced && chstck.empty());
+    catch(invalid_argument &e)
+    {
+        cerr << e.what();
+        return false;
+    }
+
+    return true;
 }
 
     /**
@@ -88,36 +130,104 @@ bool ExpressionManager::isBalanced(string expression)
      * return the string "invalid" if postfixExpression is not a valid postfix expression.
      * otherwise, return the correct infix expression as a string.
      */
-string ExpressionManager::postfixToInfix(string postfixExpression)
+string ExMan::postfixToInfix(string postfixExpression)
 {
     string retstr = "invalid";
     return retstr;
 }
 
 
-void ExpressionManager::process_operator(char op)
+void ExMan::process_operator(char op, stack<char> &opstck, string &postfix)
 {
-    if(operator_stack.empty())
-    {
-        operator_stack.push(op);
-    }
-    else if(precedence(op) > precedence(operator_stack.top()))
-    {
-        operator_stack.push(op);
-    }
+    if(opstck.empty()) opstck.push(op);
+    else if(precedence(op) > precedence(opstck.top())) opstck.push(op);
     else
     {
-        while (!operator_stack.empty() &&
-                (precedence(op) <= precedence(operator_stack.top())))
+        while (!opstck.empty() && (precedence(op) <= precedence(opstck.top())))
         {
-           postfix += operator_stack.top();
+           postfix += opstck.top();
            postfix += " ";
-           operator_stack.pop();
+           opstck.pop();
         }
 
-        operator_stack.push(op);
+        opstck.push(op);
     }
-    return;
+}
+
+void close_bracket(char token, stack<char> &opstck, string &postfix)
+{
+    int brack_type = CLOSE.find(token);
+
+    while(opstck.top() != OPEN[brack_type])
+    {
+        postfix += opstck.top();
+        postfix += " ";
+        opstck.pop();
+
+        if (opstck.empty()) throw invalid_argument("Parenthesis do not match.");
+    }
+
+    opstck.pop();
+}
+
+string ExMan::i2p_main(string &infixExpression)
+{
+
+    //bool valid = true;
+    stack<char> opstck;
+    string postfix;
+
+    istringstream infix_tokens(infixExpression);
+    string next_token;
+
+    while (infix_tokens >> next_token)
+    {
+        if(is_operator(next_token[0]))
+        {
+            process_operator(next_token[0], opstck, postfix);
+        }
+        else if(is_open(next_token[0]))
+        {
+            opstck.push(next_token[0]);
+        }
+        else if(is_close(next_token[0]))
+        {
+            close_bracket(next_token[0], opstck, postfix);
+        }
+        else if (is_int(next_token))
+        {
+            //cerr << next_token << endl;
+            //stol(next_token);
+
+            postfix += next_token + " ";
+            //postfix += " ";
+        }
+        else
+        {
+            //There are no other acceptable cases. Throw exception.
+            throw invalid_argument("Unknown token encountered: " + next_token);
+        }
+    }
+
+    while (not opstck.empty() and is_operator(opstck.top()))
+    {
+        char op = opstck.top();
+        opstck.pop();
+        postfix += op;
+        if (not opstck.empty())
+            postfix += " ";
+    }
+
+
+    if (not opstck.empty())
+        throw invalid_argument("Cannot convert argument.");
+/*
+    while(!opstck.empty())
+    {
+        opstck.pop();
+    }
+*/
+    return postfix;
 }
 
     /*
@@ -131,48 +241,24 @@ void ExpressionManager::process_operator(char op)
      * return the string "invalid" if infixExpression is not a valid infix expression.
      * otherwise, return the correct postfix expression as a string.
      */
-string ExpressionManager::infixToPostfix(string infixExpression)
+string ExMan::infixToPostfix(string infixExpression)
 {
-    bool valid = true;
-    postfix.clear();
-
-    istringstream infix_tokens(infixExpression);
-    string next_token;
-
-    while (infix_tokens >> next_token)
+    try
     {
-        if(isalnum(next_token[0]))
-        {
-           postfix += next_token;
-           postfix += " ";
-        }
-        else if (is_operator(next_token[0]))
-        {
-            process_operator(next_token[0]);
-        }
-        else
-        {
-            postfix = "invalid";
-            valid = false;
-            break;
-            //throw Syntax_Error("Unexpected Character Encountered");
-        }
+        balance_main(infixExpression);
+        string retval = this->i2p_main(infixExpression);
+        return retval;
     }
-
-    while (valid && !operator_stack.empty())
+    catch (exception &e)
     {
-        char op = operator_stack.top();
-        operator_stack.pop();
-        postfix += op;
-        postfix += " ";
+        cerr << e.what() << endl;
+        return "invalid";
     }
-
-    while(!operator_stack.empty())
+    catch (...)
     {
-        operator_stack.pop();
+        cerr << "Unknown exception caught." << endl;
+        return "invalid";
     }
-
-    return postfix;
 }   
     /*
      * Evaluates a postfix expression returns the result as a string
@@ -183,7 +269,7 @@ string ExpressionManager::infixToPostfix(string infixExpression)
      * return the string "invalid" if postfixExpression is not a valid postfix Expression
      * otherwise, return the correct evaluation as a string
      */
-string ExpressionManager::postfixEvaluate(string postfixExpression)
+string ExMan::postfixEvaluate(string postfixExpression)
 {
     string retstr = "invalid";
     return retstr;
