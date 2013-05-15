@@ -178,35 +178,40 @@ string ExMan::i2p_main(string &infixExpression)
     string postfix;
 
     istringstream infix_tokens(infixExpression);
-    string next_token;
+    string next, prev = " ";
 
-    while (infix_tokens >> next_token)
+    while (infix_tokens >> next)
     {
-        if(is_operator(next_token[0]))
+        if(is_operator(next[0]))
         {
-            process_operator(next_token[0], opstck, postfix);
+            process_operator(next[0], opstck, postfix);
         }
-        else if(is_open(next_token[0]))
+        else if(is_open(next[0]))
         {
-            opstck.push(next_token[0]);
+            opstck.push(next[0]);
         }
-        else if(is_close(next_token[0]))
+        else if(is_close(next[0]))
         {
-            close_bracket(next_token[0], opstck, postfix);
+            close_bracket(next[0], opstck, postfix);
         }
-        else if (is_int(next_token))
+        else if (is_int(next))
         {
-            //cerr << next_token << endl;
-            //stol(next_token);
+            //cerr << next << endl;
+            //stol(next);
 
-            postfix += next_token + " ";
+            postfix += next + " ";
             //postfix += " ";
         }
         else
         {
             //There are no other acceptable cases. Throw exception.
-            throw invalid_argument("Unknown token encountered: " + next_token);
+            throw invalid_argument("invalid_argument: Unknown token encountered: " + next);
         }
+
+        if (is_operator(prev[0]) and is_operator(next[0]))
+            throw invalid_argument("invalid_argument: two adjacent operators without operands.");
+        else
+            prev = next;
     }
 
     while (not opstck.empty() and is_operator(opstck.top()))
