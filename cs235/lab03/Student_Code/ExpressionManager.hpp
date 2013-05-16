@@ -1,38 +1,84 @@
 #ifndef _EXPRESSIONMANAGER_HPP_
 #define _EXPRESSIONMANAGER_HPP_
 
+#include <cctype>
 #include <string>
-#include <exception>
+#include <iostream>
+#include <sstream>
+#include <stack>
+#include <cstdlib>
+#include <stdexcept>
 #include "ExpressionManagerInterface.h"
 
 namespace ede
 {
+
 using namespace std;
 
-class Syntax_Error : public exception
+// Useful Constants
+const string OPEN = "([{", CLOSE = ")]}";
+const string NUMBERS = "0123456789";
+const string OPERATORS = "+-*/%";
+const int PRECEDENCE[] = { 1, 1, 2, 2, 2 };
+
+inline long int stol(const string &str)
 {
-private:
-    string whatStr;
+    if(str.find_first_not_of("0123456789") == str.npos)
+        return strtol(str.c_str(), NULL, 10);
+    else
+        throw invalid_argument("Argument not convertable to long int.");
+}
 
-public:
-    Syntax_Error(const char* whatErr)
+inline bool is_int(const string &str)
+{
+    try
     {
-        this->whatStr = whatErr;
+        stol(str);
     }
-    ~Syntax_Error() throw() {}
-
-    virtual const char* what() const throw()
+    catch(exception &e)
     {
-        return this->whatStr.c_str();
+        //cerr << e.what() << endl;
+        return false;
     }
-};
+    return true;
+}
 
+inline bool is_open(char ch)
+{
+    return OPEN.find(ch) != string::npos;
+}
+
+inline bool is_close(char ch)
+{
+    return CLOSE.find(ch) != string::npos;
+}
+
+inline bool is_bracket(char ch)
+{
+    return is_open(ch) or is_close(ch);
+}
+
+inline bool is_num(char ch)
+{
+    return NUMBERS.find(ch) != string::npos;
+}
+
+inline bool is_operator(char ch)
+{
+    return OPERATORS.find(ch) != string::npos;
+}
+
+inline int precedence(char op)
+{
+    return PRECEDENCE[OPERATORS.find(op)];
+}
 
 class ExpressionManager : public ExpressionManagerInterface
 {
 private:
     void process_operator(char op, stack<char> &opstck, string &postfix);
     string i2p_main(string &infixExpression);
+    string p2i_main(string &postfixExpression);
     void balance_main(string &expression);
     //int precedence(char op);
     //bool is_operator(char ch);

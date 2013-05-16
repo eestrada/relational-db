@@ -1,75 +1,10 @@
-#include <stack>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
-#include <cctype>
-#include <cstdlib>
-#include <cerrno>
+#include <algorithm>
 #include "ExpressionManager.hpp"
 
 namespace ede
 {
 
 using namespace std;
-
-// Useful Constants
-const string OPEN = "([{", CLOSE = ")]}";
-const string NUMBERS = "0123456789";
-const string OPERATORS = "+-*/%";
-const int PRECEDENCE[] = { 1, 1, 2, 2, 2 };
-
-inline long int stol(const string &str)
-{
-    if(str.find_first_not_of("0123456789") == str.npos)
-        return strtol(str.c_str(), NULL, 10);
-    else
-        throw invalid_argument("Argument not convertable to long int.");
-}
-
-inline bool is_int(const string &str)
-{
-    try
-    {
-        stol(str);
-    }
-    catch(exception &e)
-    {
-        //cerr << e.what() << endl;
-        return false;
-    }
-    return true;
-}
-
-inline bool is_open(char ch)
-{
-    return OPEN.find(ch) != string::npos;
-}
-
-inline bool is_close(char ch)
-{
-    return CLOSE.find(ch) != string::npos;
-}
-
-inline bool is_bracket(char ch)
-{
-    return is_open(ch) or is_close(ch);
-}
-
-inline bool is_num(char ch)
-{
-    return NUMBERS.find(ch) != string::npos;
-}
-
-inline bool is_operator(char ch)
-{
-    return OPERATORS.find(ch) != string::npos;
-}
-
-inline int precedence(char op)
-{
-    return PRECEDENCE[OPERATORS.find(op)];
-}
 
 void ExMan::balance_main(string &expression)
 {
@@ -107,7 +42,7 @@ bool ExMan::isBalanced(string expression)
 {
     try
     {
-        balance_main(expression);
+        this->balance_main(expression);
     }
     catch(invalid_argument &e)
     {
@@ -116,6 +51,47 @@ bool ExMan::isBalanced(string expression)
     }
 
     return true;
+}
+
+
+string ExMan::p2i_main(string &postfixExpression)
+{
+    istringstream iss(postfixExpression);
+    string next, retval;
+    stack<string> sstck;
+    bool hasop = false;
+    int numcnt = 0, opcnt = 0;
+    //typedef s string;
+
+    while(iss >> next)
+    {
+        if(is_int(next))
+        {
+            sstck.push(next);
+            ++numcnt;
+        }
+        else if(is_operator(next[0]) and sstck.size() > 1)
+        {
+            hasop = true;
+            string tmp = sstck.top(); sstck.pop();
+            string infixexp = "( " + tmp + " " + next + " "  + sstck.top() + " )";
+
+            sstck.pop();
+            sstck.push(infixexp);
+
+            ++opcnt;
+        }
+        else
+        {
+            throw invalid_argument("Unknown token encountered.");
+        }
+    }
+
+    //string retstr = "invalid";
+    if ( abs(numcnt - opcnt) > 1 )
+        throw invalid_argument("No operator found.");
+    else
+        return sstck.top();
 }
 
     /**
@@ -132,8 +108,18 @@ bool ExMan::isBalanced(string expression)
      */
 string ExMan::postfixToInfix(string postfixExpression)
 {
-    string retstr = "invalid";
-    return retstr;
+    string retval = "invalid";
+
+    try
+    {
+        retval = this->p2i_main(postfixExpression);
+        return retval;
+    }
+    catch(exception &e)
+    {
+        //cerr << e.what();
+        return retval;
+    }
 }
 
 
@@ -250,7 +236,7 @@ string ExMan::infixToPostfix(string infixExpression)
 {
     try
     {
-        balance_main(infixExpression);
+        this->balance_main(infixExpression);
         string retval = this->i2p_main(infixExpression);
         return retval;
     }
