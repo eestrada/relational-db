@@ -19,11 +19,7 @@ public:
 
     void printMe();
 
-	LinkedList(void)
-    {
-        this->head = NULL;
-        this->tail = NULL;
-    };
+	LinkedList(void): head(NULL), tail(NULL), mysize(0) {};
 
 	virtual ~LinkedList(void)
     {
