@@ -1,5 +1,5 @@
-#ifndef _EXPRESSIONMANAGER_HPP_
-#define _EXPRESSIONMANAGER_HPP_
+#ifndef _POSTFIXEVAL_HPP_
+#define _POSTFIXEVAL_HPP_
 
 #include "ExpressionManager.hpp"
 
@@ -15,14 +15,40 @@ private:
 
     int eval_op(char op)
     {
-        
+        if(operand_stack.empty())
+            throw invalid_argument("Stack is empty.");
+        int rhs = operand_stack.top();
+        operand_stack.pop();
+        if(operand_stack.empty())
+            throw invalid_argument("Stack is empty.");
+        int lhs = operand_stack.top();
+        operand_stack.pop();
+        int result = 0;
+
+        switch(op)
+        {
+        case '-' :  result = lhs - rhs;
+                    break;
+        case '+' :  result = lhs + rhs;
+                    break;
+        case '*' :  result = lhs * rhs;
+                    break;
+        case '/' :  result = lhs / rhs;
+                    break;
+        case '%' :  result = lhs % rhs;
+                    break;
+        default  :  throw invalid_argument("Unknown operator symbol.");
+                    break;
+        }
+
+        return result;
     }
 
 public:
-    int eval(const string &expression);
+    int eval(const string &expression)
     {
-        while(not operand_stack.empty())
-            operand_stack.pop()
+        while(!operand_stack.empty())
+            operand_stack.pop();
 
         istringstream tokens(expression);
         char next_char;
@@ -38,11 +64,30 @@ public:
             }
             else if ( is_operator(next_char) )
             {
+                int result = this->eval_op(next_char);
+                operand_stack.push(result);
             }
             else
             {
                 throw invalid_argument("Unknown token encountered.");
             }
+        }
+        if (!operand_stack.empty())
+        {
+            int answer = operand_stack.top();
+            operand_stack.pop();
+            if (operand_stack.empty())
+            {
+                return answer;
+            }
+            else
+            {
+                throw invalid_argument("Stack should be empty.");
+            }
+        }
+        else
+        {
+            throw invalid_argument("Stack is empty.");
         }
     }
 };

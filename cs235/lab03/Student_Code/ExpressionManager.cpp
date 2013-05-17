@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "ExpressionManager.hpp"
+#include "PostFixEval.hpp"
 
 namespace ede
 {
@@ -262,8 +263,30 @@ string ExMan::infixToPostfix(string infixExpression)
      */
 string ExMan::postfixEvaluate(string postfixExpression)
 {
-    string retstr = "invalid";
-    return retstr;
+    PostFixEval pfe;
+    int retval = 0;
+
+    try
+    {
+        //this->p2i_main(postfixExpression);
+        retval = pfe.eval(postfixExpression);
+    }
+    catch(invalid_argument &e)
+    {
+        cerr << e.what() << endl;
+        return "invalid";
+    }
+    catch(...)
+    {
+        cerr << "Unknown exception was caught." << endl;
+        return "invalid";
+    }
+
+    ostringstream oss;
+
+    oss << retval;
+
+    return oss.str();
 }
 
 } // End namespace ede
