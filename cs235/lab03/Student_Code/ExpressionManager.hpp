@@ -2,6 +2,7 @@
 #define _EXPRESSIONMANAGER_HPP_
 
 #include <cctype>
+#include <ciso646>
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -23,8 +24,8 @@ const int PRECEDENCE[] = { 1, 1, 2, 2, 2 };
 
 inline long int stol(const string &str)
 {
-    if(str.find_first_not_of("0123456789") == str.npos)
-        return strtol(str.c_str(), NULL, 10);
+    if(str.find_first_not_of(NUMBERS) == str.npos)
+        return ::std::strtol(str.c_str(), NULL, 10);
     else
         throw invalid_argument("Argument not convertable to long int.");
 }
@@ -33,7 +34,7 @@ inline bool is_int(const string &str)
 {
     try
     {
-        stol(str);
+        ::ede::stol(str);
     }
     catch(exception &e)
     {
