@@ -47,7 +47,7 @@ bool ExMan::isBalanced(string expression)
     }
     catch(invalid_argument &e)
     {
-        //cerr << e.what();
+        cerr << e.what() << endl;
         return false;
     }
 
@@ -75,7 +75,7 @@ string ExMan::p2i_main(string &postfixExpression)
         {
             hasop = true;
             string tmp = sstck.top(); sstck.pop();
-            string infixexp = "( " + tmp + " " + next + " "  + sstck.top() + " )";
+            string infixexp = "( " + sstck.top() + " " + next + " " + tmp + " )";
 
             sstck.pop();
             sstck.push(infixexp);
@@ -88,7 +88,6 @@ string ExMan::p2i_main(string &postfixExpression)
         }
     }
 
-    //string retstr = "invalid";
     if ( abs(numcnt - opcnt) > 1 )
         throw invalid_argument("No operator found.");
     else
@@ -118,7 +117,7 @@ string ExMan::postfixToInfix(string postfixExpression)
     }
     catch(exception &e)
     {
-        //cerr << e.what();
+        cerr << e.what() << endl;
         return retval;
     }
 }
@@ -153,16 +152,15 @@ void close_bracket(char token, stack<char> &opstck, string &postfix)
 
         if (opstck.empty()) throw invalid_argument("Parenthesis do not match.");
     }
-
     opstck.pop();
+
 }
 
 string ExMan::i2p_main(string &infixExpression)
 {
-
-    //bool valid = true;
     stack<char> opstck;
     string postfix;
+    int numcnt = 0, opcnt = 0;
 
     istringstream infix_tokens(infixExpression);
     string next, prev = " ";
@@ -172,6 +170,7 @@ string ExMan::i2p_main(string &infixExpression)
         if(is_operator(next[0]))
         {
             process_operator(next[0], opstck, postfix);
+            ++opcnt;
         }
         else if(is_open(next[0]))
         {
@@ -183,11 +182,8 @@ string ExMan::i2p_main(string &infixExpression)
         }
         else if (is_int(next))
         {
-            //cerr << next << endl;
-            //stol(next);
-
             postfix += next + " ";
-            //postfix += " ";
+            ++numcnt;
         }
         else
         {
@@ -210,6 +206,11 @@ string ExMan::i2p_main(string &infixExpression)
             postfix += " ";
     }
 
+    if ( opcnt == 0 )
+        throw invalid_argument("No operators found.");
+
+    if ( numcnt == 0 )
+        throw invalid_argument("No operands found.");
 
     if (not opstck.empty())
         throw invalid_argument("Cannot convert argument.");
@@ -243,7 +244,7 @@ string ExMan::infixToPostfix(string infixExpression)
     }
     catch (exception &e)
     {
-        //cerr << e.what() << endl;
+        cerr << e.what() << endl;
         return "invalid";
     }
     catch (...)
