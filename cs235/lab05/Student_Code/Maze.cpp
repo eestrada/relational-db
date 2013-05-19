@@ -2,14 +2,20 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
 
 namespace ede
 {
 
-Maze::~Maze()
+Maze::Maze()
 {
-
+    //std::srand(std::time(NULL)); // For more random results
+    std::srand(0);
 }
+
+Maze::~Maze(){}
 
 
 /**
@@ -17,9 +23,65 @@ Maze::~Maze()
  */
 void Maze::createRandomMaze()
 {
+    for(size_t i = 0; i < HEIGHT; ++i)
+    {
+        for(size_t j = 0; j < WIDTH; ++j)
+        {
+            for(size_t k = 0; k < DEPTH; ++k)
+            {
+                int t = std::rand() % 2;
+
+                maze[i][j][k] = bool(t);
+
+            }
+        }
+    }
+
+    maze[0][0][0] = true;
+    maze[HEIGHT - 1][WIDTH - 1][DEPTH - 1] = true;
     return;
 }
 
+bool Maze::copyMaze(bool other[HEIGHT][WIDTH][DEPTH])
+{
+    for(size_t i = 0; i < HEIGHT; ++i)
+    {
+        for(size_t j = 0; j < WIDTH; ++j)
+        {
+            for(size_t k = 0; k < DEPTH; ++k)
+            {
+                maze[i][j][k] = other[i][j][k];
+            }
+        }
+    }
+    return true;
+}
+
+bool Maze::importHelper(const std::string &fileName)
+{
+    std::ifstream file;
+    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+    bool lmaze[HEIGHT][WIDTH][DEPTH];
+    int t;
+
+    file.open(fileName.c_str());
+
+    for(size_t i = 0; i < HEIGHT; ++i)
+    {
+        for(size_t j = 0; j < WIDTH; ++j)
+        {
+            for(size_t k = 0; k < DEPTH; ++k)
+            {
+                file >> t;
+                lmaze[i][j][k] = bool(t);
+            }
+        }
+    }
+
+    this->copyMaze(lmaze);
+
+    return true;
+}
 
 /**
  * Read from the given file (see maze_sample.txt for format) and store it as a maze
@@ -30,7 +92,17 @@ void Maze::createRandomMaze()
  */
 bool Maze::importMaze(std::string fileName)
 {
-    return bool();
+    try
+    {
+        this->importHelper(fileName);
+    }
+    catch(std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -65,7 +137,22 @@ std::string Maze::getMazePath()
  */
 std::string Maze::getMaze()
 {
-    return std::string();
+    std::ostringstream mzstrm;
+
+    for(size_t i = 0; i < HEIGHT; ++i)
+    {
+        for(size_t j = 0; j < WIDTH; ++j)
+        {
+            for(size_t k = 0; k < DEPTH; ++k)
+            {
+                mzstrm << maze[i][j][k] << " ";
+            }
+            mzstrm << "\n";
+        }
+        mzstrm << "\n";
+    }
+
+    return mzstrm.str();
 }
 
 

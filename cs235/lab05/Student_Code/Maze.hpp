@@ -1,11 +1,9 @@
 #ifndef _MAZE_HPP_
 #define _MAZE_HPP_
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <cstdlib>
 #include "MazeInterface.h"
+#include <string>
+#include <vector>
 
 namespace ede
 {
@@ -13,12 +11,7 @@ namespace ede
 class Maze : public MazeInterface
 {
 public:
-
-public:
-	Maze()
-    {
-        srand(0);
-    }
+	Maze();
 
 	virtual ~Maze();
 
@@ -34,7 +27,7 @@ public:
 	 * 
 	 * @return true if the file was successfully read/imported, false if an error occurred when parsing/reading the file
 	 */
-	virtual bool importMaze(std::string fileName);
+	virtual bool importMaze(::std::string fileName);
 	
 	/**
 	 * Traverses the current maze in storage, storing the path taken to solve the maze if the maze was solvable.
@@ -50,14 +43,30 @@ public:
 	 * @return the path to the most recent maze traversed
 	 * 		if no maze has been solved yet, return an empty string
 	 */
-	virtual std::string getMazePath();
+	virtual ::std::string getMazePath();
 	
 	/**
 	 * Get the current maze stored in a single string (see website for format)
 	 * 
 	 * @return a string representation of your maze
 	 */
-	virtual std::string getMaze();
+	virtual ::std::string getMaze();
+private:
+    struct coord
+    {
+        unsigned char x,y,z;
+        coord() : x(), y(), z() {}
+    };
+    //vars
+    static const size_t HEIGHT = 8, WIDTH = 8, DEPTH = 8;
+    bool maze[8][8][8];
+    std::vector<coord> path;
+
+    //funcs
+    bool importHelper(const std::string &fileName);
+    bool copyMaze(bool other[8][8][8]);
+
+
 }; // End Maze class declaration
 
 }; // End ede namespace
