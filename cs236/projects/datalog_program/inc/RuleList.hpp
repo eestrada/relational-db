@@ -10,10 +10,10 @@ class RuleList : public std::vector<Rule>
 {
 private:
 public:
-    RuleList();
-    ~RuleList();
+    RuleList(){}
+    ~RuleList(){}
 
-    std::string toString();
+    std::string toString() const;
 };
 
 std::ostream & operator<<(std::ostream &out, const RuleList &rlist);

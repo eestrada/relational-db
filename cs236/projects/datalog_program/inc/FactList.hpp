@@ -10,10 +10,10 @@ class FactList : public std::vector<Fact>
 {
 private:
 public:
-    FactList();
-    ~FactList();
+    FactList(){}
+    ~FactList(){}
 
-    std::string toString();
+    std::string toString() const;
 };
 
 std::ostream & operator<<(std::ostream &out, const FactList &flist);

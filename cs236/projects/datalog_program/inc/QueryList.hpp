@@ -10,10 +10,10 @@ class QueryList : public std::vector<Query>
 {
 private:
 public:
-    QueryList();
-    ~QueryList();
+    QueryList(){}
+    ~QueryList(){}
 
-    std::string toString();
+    std::string toString() const;
 };
 
 std::ostream & operator<<(std::ostream &out, const QueryList &qlist);

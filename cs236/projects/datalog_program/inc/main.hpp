@@ -21,16 +21,16 @@ inline int parseArgs(int argc, char *argv[], std::ostream &out, std::ostream &er
         return -1;
     }
 
-    Parser *parse;
+    DatalogProgram *dp;
 
-    if(std::string("-") == argv[1]) { parse = new Parser(std::cin); }
-    else { parse = new Parser(argv[1]); }
+    if(std::string("-") == argv[1]) { dp = new DatalogProgram(std::cin); }
+    else { dp = new DatalogProgram(argv[1]); }
 
-    out << (*parse);
+    out << (*dp);
 
     out.flush();
 
-    delete parse;
+    delete dp;
 
     return 0;
 }

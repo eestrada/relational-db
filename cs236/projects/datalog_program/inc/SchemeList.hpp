@@ -10,12 +10,13 @@ class SchemeList : public std::vector<Scheme>
 {
 private:
 public:
-    SchemeList();
-    ~SchemeList();
+    SchemeList(){}
+    ~SchemeList(){}
 
-    std::string toString();
+    std::string toString() const;
 };
 
 std::ostream & operator<<(std::ostream &out, const SchemeList &slist);
 
 #endif //defined __SCHEMELIST_H__
+

@@ -1,8 +1,12 @@
 #include "FactList.hpp"
 
-std::ostream & operator<<(std::ostream &out, const FactList &flist)
+std::string FactList::toString() const
 {
-    return out;
+    return std::string();
 }
 
+std::ostream & operator<<(std::ostream &out, const FactList &flist)
+{
+    return out << flist.toString();
+}
 

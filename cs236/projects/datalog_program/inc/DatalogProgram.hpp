@@ -5,11 +5,19 @@
 #include "QueryList.hpp"
 #include "FactList.hpp"
 #include "RuleList.hpp"
+#include "Token.hpp"
+#include "Lex.hpp"
+#include <vector>
 #include <ostream>
+#include <istream>
+#include <iostream>
 
 class DatalogProgram
 {
 private:
+    Lex lexer;
+    std::vector<Token> tvec;
+
     SchemeList sl;
     QueryList ql;
     FactList fl;
@@ -17,7 +25,17 @@ private:
 
 public:
 
-    friend std::ostream & operator<<(std::ostream &, const DatalogProgram &);
+    DatalogProgram();
+    DatalogProgram(std::istream &in);
+    DatalogProgram(const char* fileName);
+    DatalogProgram(const Lex &l);
+
+    void parseSchemes(std::istream &in, const std::string &str);
+    void parseQueries(std::istream &in, const std::string &str);
+    void parseFacts(std::istream &in, const std::string &str);
+    void parseRules(std::istream &in, const std::string &str);
+
+    std::string toString() const;
 };
 
 std::ostream & operator<<(std::ostream &out, const DatalogProgram &dp);

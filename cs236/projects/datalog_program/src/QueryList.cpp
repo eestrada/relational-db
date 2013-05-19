@@ -1,8 +1,12 @@
 #include "QueryList.hpp"
 
-std::ostream & operator<<(std::ostream &out, const QueryList &qlist)
+std::string QueryList::toString() const
 {
-    return out;
+    return std::string();
 }
 
+std::ostream & operator<<(std::ostream &out, const QueryList &qlist)
+{
+    return out << qlist.toString();
+}
 
