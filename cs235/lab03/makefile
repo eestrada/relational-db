@@ -1,1 +1,1 @@
-../../old_cs235/lab04/makefile
+../../prev_cs235/lab04/makefile
