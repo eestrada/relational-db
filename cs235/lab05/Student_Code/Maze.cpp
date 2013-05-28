@@ -9,6 +9,19 @@
 namespace ede
 {
 
+const ::std::string coord::toString() const
+{
+    ostringstream out;
+
+    out << "(" << this->x << ", " << this->y << ", " << this->z << ")";
+    return out.str();
+}
+
+::std::ostream & operator<<(::std::ostream &out, const coord &crd)
+{
+    return out << crd.toString().c_str();
+}
+
 Maze::Maze()
 {
     //std::srand(std::time(NULL)); // For more random results
@@ -31,18 +44,18 @@ void Maze::createRandomMaze()
             {
                 int t = std::rand() % 2;
 
-                maze[i][j][k] = bool(t);
+                maze[i][j][k] = color(t);
 
             }
         }
     }
 
-    maze[0][0][0] = true;
-    maze[HEIGHT - 1][WIDTH - 1][DEPTH - 1] = true;
+    maze[0][0][0] = BACKGROUND;
+    maze[HEIGHT - 1][WIDTH - 1][DEPTH - 1] = BACKGROUND;
     return;
 }
 
-bool Maze::copyMaze(bool other[HEIGHT][WIDTH][DEPTH])
+bool Maze::copyMaze(color other[HEIGHT][WIDTH][DEPTH])
 {
     for(size_t i = 0; i < HEIGHT; ++i)
     {
@@ -61,7 +74,7 @@ bool Maze::importHelper(const std::string &fileName)
 {
     std::ifstream file;
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
-    bool lmaze[HEIGHT][WIDTH][DEPTH];
+    color lmaze[HEIGHT][WIDTH][DEPTH];
     int t;
 
     file.open(fileName.c_str());
@@ -73,7 +86,7 @@ bool Maze::importHelper(const std::string &fileName)
             for(size_t k = 0; k < DEPTH; ++k)
             {
                 file >> t;
-                lmaze[i][j][k] = bool(t);
+                lmaze[i][j][k] = color(t);
             }
         }
     }
@@ -106,6 +119,38 @@ bool Maze::importMaze(std::string fileName)
 }
 
 
+bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
+{
+    if(h < 0 or w < 0 or d < 0 or h >= HEIGHT or w >= WIDTH or d >= DEPTH)
+        return false; // Out of bounds
+    else if (m[h][w][d] != BACKGROUND)
+        return false; // Barrier or dead end
+    else if (h == HEIGHT-1 and w == WIDTH-1 and d == DEPTH-1)
+    {
+        m[h][w][d] = PATH; // On path!
+        return true; // Also, is maze exit;
+    }
+    else
+    {
+        // Recursively attempt to find a path from each neighbor.
+        // Tentatively mark cell as on path.
+        m[h][w][d] = PATH;
+        if(traverseHelper(m, h, w, d+1)
+           or traverseHelper(m, h-1, w, d)
+           or traverseHelper(m, h+1, w, d)
+           or traverseHelper(m, h, w-1, d)
+           or traverseHelper(m, h, w+1, d) )
+        {
+            return true;
+        }
+        else
+        {
+            m[h][w][d] = TEMPORARY; // Dead end.
+            return false;
+        }
+    }
+}
+
 /**
  * Traverses the current maze in storage, storing the path taken to solve the maze if the maze was solvable.
  * 
@@ -113,7 +158,18 @@ bool Maze::importMaze(std::string fileName)
  */
 bool Maze::traverseMaze()
 {
-    return bool();
+    bool ret = true;
+
+    try
+    {
+        ret = this->traverseHelper(this->maze, 0, 0, 0);
+    }
+    catch(std::exception &e)
+    {
+        ret = false;
+    }
+
+    return ret;
 }
 
 
@@ -126,7 +182,17 @@ bool Maze::traverseMaze()
  */
 std::string Maze::getMazePath()
 {
-    return std::string();
+    std::vector<coord>::iterator iter = path.begin();
+    std::ostringstream out;
+
+    while(iter != path.end())
+    {
+        out << *iter;
+        ++iter;
+        if(iter != path.end()) out << "\n";
+    }
+
+    return out.str();
 }
 
 

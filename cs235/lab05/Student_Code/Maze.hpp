@@ -2,11 +2,22 @@
 #define _MAZE_HPP_
 
 #include "MazeInterface.h"
+#include <ostream>
 #include <string>
 #include <vector>
 
 namespace ede
 {
+static const size_t HEIGHT = 8, WIDTH = 8, DEPTH = 8;
+
+enum color {ABNORMAL, BACKGROUND, TEMPORARY, PATH};
+
+struct coord
+{
+    unsigned char x,y,z;
+    coord() : x(), y(), z() {}
+    const ::std::string toString() const;
+};
 
 class Maze : public MazeInterface
 {
@@ -52,19 +63,14 @@ public:
 	 */
 	virtual ::std::string getMaze();
 private:
-    struct coord
-    {
-        unsigned char x,y,z;
-        coord() : x(), y(), z() {}
-    };
     //vars
-    static const size_t HEIGHT = 8, WIDTH = 8, DEPTH = 8;
-    bool maze[8][8][8];
+    color maze[HEIGHT][WIDTH][DEPTH];
     std::vector<coord> path;
 
     //funcs
     bool importHelper(const std::string &fileName);
-    bool copyMaze(bool other[8][8][8]);
+    bool copyMaze(color other[HEIGHT][WIDTH][DEPTH]);
+    bool traverseHelper(color other[HEIGHT][WIDTH][DEPTH], int h, int w, int d);
 
 
 }; // End Maze class declaration
