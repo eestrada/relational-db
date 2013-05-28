@@ -1,5 +1,5 @@
 #include "Factory.h"
-#include "Maze.hpp"
+#include "Maze.h"
 
 //You may add #include statments here
 using namespace std;

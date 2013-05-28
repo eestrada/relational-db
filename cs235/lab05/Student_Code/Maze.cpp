@@ -1,4 +1,4 @@
-#include "Maze.hpp"
+#include "Maze.h"
 #include <string>
 #include <iostream>
 #include <sstream>
