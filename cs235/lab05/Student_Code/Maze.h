@@ -4,7 +4,8 @@
 #include "MazeInterface.h"
 #include <ostream>
 #include <string>
-#include <vector>
+//#include <vector>
+#include <deque>
 
 namespace ede
 {
@@ -65,7 +66,7 @@ public:
 private:
     //vars
     color maze[HEIGHT][WIDTH][DEPTH];
-    std::vector<coord> path;
+    std::deque<coord> path;
 
     //funcs
     bool importHelper(const std::string &fileName);

@@ -121,6 +121,8 @@ bool Maze::importMaze(std::string fileName)
 
 bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
 {
+    coord tmp;
+
     if(h < 0 or w < 0 or d < 0 or h >= HEIGHT or w >= WIDTH or d >= DEPTH)
         return false; // Out of bounds
     else if (m[h][w][d] != BACKGROUND)
@@ -128,6 +130,8 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
     else if (h == HEIGHT-1 and w == WIDTH-1 and d == DEPTH-1)
     {
         m[h][w][d] = PATH; // On path!
+        tmp.x=h; tmp.y=w; tmp.z=d;
+        path.push_front(tmp);
         return true; // Also, is maze exit;
     }
     else
@@ -141,6 +145,8 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
            or traverseHelper(m, h, w-1, d)
            or traverseHelper(m, h, w+1, d) )
         {
+            tmp.x=h; tmp.y=w; tmp.z=d;
+            path.push_front(tmp);
             return true;
         }
         else
@@ -158,6 +164,7 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
  */
 bool Maze::traverseMaze()
 {
+    path.clear();
     bool ret = true;
 
     try
@@ -182,7 +189,7 @@ bool Maze::traverseMaze()
  */
 std::string Maze::getMazePath()
 {
-    std::vector<coord>::iterator iter = path.begin();
+    std::deque<coord>::iterator iter = path.begin();
     std::ostringstream out;
 
     while(iter != path.end())
