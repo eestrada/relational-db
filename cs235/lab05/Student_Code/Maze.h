@@ -12,11 +12,12 @@ namespace ede
 static const size_t HEIGHT = 8, WIDTH = 8, DEPTH = 8;
 
 enum color {ABNORMAL, BACKGROUND, TEMPORARY, PATH};
-
+typedef unsigned char uchar;
 struct coord
 {
-    unsigned char x,y,z;
+    uchar x,y,z;
     coord() : x(), y(), z() {}
+    coord(uchar xval, uchar yval, uchar zval) : x(xval), y(yval), z(zval) {}
     const ::std::string toString() const;
 };
 

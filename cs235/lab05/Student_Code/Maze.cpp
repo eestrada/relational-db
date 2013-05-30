@@ -13,7 +13,7 @@ const ::std::string coord::toString() const
 {
     ostringstream out;
 
-    out << "(" << this->x << ", " << this->y << ", " << this->z << ")";
+    out << "(" << int(this->x) << ", " << int(this->y) << ", " << int(this->z) << ")";
     return out.str();
 }
 
@@ -74,10 +74,10 @@ bool Maze::importHelper(const std::string &fileName)
 {
     std::ifstream file;
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
-    color lmaze[HEIGHT][WIDTH][DEPTH];
-    int t;
-
     file.open(fileName.c_str());
+
+    color tmp[HEIGHT][WIDTH][DEPTH];
+    int t;
 
     for(size_t i = 0; i < HEIGHT; ++i)
     {
@@ -86,12 +86,12 @@ bool Maze::importHelper(const std::string &fileName)
             for(size_t k = 0; k < DEPTH; ++k)
             {
                 file >> t;
-                lmaze[i][j][k] = color(t);
+                tmp[i][j][k] = color(t);
             }
         }
     }
 
-    this->copyMaze(lmaze);
+    this->copyMaze(tmp);
 
     return true;
 }
@@ -111,7 +111,8 @@ bool Maze::importMaze(std::string fileName)
     }
     catch(std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        //std::cerr << "Maze could not be imported due to following error: ";
+        //std::cerr << e.what() << std::endl;
         return false;
     }
 
@@ -121,17 +122,18 @@ bool Maze::importMaze(std::string fileName)
 
 bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
 {
-    coord tmp;
-
     if(h < 0 or w < 0 or d < 0 or h >= HEIGHT or w >= WIDTH or d >= DEPTH)
+    {
         return false; // Out of bounds
+    }
     else if (m[h][w][d] != BACKGROUND)
+    {
         return false; // Barrier or dead end
+    }
     else if (h == HEIGHT-1 and w == WIDTH-1 and d == DEPTH-1)
     {
         m[h][w][d] = PATH; // On path!
-        tmp.x=h; tmp.y=w; tmp.z=d;
-        path.push_front(tmp);
+        path.push_front( coord(h,w,d) );
         return true; // Also, is maze exit;
     }
     else
@@ -145,8 +147,7 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
            or traverseHelper(m, h, w-1, d)
            or traverseHelper(m, h, w+1, d) )
         {
-            tmp.x=h; tmp.y=w; tmp.z=d;
-            path.push_front(tmp);
+            path.push_front( coord(h,w,d) );
             return true;
         }
         else
@@ -165,6 +166,7 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
 bool Maze::traverseMaze()
 {
     path.clear();
+
     bool ret = true;
 
     try
@@ -173,8 +175,12 @@ bool Maze::traverseMaze()
     }
     catch(std::exception &e)
     {
+        std::cerr << "Could not traverse maze due to following error: ";
+        std::cerr << e.what() << std::endl;
         ret = false;
     }
+
+    //this->getMazePath();
 
     return ret;
 }
@@ -194,10 +200,11 @@ std::string Maze::getMazePath()
 
     while(iter != path.end())
     {
-        out << *iter;
-        ++iter;
+        out << *iter; ++iter;
         if(iter != path.end()) out << "\n";
     }
+
+    //std::cerr << out.str() << std::endl;
 
     return out.str();
 }
