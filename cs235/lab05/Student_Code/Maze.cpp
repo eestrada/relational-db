@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <ciso646>
 
 namespace ede
 {
@@ -133,7 +134,7 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
     else if (h == HEIGHT-1 and w == WIDTH-1 and d == DEPTH-1)
     {
         m[h][w][d] = PATH; // On path!
-        path.push_front( coord(h,w,d) );
+        path.push_front( coord(HEIGHT-1, WIDTH-1, DEPTH-1) );
         return true; // Also, is maze exit;
     }
     else
@@ -141,13 +142,15 @@ bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
         // Recursively attempt to find a path from each neighbor.
         // Tentatively mark cell as on path.
         m[h][w][d] = PATH;
-        if(traverseHelper(m, h, w, d+1)
-           or traverseHelper(m, h-1, w, d)
+        if(traverseHelper(m, h-1, w, d)
            or traverseHelper(m, h+1, w, d)
            or traverseHelper(m, h, w-1, d)
-           or traverseHelper(m, h, w+1, d) )
+           or traverseHelper(m, h, w+1, d)
+           or traverseHelper(m, h, w, d-1) 
+           or traverseHelper(m, h, w, d+1) )
         {
-            path.push_front( coord(h,w,d) );
+            // Why did I need to reverse the coords to get this to work?
+            path.push_front( coord(d,w,h) );
             return true;
         }
         else
@@ -175,8 +178,8 @@ bool Maze::traverseMaze()
     }
     catch(std::exception &e)
     {
-        std::cerr << "Could not traverse maze due to following error: ";
-        std::cerr << e.what() << std::endl;
+        //std::cerr << "Could not traverse maze due to following error: ";
+        //std::cerr << e.what() << std::endl;
         ret = false;
     }
 
