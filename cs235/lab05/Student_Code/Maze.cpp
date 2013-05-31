@@ -10,22 +10,23 @@
 namespace ede
 {
 
-const ::std::string coord::toString() const
+const std::string coord::toString() const
 {
-    ostringstream out;
+    std::ostringstream out;
 
-    out << "(" << int(this->x) << ", " << int(this->y) << ", " << int(this->z) << ")";
+    out << "(" << int(this->x) << ", " << int(this->y) << ", ";
+    out << int(this->z) << ")";
+
     return out.str();
 }
 
-::std::ostream & operator<<(::std::ostream &out, const coord &crd)
+std::ostream & operator<<(std::ostream &out, const coord &crd)
 {
     return out << crd.toString().c_str();
 }
 
 Maze::Maze()
 {
-    //std::srand(std::time(NULL)); // For more random results
     std::srand(0);
 }
 
@@ -112,8 +113,6 @@ bool Maze::importMaze(std::string fileName)
     }
     catch(std::exception &e)
     {
-        //std::cerr << "Maze could not be imported due to following error: ";
-        //std::cerr << e.what() << std::endl;
         return false;
     }
 
@@ -121,41 +120,40 @@ bool Maze::importMaze(std::string fileName)
 }
 
 
-bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int h, int w, int d)
+bool Maze::traverseHelper(color m[HEIGHT][WIDTH][DEPTH], int x, int y, int z)
 {
-    if(h < 0 or w < 0 or d < 0 or h >= HEIGHT or w >= WIDTH or d >= DEPTH)
+    if(x < 0 or y < 0 or z < 0 or x >= WIDTH or y >= HEIGHT or z >= DEPTH)
     {
         return false; // Out of bounds
     }
-    else if (m[h][w][d] != BACKGROUND)
+    else if (m[z][y][x] != BACKGROUND)
     {
         return false; // Barrier or dead end
     }
-    else if (h == HEIGHT-1 and w == WIDTH-1 and d == DEPTH-1)
+    else if (x == WIDTH-1 and y == HEIGHT-1 and z == DEPTH-1)
     {
-        m[h][w][d] = PATH; // On path!
-        path.push_front( coord(HEIGHT-1, WIDTH-1, DEPTH-1) );
+        m[z][y][x] = PATH; // On path!
+        path.push_front( coord(x,y,z) );
         return true; // Also, is maze exit;
     }
     else
     {
         // Recursively attempt to find a path from each neighbor.
         // Tentatively mark cell as on path.
-        m[h][w][d] = PATH;
-        if(traverseHelper(m, h-1, w, d)
-           or traverseHelper(m, h+1, w, d)
-           or traverseHelper(m, h, w-1, d)
-           or traverseHelper(m, h, w+1, d)
-           or traverseHelper(m, h, w, d-1) 
-           or traverseHelper(m, h, w, d+1) )
+        m[z][y][x] = PATH;
+        if(traverseHelper(m, x-1, y, z)
+           or traverseHelper(m, x+1, y, z)
+           or traverseHelper(m, x, y-1, z)
+           or traverseHelper(m, x, y+1, z)
+           or traverseHelper(m, x, y, z-1) 
+           or traverseHelper(m, x, y, z+1) )
         {
-            // Why did I need to reverse the coords to get this to work?
-            path.push_front( coord(d,w,h) );
+            path.push_front( coord(x,y,z) );
             return true;
         }
         else
         {
-            m[h][w][d] = TEMPORARY; // Dead end.
+            m[z][y][x] = TEMPORARY; // Dead end.
             return false;
         }
     }
@@ -178,12 +176,8 @@ bool Maze::traverseMaze()
     }
     catch(std::exception &e)
     {
-        //std::cerr << "Could not traverse maze due to following error: ";
-        //std::cerr << e.what() << std::endl;
         ret = false;
     }
-
-    //this->getMazePath();
 
     return ret;
 }
@@ -206,8 +200,6 @@ std::string Maze::getMazePath()
         out << *iter; ++iter;
         if(iter != path.end()) out << "\n";
     }
-
-    //std::cerr << out.str() << std::endl;
 
     return out.str();
 }

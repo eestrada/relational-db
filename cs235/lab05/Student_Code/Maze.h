@@ -12,13 +12,13 @@ namespace ede
 static const size_t HEIGHT = 8, WIDTH = 8, DEPTH = 8;
 
 enum color {ABNORMAL, BACKGROUND, TEMPORARY, PATH};
-typedef unsigned char uchar;
+
 struct coord
 {
-    uchar x,y,z;
+    char x,y,z;
     coord() : x(), y(), z() {}
-    coord(uchar xval, uchar yval, uchar zval) : x(xval), y(yval), z(zval) {}
-    const ::std::string toString() const;
+    coord(char xval, char yval, char zval) : x(xval), y(yval), z(zval) {}
+    const std::string toString() const;
 };
 
 class Maze : public MazeInterface
@@ -40,7 +40,7 @@ public:
 	 * 
 	 * @return true if the file was successfully read/imported, false if an error occurred when parsing/reading the file
 	 */
-	virtual bool importMaze(::std::string fileName);
+	virtual bool importMaze(std::string fileName);
 	
 	/**
 	 * Traverses the current maze in storage, storing the path taken to solve the maze if the maze was solvable.
@@ -56,23 +56,23 @@ public:
 	 * @return the path to the most recent maze traversed
 	 * 		if no maze has been solved yet, return an empty string
 	 */
-	virtual ::std::string getMazePath();
+	virtual std::string getMazePath();
 	
 	/**
 	 * Get the current maze stored in a single string (see website for format)
 	 * 
 	 * @return a string representation of your maze
 	 */
-	virtual ::std::string getMaze();
+	virtual std::string getMaze();
 private:
     //vars
-    color maze[HEIGHT][WIDTH][DEPTH];
+    color maze[WIDTH][HEIGHT][DEPTH];
     std::deque<coord> path;
 
     //funcs
     bool importHelper(const std::string &fileName);
-    bool copyMaze(color other[HEIGHT][WIDTH][DEPTH]);
-    bool traverseHelper(color other[HEIGHT][WIDTH][DEPTH], int h, int w, int d);
+    bool copyMaze(color other[WIDTH][HEIGHT][DEPTH]);
+    bool traverseHelper(color other[WIDTH][HEIGHT][DEPTH], int x, int y, int z);
 
 
 }; // End Maze class declaration
