@@ -10,19 +10,11 @@ namespace ede
 
 class BST : public BSTInterface
 {
-private:
-    Node *root;
 
-    virtual bool addNode(Node *current, int val);
-    
-    virtual bool removeNode(Node *current, int val);
 public:
-	BST() : root(NULL){}
+	BST();
 	
-    virtual ~BST()
-    {
-        delete(root);
-    }
+    virtual ~BST();
 
 	//Please note that the class that implements this interface must be made
 	//of objects which implement the NodeInterface
@@ -49,6 +41,16 @@ public:
 	 * @return false if remove is unsuccessful(i.e. the int is not in the tree)
 	 */
 	virtual bool remove(int data);
+
+private:
+    // Private member functions
+    virtual bool addNode(Node *current, int val);
+    
+    virtual bool removeNode(Node *current, int val);
+
+private:
+    // Private member variables
+    Node *root;
 };
 
 }

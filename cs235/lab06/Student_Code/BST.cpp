@@ -7,9 +7,12 @@ using namespace std;
 namespace ede
 {
 
-long Node::nodecount = 0;
 //Please note that the class that implements this interface must be made
 //of objects which implement the NodeInterface
+
+BST::BST() : root(NULL){}
+
+BST::~BST() { delete(root); }
 
 /*
  * Returns the root node for this tree
