@@ -1,5 +1,5 @@
 #include "Factory.h"
-#include "BST.hpp"
+#include "BST.h"
 //You may add #include statements here
 
 /*

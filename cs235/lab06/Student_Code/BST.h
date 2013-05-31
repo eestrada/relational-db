@@ -2,7 +2,7 @@
 #define _BST_HPP_
 
 #include "NodeInterface.h"
-#include "Node.hpp"
+#include "Node.h"
 #include "BSTInterface.h"
 
 namespace ede
