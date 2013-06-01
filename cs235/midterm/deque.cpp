@@ -6,6 +6,9 @@ deque<T>::deque() : capacity(DEFAULT_CAPACITY), num_items(0), front_index(0),
     rear_index(0), the_data(new T[DEFAULT_CAPACITY]) {}
 
 template < typename T >
+deque<T>::~deque() { delete[] the_data; }
+
+template < typename T >
 void deque<T>::reallocate()
 {
     size_t new_capacity = 2 * capacity;
