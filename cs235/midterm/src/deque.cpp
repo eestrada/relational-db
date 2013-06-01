@@ -36,7 +36,7 @@ void deque<T>::push_back(const T& data)
 
     ++num_items;
     rear_index = (rear_index + 1) % capacity;
-    the_data[rear_index] = item;
+    the_data[rear_index] = data;
 }
 
 template < typename T >
@@ -47,7 +47,7 @@ void deque<T>::pop_front()
 }
 
 template < typename T >
-void deque<T>::pop_back();
+void deque<T>::pop_back(){throw false;}
 
 //template < typename T >
 //T deque<T>::pop_front(int);
@@ -56,16 +56,16 @@ void deque<T>::pop_back();
 //T deque<T>::pop_back(int);
 
 template < typename T >
-const T & deque<T>::operator[](size_t index) const;
+const T & deque<T>::operator[](size_t index) const{throw false;}
 
 template < typename T >
-T & deque<T>::operator[](size_t index);
+T & deque<T>::operator[](size_t index){throw false;}
 
 template < typename T >
-const T & deque<T>::at(size_t index) const;
+const T & deque<T>::at(size_t index) const{throw false;}
 
 template < typename T >
-T & deque<T>::at(size_t index);
+T & deque<T>::at(size_t index){throw false;}
 
 template < typename T >
 const T & deque<T>::front() const
@@ -92,7 +92,7 @@ T & deque<T>::back()
 }
 
 template < typename T >
-void deque<T>::swap(Deque<T> &other)
+void deque<T>::swap(deque<T> &other)
 {
     throw false;
 }

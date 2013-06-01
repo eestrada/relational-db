@@ -29,7 +29,7 @@ public:
     const T & back() const;
     T & back();
 
-    void swap(Deque<T> &other);
+    void swap(deque<T> &other);
     bool empty() const;
     size_t size() const;
     void resize(size_t size);
