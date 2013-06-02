@@ -20,8 +20,8 @@ public:
     void push_back(const T& data);
     void pop_front();
     void pop_back();
-    T pop_front(int);
-    T pop_back(int);
+    T pop_front(bool);
+    T pop_back(bool);
 
     const T & front() const;
     T & front();
@@ -33,6 +33,7 @@ public:
     bool empty() const;
     size_t size() const;
     void resize(size_t size);
+    void clear();
 private:
     void reallocate();
 
@@ -42,5 +43,7 @@ private:
     size_t capacity, num_items, front_index, rear_index;
     T *the_data;
 };
+
+#include "deque.inl"
 
 #endif // Defined _DEQUE_H_

@@ -13,8 +13,12 @@ INCS = $(wildcard $(INCDIR)/*.hpp) $(wildcard $(INCDIR)/*.h)
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
-
+MAINCPP = $(SRCDIR)/main.cpp
 .PHONY : run bin test clean memcheck packproj
+
+all:
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(MAINCPP)
+	$(BIN) $(ARGS)
 
 run : bin
 	$(BIN) $(ARGS)

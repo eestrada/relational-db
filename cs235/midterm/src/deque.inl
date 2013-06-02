@@ -1,9 +1,11 @@
-#include "deque.h"
-
 
 template < typename T >
-deque<T>::deque() : capacity(DEFAULT_CAPACITY), num_items(0), front_index(0),
-    rear_index(0), the_data(new T[DEFAULT_CAPACITY]) {}
+deque<T>::deque() :
+    capacity(DEFAULT_CAPACITY),
+    num_items(0),
+    front_index(0),
+    rear_index(DEFAULT_CAPACITY - 1),
+    the_data(new T[DEFAULT_CAPACITY]) {}
 
 template < typename T >
 deque<T>::~deque() { delete[] the_data; }
@@ -30,6 +32,17 @@ void deque<T>::reallocate()
 }
 
 template < typename T >
+void deque<T>::push_front(const T& data)
+{
+    if(num_items == capacity) this->reallocate();
+
+    ++num_items;
+    front_index = (front_index - 1) % capacity;
+    the_data[front_index] = data;
+    //throw false;
+}
+
+template < typename T >
 void deque<T>::push_back(const T& data)
 {
     if(num_items == capacity) this->reallocate();
@@ -47,25 +60,62 @@ void deque<T>::pop_front()
 }
 
 template < typename T >
-void deque<T>::pop_back(){throw false;}
+void deque<T>::pop_back()
+{
+    rear_index = (rear_index - 1) % capacity;
+    --num_items;
+    //throw false;
+}
 
 //template < typename T >
-//T deque<T>::pop_front(int);
+//T deque<T>::pop_front(bool);
 
 //template < typename T >
-//T deque<T>::pop_back(int);
+//T deque<T>::pop_back(bool);
+
+/*
+ * Subscript operator. It is theoretically possible to index beyond or below
+ * the capacity of the deque without generating a segmentation fault. However,
+ * this will very likely just return junk data.
+ *
+ * Use the "at" function to get bounds checking.
+ */
+template < typename T >
+const T & deque<T>::operator[](size_t index) const
+{
+    return the_data[(front_index + index) % capacity];
+}
+
+/*
+ * Subscript operator. It is theoretically possible to index beyond or below
+ * the capacity of the deque without generating a segmentation fault. However,
+ * this will very likely just return junk data.
+ *
+ * Use the "at" function to get bounds checking.
+ */
+template < typename T >
+T & deque<T>::operator[](size_t index)
+{
+    return the_data[(front_index + index) % capacity];
+}
 
 template < typename T >
-const T & deque<T>::operator[](size_t index) const{throw false;}
+const T & deque<T>::at(size_t index) const
+{
+    if(index >= num_items)
+        throw std::out_of_range("deque::out_of_range");
+
+    return (*this)[index];
+}
 
 template < typename T >
-T & deque<T>::operator[](size_t index){throw false;}
+T & deque<T>::at(size_t index)
+{
+    if(index >= num_items)
+        throw std::out_of_range("deque::out_of_range");
 
-template < typename T >
-const T & deque<T>::at(size_t index) const{throw false;}
-
-template < typename T >
-T & deque<T>::at(size_t index){throw false;}
+    return (*this)[index];
+}
 
 template < typename T >
 const T & deque<T>::front() const
@@ -114,5 +164,16 @@ template < typename T >
 void deque<T>::resize(size_t size)
 {
     throw false;
+}
+
+/*
+ * Resets size, but not capacity.
+ */
+template < typename T >
+void deque<T>::clear()
+{
+    num_items = 0;
+    front_index = 0;
+    rear_index = capacity - 1;
 }
 
