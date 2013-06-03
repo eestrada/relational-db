@@ -16,14 +16,12 @@ OBJS := $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(OBJS))
 MAINCPP = $(SRCDIR)/main.cpp
 .PHONY : run bin test clean memcheck packproj
 
-all:
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(MAINCPP)
-	$(BIN) $(ARGS)
-
 run : bin
 	$(BIN) $(ARGS)
 
-bin : $(BIN)
+bin :
+	@- mkdir -p $(BINDIR)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(MAINCPP)
 
 test : clean memcheck
 

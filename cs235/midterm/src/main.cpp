@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
     }
 
-    std::cerr << "End of program." << std::endl;
+    //std::cerr << "End of program." << std::endl;
 
     return retval;
 }
