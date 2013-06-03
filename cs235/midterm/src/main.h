@@ -32,34 +32,63 @@ inline void test_queue()
 inline void test_deque()
 {
     deque<int> d;
-    std::cerr << "Appending 0 to 500 by 5s to the back end.\n";
+    bool failed = false;
+
+    std::clog << "Testing Deque ADT.\n";
+
+    std::clog << "Appending 0 to 500 by 5s to the back end.\n";
+
+    for(size_t i = 0; i < 500; i+=5)
+    {
+        d.push_back(i);
+    }
+
+    for(size_t i = 0; i < 100; ++i)
+    {
+        if (d.at(i) != i * 5)
+        {
+            std::clog << "Index '"<< i << "' does not match expected result.";
+            std::clog << " Returned: " << d[i] << ". Should have returned: ";
+            std::clog << (i * 5) << ".\n";
+            std::clog << "Deque push back test failed!\n\n";
+
+            failed = true;
+        }
+    }
+
+    // Clear deque before next test!!!
+    d.clear();
+
+    std::clog << "Alternatively pushing 0 to 100 by 5s to the front and back ends.\n";
 
     for(size_t i = 0; i < 100; i+=5)
     {
-        if (i % 2 == 0)
+        if (i % 2 == 0) // When even, push to back.
             d.push_back(i);
-        else
+        else // When odd, push to front.
             d.push_front(i);
-            
     }
+
+    int result[] = {95,85,75,65,55,45,35,25,15,5,0,10,20,30,40,50,60,70,80,90};
 
     for(size_t i = 0; i < 20; ++i)
     {
-        //if (d.at(i) != i * 5)
-        if (false)
+        if (d.at(i) != result[i])
         {
-            std::clog << "Index "<< i << " does not match expected result.";
+            std::clog << "Index '"<< i << "' does not match expected result.";
             std::clog << " Returned: " << d[i] << ". Should have returned: ";
             std::clog << (i * 5) << ".\n";
-            std::clog << "Deque test failed!\n\n";
-            std::clog << std::flush;
-            return;
+            std::clog << "Deque push front and back test failed!\n\n";
+
+            failed = true;
         }
-        else
-            std::clog << "Index "<< i << ": " << d[i] << "\n";
     }
 
-    std::clog << "Deque test passed!\n\n";
+    if(failed)
+        std::clog << "One or more Deque tests failed!\n\n";
+    else
+        std::clog << "All Deque tests passed!\n\n";
+
     std::clog << std::flush;
 }
 
