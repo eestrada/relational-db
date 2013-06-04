@@ -32,9 +32,9 @@ public:
     void swap(deque<T> &other);
     bool empty() const;
     size_t size() const;
+
     void resize(size_t size);
     void clear();
-
 
     bool operator==(const deque<T> &other);
     bool operator!=(const deque<T> &other);
@@ -51,3 +51,4 @@ private:
 #include "deque.inl"
 
 #endif // Defined _DEQUE_H_
+

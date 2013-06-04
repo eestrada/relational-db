@@ -7,6 +7,9 @@ template < typename T, typename C = deque<T> >
 class queue
 {
 public:
+    queue() : container() {}
+    ~queue() {} // Nothing allocated dynamically, so nothing to do here.
+
     void push(const T &data)
     {
         this->container.push_back(data);

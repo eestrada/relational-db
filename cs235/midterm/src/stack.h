@@ -8,7 +8,7 @@ class stack
 {
 public:
     stack() : container() {}
-    ~stack() {} // Nothing allocated dynamically, so nothing to do.
+    ~stack() {} // Nothing allocated dynamically, so nothing to do here.
 
     void push(const T &data)
     {
