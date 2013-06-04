@@ -1,5 +1,5 @@
 CXX ?= c++
-CXXFLAGS = -ansi -pedantic -g -Wall -I./ -I./inc/
+CXXFLAGS = -ansi -pedantic -g -Wall -I./ -I./inc/ -I./src/
 
 BINDIR = ./bin
 BIN = $(BINDIR)/test.bin

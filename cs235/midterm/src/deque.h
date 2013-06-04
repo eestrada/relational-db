@@ -34,6 +34,10 @@ public:
     size_t size() const;
     void resize(size_t size);
     void clear();
+
+
+    bool operator==(const deque<T> &other);
+    bool operator!=(const deque<T> &other);
 private:
     void reallocate();
 

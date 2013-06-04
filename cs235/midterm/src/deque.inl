@@ -102,19 +102,19 @@ T & deque<T>::operator[](size_t index)
 template < typename T >
 const T & deque<T>::at(size_t index) const
 {
-    if(index >= num_items)
+    if(index < this->size())
+        return (*this)[index];
+    else
         throw std::out_of_range("deque::out_of_range");
-
-    return (*this)[index];
 }
 
 template < typename T >
 T & deque<T>::at(size_t index)
 {
-    if(index >= num_items)
+    if(index < this->size())
+        return (*this)[index];
+    else
         throw std::out_of_range("deque::out_of_range");
-
-    return (*this)[index];
 }
 
 template < typename T >
@@ -126,19 +126,53 @@ const T & deque<T>::front() const
 template < typename T >
 T & deque<T>::front()
 {
-    return the_data[front_index];
+    if(this->size() > 0)
+        return the_data[front_index];
+    else
+        throw std::out_of_range("deque::out_of_range");
 }
 
 template < typename T >
 const T & deque<T>::back() const
 {
-    return the_data[rear_index];
+    if(this->size() > 0)
+        return the_data[rear_index];
+    else
+        throw std::out_of_range("deque::out_of_range");
 }
 
 template < typename T >
 T & deque<T>::back()
 {
-    return the_data[rear_index];
+    if(this->size() > 0)
+        return the_data[rear_index];
+    else
+        throw std::out_of_range("deque::out_of_range");
+}
+
+template < typename T >
+bool deque<T>::operator==(const deque<T> &other)
+{
+    if(this->size() != other.size()) // If sizes don't match we aren't equal
+        return false;
+    else // compare individual members for equality
+    {
+        for(size_t i = 0; i < this->size(); ++i)
+        {
+            if(this->at(i) != other.at(i))
+                return false;
+        }
+    }
+
+    // If we made it down here then the deques must be equal
+    return true;
+}
+
+template < typename T >
+bool deque<T>::operator!=(const deque<T> &other)
+{
+    // Simply invert the equality operator
+    return !((*this) == other);
 }
 
 template < typename T >
