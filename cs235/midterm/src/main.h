@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <typeinfo>
 
 class not_implemented : public std::runtime_error
 {
@@ -23,18 +24,20 @@ private:
     std::string val;
 };
 
+template < typename T >
 inline void test_stack()
 {
-    stack<int> a;
+    stack<T> a;
     bool failed = false;
 
     std::clog << "\nTesting Stack ADT.\n";
+    std::clog << "Of type: " << typeid(T).name() << "\n";
 
     std::clog << "Pushing 0 to 40 by 4s to top of stack.\n";
 
     for(int i = 0; i <=40; i+=4)
     {
-        a.push(i);
+        a.push(T(i));
     }
 
     std::clog << "Popping previously pushed values from top of stack.\n";
@@ -64,14 +67,16 @@ inline void test_stack()
     std::clog << std::flush;
 }
 
+template < typename T >
 inline void test_queue()
 {
-    queue<int> a, b;
+    queue<T> a, b;
     bool failed = false;
 
     std::clog << "\nTesting Queue ADT.\n";
+    std::clog << "Of type: " << typeid(T).name() << "\n";
 
-    std::clog << "Pushing 0 to 40 by 4s to back of queue B and queue B.\n";
+    std::clog << "Pushing 0 to 40 by 4s to back of Queue A and Queue B.\n";
 
     for(int i = 0; i <=40; i+=4)
     {
@@ -116,12 +121,14 @@ inline void test_queue()
     std::clog << std::flush;
 }
 
+template < typename T >
 inline void test_deque()
 {
-    deque<int> a,b;
+    deque<T> a,b;
     bool failed = false;
 
     std::clog << "\nTesting Deque ADT.\n";
+    std::clog << "Of type: " << typeid(T).name() << "\n";
 
     std::clog << "Appending 0 to 500 by 5s to the back end.\n";
 
@@ -189,38 +196,141 @@ inline void test_deque()
     std::clog << std::flush;
 }
 
+template < typename T >
 inline void test_ir_deque()
 {
-    throw not_implemented("ir_deque test not implemented");
+    ir_deque<T> a, b;
+    bool failed = false;
+
+    std::clog << "\nTesting IR_Deque ADT.\n";
+    std::clog << "Of type: " << typeid(T).name() << "\n";
+
+    std::clog << "Pushing 0 to 40 by 4s to back of IR_Deque A and IR_Deque B.\n";
+    for(int i = 0; i <=40; i+=4)
+    {
+        a.push(i);
+        b.push(i);
+    }
+
+    std::clog << "Popping previously pushed values from front of IR_Deque A.\n";
+    for(int i = 0; i <= 40; i+=4)
+    {
+        if(a.front() != i)
+        {
+            std::clog << "A Front returned: " << a.front() << ". Should have returned: ";
+            std::clog << i << ".\n";
+            std::clog << "Push/pop Queue test failed!\n\n";
+
+            failed = true;
+        }
+        a.pop_front();
+    }
+
+    std::clog << "Popping previously pushed values from back of IR_Deque B.\n";
+    for(int i = 40; i >= 0; i-=4)
+    {
+        if(b.back() != i)
+        {
+            std::clog << "B Back returned: " << b.back() << ". Should have returned: ";
+            std::clog << i << ".\n";
+            std::clog << "Push/pop Queue test failed!\n\n";
+
+            failed = true;
+        }
+        b.pop_back();
+    }
+    // All other tests are extraneous since they are just wrapped around the
+    // identical functions of the deque implementation. If deque passes, then
+    // ir_deque would pass.
+
+    if(failed)
+        std::clog << "One or more IR_Deque tests failed!\n\n";
+    else
+        std::clog << "All IR_Deque tests passed!\n\n";
+
+    std::clog << std::flush;
 }
 
+template < typename T >
 inline void test_or_deque()
 {
-    throw not_implemented("or_deque test not implemented");
+    or_deque<T> a, b;
+    bool failed = false;
+
+    std::clog << "\nTesting OR_Deque ADT.\n";
+    std::clog << "Of type: " << typeid(T).name() << "\n";
+
+    std::clog << "Pushing 0 to 40 by 4s to front of OR_Deque A and back of OR_Deque B.\n";
+
+    for(int i = 0; i <=40; i+=4)
+    {
+        a.push_front(i);
+        b.push_back(i);
+    }
+
+    std::clog << "Popping previously pushed values from front of OR_Deque A";
+    std::clog << " and back of OR_Deque B.\n";
+
+    for(int i = 40; i >= 0; i-=4)
+    {
+        // The values should count down from 40 to 0 in or_deque A.
+        if(a.front() != i)
+        {
+            std::clog << "A Front returned: " << a.front() << ". Should have returned: ";
+            std::clog << i << ".\n";
+            std::clog << "Push/pop OR_Deque test failed!\n\n";
+
+            failed = true;
+        }
+
+        // The back should always remain at the value of 40 until the last value is popped.
+        if(b.back() != 40)
+        {
+            std::clog << "B Back returned: " << b.back() << ". Should have returned: ";
+            std::clog << 40 << ".\n";
+            std::clog << "Push/pop OR_Deque test failed!\n\n";
+
+            failed = true;
+        }
+        a.pop();
+        b.pop();
+    }
+
+    // All other tests are extraneous since they are just wrapped around the
+    // identical functions of the deque implementation. If deque passes, then
+    // queue would pass.
+
+    if(failed)
+        std::clog << "One or more OR_Deque tests failed!\n\n";
+    else
+        std::clog << "All OR_Deque tests passed!\n\n";
+
+    std::clog << std::flush;
 }
 
 inline bool test_all()
 {
     bool passed = true;
 
+    // Tests all the ADTs with different data types to make sure it works as a template
     try
-        { test_stack(); }
+        { test_stack<short>(); test_stack<long>(); test_stack<double>(); }
     catch(std::exception &e)
         { std::clog << "Exception encountered: " << e.what() << "\n"; passed=false; }
     try
-        { test_queue(); }
+        { test_queue<short>(); test_queue<long>(); test_queue<double>(); }
     catch(std::exception &e)
         { std::clog << "Exception encountered: " << e.what() << "\n"; passed=false; }
     try
-        { test_deque(); }
+        { test_deque<short>(); test_deque<long>(); test_deque<double>(); }
     catch(std::exception &e)
         { std::clog << "Exception encountered: " << e.what() << "\n"; passed=false; }
     try
-        { test_ir_deque(); }
+        { test_ir_deque<short>(); test_ir_deque<long>(); test_ir_deque<double>(); }
     catch(std::exception &e)
         { std::clog << "Exception encountered: " << e.what() << "\n"; passed=false; }
     try
-        { test_or_deque(); }
+        { test_or_deque<short>(); test_or_deque<long>(); test_or_deque<double>(); }
     catch(std::exception &e)
         { std::clog << "Exception encountered: " << e.what() << "\n"; passed=false; }
 

@@ -10,6 +10,13 @@ public:
     deque();
     ~deque();
 
+    /*
+     * Subscript operator. It is theoretically possible to index beyond or below
+     * the capacity of the deque without generating a segmentation fault. However,
+     * this will very likely just return junk data.
+     *
+     * Use the "at" function to get bounds checking.
+     */
     const T & operator[](size_t index) const;
     T & operator[](size_t index);
 
@@ -20,8 +27,6 @@ public:
     void push_back(const T& data);
     void pop_front();
     void pop_back();
-    T pop_front(bool);
-    T pop_back(bool);
 
     const T & front() const;
     T & front();
@@ -34,6 +39,10 @@ public:
     size_t size() const;
 
     void resize(size_t size);
+
+    /*
+     * Resets size, but not capacity.
+     */
     void clear();
 
     bool operator==(const deque<T> &other);

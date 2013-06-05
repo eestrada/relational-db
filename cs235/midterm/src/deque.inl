@@ -39,7 +39,6 @@ void deque<T>::push_front(const T& data)
     ++num_items;
     front_index = (front_index - 1) % capacity;
     the_data[front_index] = data;
-    //throw false;
 }
 
 template < typename T >
@@ -64,14 +63,7 @@ void deque<T>::pop_back()
 {
     rear_index = (rear_index - 1) % capacity;
     --num_items;
-    //throw false;
 }
-
-//template < typename T >
-//T deque<T>::pop_front(bool);
-
-//template < typename T >
-//T deque<T>::pop_back(bool);
 
 /*
  * Subscript operator. It is theoretically possible to index beyond or below
@@ -120,7 +112,10 @@ T & deque<T>::at(size_t index)
 template < typename T >
 const T & deque<T>::front() const
 {
-    return the_data[front_index];
+    if(this->size() > 0)
+        return the_data[front_index];
+    else
+        throw std::out_of_range("deque::out_of_range");
 }
 
 template < typename T >
@@ -159,7 +154,7 @@ bool deque<T>::operator==(const deque<T> &other)
     {
         for(size_t i = 0; i < this->size(); ++i)
         {
-            if(this->at(i) != other.at(i))
+            if((*this)[i] != other[i])
                 return false;
         }
     }
@@ -184,7 +179,7 @@ void deque<T>::swap(deque<T> &other)
 template < typename T >
 bool deque<T>::empty() const
 {
-    return this->num_items == 0;
+    return this->size() == 0;
 }
 
 
