@@ -1,9 +1,5 @@
 #include "Node.h"
 
-#if !defined(NULL)
-#define NULL 0
-#endif
-
 namespace ede
 {
 

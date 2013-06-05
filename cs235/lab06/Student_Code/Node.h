@@ -1,9 +1,8 @@
 #ifndef _NODE_HPP_
 #define _NODE_HPP_
 #include "NodeInterface.h"
-//#include <iostream>
 
-#ifndef NULL
+#if !defined(NULL)
 #define NULL 0
 #endif
 
