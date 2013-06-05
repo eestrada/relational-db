@@ -1,7 +1,6 @@
 #ifndef _BST_HPP_
 #define _BST_HPP_
 
-#include "NodeInterface.h"
 #include "Node.h"
 #include "BSTInterface.h"
 
@@ -48,6 +47,12 @@ private:
     
     virtual bool removeNode(Node *current, int val);
 
+    // Helper functions for removal
+    virtual bool removeLeaf(Node *current, int val);
+
+    virtual bool removeMPred(Node *current, int val);
+
+    virtual bool removeIPred(Node *current, int val);
 private:
     // Private member variables
     Node *root;
