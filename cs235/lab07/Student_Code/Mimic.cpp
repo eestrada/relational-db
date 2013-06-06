@@ -3,9 +3,9 @@
 #include <sstream>
 #include <vector>
 #include <cstdlib>
-#include "Mimic.hpp"
-#include "map.hpp"
-#include "pair.hpp"
+#include "Mimic.h"
+#include "map.h"
+#include "pair.h"
 
 using namespace std;
 using ede::mapnode;

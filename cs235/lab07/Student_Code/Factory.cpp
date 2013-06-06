@@ -1,5 +1,5 @@
 #include "Factory.h"
-#include "Mimic.hpp"
+#include "Mimic.h"
 
 //You may add #include statments here
 using namespace std;

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "pair.hpp"
+#include "pair.h"
 
 using namespace std;
 
