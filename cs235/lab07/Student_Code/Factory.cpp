@@ -1,4 +1,6 @@
 #include "Factory.h"
+#include "Mimic.hpp"
+
 //You may add #include statments here
 using namespace std;
 
@@ -16,6 +18,6 @@ using namespace std;
 */
 MimicInterface* Factory::createMimic()
 {
-	return NULL;//Modify this line
+	return new Mimic();//Modify this line
 }
 //=======================================================================================
