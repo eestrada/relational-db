@@ -1,17 +1,19 @@
-#pragma once
+#if !defined(_QUICKSORT_HPP_)
+#define _QUICKSORT_HPP_
+
 #include <iostream>
 #include <string>
 #include "QSInterface.h"
-using namespace std;
 
 class QuickSort : public QSInterface
 {
 	public:
-		QuickSort(){}
-		virtual ~QuickSort(){}
+		QuickSort();
+		virtual ~QuickSort();
 
 		/*
-		 * For all methods below, it is assumed that the given array's size is correctly provided by the following parameter.
+		 * For all methods below, it is assumed that the given array's size is
+         * correctly provided by the following parameter.
 		 */
 
 		/*
@@ -27,9 +29,7 @@ class QuickSort : public QSInterface
 		 * @param size
 		 * 		the correct size of the given array
 		 */
-		virtual void sortAll(int data[], int size)
-        {
-        }
+		virtual void sortAll(int data[], int size);
 
 		/*
 		 * sort()
@@ -51,9 +51,7 @@ class QuickSort : public QSInterface
 		 * @param right
 		 * 		the right boundary for the subarray to sort
 		 */
-		virtual void sort(int data[], int size, int left, int right)
-        {
-        }
+		virtual void sort(int data[], int size, int left, int right);
 
 		/*
 		 * medianOfThree()
@@ -78,9 +76,7 @@ class QuickSort : public QSInterface
 		 * @param right
 		 * 		the right boundary for the subarray from which to find a pivot
 		 */
-		virtual void medianOfThree(int data[], int size, int left, int right)
-        {
-        }
+		virtual void medianOfThree(int data[], int size, int left, int right);
 
 		/*
 		 * Partitions a subarray around a pivot value selected according to
@@ -105,10 +101,7 @@ class QuickSort : public QSInterface
 		 * @return the pivot's ending index after the partition completes; -1 if
 		 * 		provided with bad input
 		 */
-		virtual int partition(int data[], int size, int left, int right)
-        {
-            return int();
-        }
+		virtual int partition(int data[], int size, int left, int right);
 
 		/*
 		 * Swaps the values at the given indices within the given array.
@@ -128,7 +121,8 @@ class QuickSort : public QSInterface
 		 * @param j
 		 * 		the second index
 		 */
-		virtual void swap(int data[], int size, int i, int j)
-        {
-        }
+		virtual void swap(int data[], int size, int i, int j);
 };
+
+#endif // defined _QUICKSORT_HPP_
+
