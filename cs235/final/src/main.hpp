@@ -1,8 +1,11 @@
+#if !defined(_MAIN_HPP_)
+#define _MAIN_HPP_
+
 #include <cstdlib>
 #include <iostream>
+#include "hash_map.hpp"
 #include "pqueue.hpp"
 #include "huffman.hpp"
-#include "hash_map.hpp"
 
 namespace ede
 {
@@ -28,3 +31,5 @@ int main(int argc, char **argv)
 }
 
 }
+
+#endif // Defined _MAIN_HPP_
