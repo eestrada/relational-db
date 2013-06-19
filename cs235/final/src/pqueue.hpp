@@ -2,6 +2,7 @@
 #define _PQUEUE_HPP_
 
 #include <vector>
+#include "deque.hpp"
 #include "utility.hpp"
 
 namespace ede
