@@ -1,6 +1,8 @@
 #if !defined(_HASH_MAP_HPP_)
 #define _HASH_MAP_HPP_
 
+#include "utility.hpp"
+
 namespace ede
 {
 
@@ -13,33 +15,12 @@ struct pair
     first_type first;
     second_type second;
 
-    pair(): first(), second() {}
-
     template < typename S, typename T >
-    pair(const pair<S,T> &pr): first(pr.first), second(pr.second) {}
+    pair(const pair<S,T> &pr) : first(pr.first), second(pr.second) {}
     
+    pair(): first(), second() {}
     pair(const first_type &f, const second_type &s): first(f), second(s) {}
     ~pair() {}
-
-/*
-    bool operator<(const kvpair<S, T> &other)
-        {return (this->first < other.first);}
-
-    bool operator>(const kvpair<S, T> &other)
-        {return (this->first > other.first);}
-
-    bool operator<=(const kvpair<S, T> &other)
-        {return (this->first <= other.first);}
-
-    bool operator>=(const kvpair<S, T> &other)
-        {return (this->first >= other.first);}
-
-    bool operator==(const kvpair<S, T> &other)
-        {return (this->first == other.first);}
-
-    bool operator!=(const kvpair<S, T> &other)
-        {return (this->first != other.first);}
-*/
 };
 
 template <  typename Key,

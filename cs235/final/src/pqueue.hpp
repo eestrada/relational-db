@@ -2,18 +2,10 @@
 #define _PQUEUE_HPP_
 
 #include <vector>
+#include "utility.hpp"
 
 namespace ede
 {
-
-template < typename T >
-struct less
-{
-    bool operator()(const T &a, const T &b)
-    {
-        return (a < b);
-    }
-};
 
 template <  typename T, typename Container = std::vector<T>,
             typename Compare = less<T> >
