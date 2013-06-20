@@ -1,24 +1,23 @@
 #if !defined(_PQUEUE_HPP_)
 #define _PQUEUE_HPP_
 
-#include <vector>
 #include "deque.hpp"
 #include "utility.hpp"
 
 namespace ede
 {
 
-template <  typename T, typename Container = std::vector<T>,
-            typename Compare = less<T> >
-class priority_queue
+template <  typename T, typename Container = ::ede::deque<T>,
+            typename Compare = ::ede::less<T> >
+class pqueue
 {
 public:
     typedef T element_type;
     typedef Container container_type;
     typedef Compare comparison_functor;
 
-    priority_queue();
-    ~priority_queue() throw();
+    pqueue();
+    ~pqueue() throw();
 
     void push(const T &data);
 
@@ -26,6 +25,10 @@ public:
     T& top();
 
     void pop();
+
+    operator bool() const;
+    bool empty() const;
+    size_t size() const;
 
 protected:
     Container seq;
@@ -35,5 +38,7 @@ protected:
 }
 
 #include "pqueue.inl"
+
+
 
 #endif // Defined _PQUEUE_HPP_

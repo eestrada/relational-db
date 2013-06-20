@@ -2,13 +2,34 @@
 #define _MAIN_HPP_
 
 #include <cstdlib>
+#include <cstdio>
 #include <iostream>
-#include "hash_map.hpp"
+#include <string>
+#include <vector>
+#include <algorithm>
 #include "pqueue.hpp"
 #include "huffman.hpp"
 
 namespace ede
 {
+
+template < typename T >
+void rand_seq( ede::pqueue<T> &seq )
+{
+    std::vector<T> v;
+
+    for(int i = -50; i < 50; ++i)
+    {
+        v.push_back(i);
+    }
+
+    std::random_shuffle( v.begin(), v.end() );
+
+    for(auto iter = v.begin(); iter != v.end(); ++iter)
+    {
+        seq.push(*iter);
+    }
+}
 
 /* 
  * Runs program according to arguments.
@@ -25,9 +46,28 @@ namespace ede
  */
 int main(int argc, char **argv)
 {
-    std::cerr << "Smells like testing...\n" << std::flush;
-    // Nothing is implemented yet, so return failure for now.
-    return EXIT_FAILURE;
+    ede::pqueue<int> test;
+
+    rand_seq(test);
+
+    std::cerr << "" << std::endl;
+    while(test)
+    {
+        std::cerr << test.top() << ", ";
+        test.pop();
+    }
+    std::cerr << "\n" << std::endl;
+
+    for(int i = 0; i < argc; ++i)
+        std::cerr << argv[i] << std::endl;
+
+/*
+    char c;
+    for(std::cin.get(c); !std::cin.eof(); std::cin.get(c))
+        std::cout.put(c);
+*/
+
+    return EXIT_SUCCESS;
 }
 
 }

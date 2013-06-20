@@ -1,19 +1,21 @@
 BINDIR = ./bin
 BIN = $(BINDIR)/test.bin
-ARGS = 
+INPUT = cat test_input.txt
+OUTPUT = OUTPUT.txt
+ARGS = input.txt output.txt
 
 SRCDIR = ./src
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 INCS = $(wildcard $(SRCDIR)/*.h*) $(wildcard $(SRCDIR)/*.inl)
 
 CXX ?= c++
-CXXFLAGS = -ansi -pedantic -g -Wall -I$(SRCDIR)/
+CXXFLAGS = -std=c++11 -pedantic -g -Wall -I$(SRCDIR)/
 #CXXFLAGS = -ansi -pedantic -g -Wall -I./ -I./inc/ -I./src/
 
 .PHONY : run test clean memcheck
 
 run : $(BIN)
-	$(BIN) $(ARGS)
+	$(INPUT) | $(BIN) > $(OUTPUT)
 
 test : clean memcheck
 
