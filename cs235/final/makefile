@@ -12,7 +12,9 @@ CXX ?= c++
 CXXFLAGS = -std=c++11 -pedantic -g -Wall -I$(SRCDIR)/
 #CXXFLAGS = -ansi -pedantic -g -Wall -I./ -I./inc/ -I./src/
 
-.PHONY : run test clean memcheck
+.PHONY : run bin test clean memcheck
+
+bin : $(BIN)
 
 run : $(BIN)
 	$(INPUT) | $(BIN) > $(OUTPUT)
@@ -22,6 +24,7 @@ test : clean memcheck
 clean :
 	@ echo "Removing generated files"
 	rm -rf $(BINDIR)
+	rm -f $(OUTPUT)
 
 memcheck : $(BIN) 
 	@ echo "Running valgrind to check for memory leaks"

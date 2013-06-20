@@ -10,6 +10,29 @@
 #include "pqueue.hpp"
 #include "huffman.hpp"
 
+template < typename T >
+std::ostream & operator<<(std::ostream &out, ede::pqueue<T> pq)
+{
+    while(pq)
+    {
+        out << pq.top() << ", ";
+        pq.pop();
+    }
+
+    return out;
+}
+
+template < typename T >
+std::ostream & operator<<(std::ostream &out, const std::vector<T> &v)
+{
+    for(auto iter = v.cbegin(); iter != v.cend(); ++iter)
+    {
+        out << *iter << ", ";
+    }
+
+    return out;
+}
+
 namespace ede
 {
 
@@ -18,7 +41,7 @@ void rand_seq( ede::pqueue<T> &seq )
 {
     std::vector<T> v;
 
-    for(int i = -50; i < 50; ++i)
+    for(int i = -50; i <= 50; ++i)
     {
         v.push_back(i);
     }
@@ -29,6 +52,9 @@ void rand_seq( ede::pqueue<T> &seq )
     {
         seq.push(*iter);
     }
+
+    std::cerr << "\n" << v << std::endl;
+    std::cerr << "\n" << seq << std::endl;
 }
 
 /* 
@@ -49,23 +75,6 @@ int main(int argc, char **argv)
     ede::pqueue<int> test;
 
     rand_seq(test);
-
-    std::cerr << "" << std::endl;
-    while(test)
-    {
-        std::cerr << test.top() << ", ";
-        test.pop();
-    }
-    std::cerr << "\n" << std::endl;
-
-    for(int i = 0; i < argc; ++i)
-        std::cerr << argv[i] << std::endl;
-
-/*
-    char c;
-    for(std::cin.get(c); !std::cin.eof(); std::cin.get(c))
-        std::cout.put(c);
-*/
 
     return EXIT_SUCCESS;
 }

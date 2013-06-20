@@ -16,9 +16,12 @@ public:
 public:
     deque();
 
-    template < typename U >
-    deque(typename U::const_iterator &begin,
-        typename U::const_iterator &end);
+    template < typename InputIterator >
+    deque(InputIterator begin,
+        InputIterator end);
+
+
+    deque(const deque<T> &other);
     ~deque();
 
     T & operator[](size_t index) throw();

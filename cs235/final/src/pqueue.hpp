@@ -1,28 +1,29 @@
 #if !defined(_PQUEUE_HPP_)
 #define _PQUEUE_HPP_
 
+#include <vector>
 #include "deque.hpp"
 #include "utility.hpp"
 
 namespace ede
 {
 
-template <  typename T, typename Container = ::ede::deque<T>,
-            typename Compare = ::ede::less<T> >
+template <  typename T, typename Compare = ::ede::less<T>,
+            typename Container = ::ede::deque<T> >
 class pqueue
 {
-public:
+public: // public typedefs of template parameters
     typedef T element_type;
     typedef Container container_type;
     typedef Compare comparison_functor;
 
+public: // public member function declarations
     pqueue();
     ~pqueue() throw();
 
     void push(const T &data);
 
     const T& top() const;
-    T& top();
 
     void pop();
 
@@ -30,9 +31,9 @@ public:
     bool empty() const;
     size_t size() const;
 
-protected:
+protected: // protected member variables
     Container seq;
-    Compare comp_func;
+    Compare compare_func;
 };
 
 }

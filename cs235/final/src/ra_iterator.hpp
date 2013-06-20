@@ -69,6 +69,9 @@ public:
         return tmp;
     }
 
+    E & operator[](size_t i) { return seq->at(index + i); }
+    const E & operator[](size_t i) const { return seq->at(index + i); }
+
 private:
     ra_iterator(size_t i, Container *s) : index(i), seq(s){}
     size_t index;

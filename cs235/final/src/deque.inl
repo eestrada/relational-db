@@ -8,6 +8,38 @@ deque<T>::deque() :
     the_data(new T[DEFAULT_CAPACITY]) {}
 
 template < typename T >
+template < typename InputIterator >
+deque<T>::deque(InputIterator begin, InputIterator end) :
+        capacity(DEFAULT_CAPACITY),
+        num_items(0),
+        front_index(0),
+        rear_index(DEFAULT_CAPACITY - 1),
+        the_data(new T[DEFAULT_CAPACITY])
+{
+    while(begin != end)
+    {
+        this->push_back(*begin);
+        ++begin;
+    }
+    //throw std::runtime_error("deque<T>::deque iterator constructor not implemented.");
+}
+
+
+template < typename T >
+deque<T>::deque(const deque<T> &other) :
+    capacity(other.capacity),
+    num_items(0),
+    front_index(0),
+    rear_index(other.capacity - 1),
+    the_data(new T[other.capacity])
+{
+    for(auto i = 0; i < other.size(); ++i)
+    {
+        this->push_back(other.at(i));
+    }
+}
+
+template < typename T >
 deque<T>::~deque() { delete[] the_data; }
 
 template < typename T >
