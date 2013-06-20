@@ -3,7 +3,24 @@
 
 namespace ede
 {
+
+template < typename U, typename V >
+struct pair
+{
+    typedef U first_type;
+    typedef V second_type;
+
+    first_type first;
+    second_type second;
+
+    template < typename S, typename T >
+    pair(const pair<S,T> &pr) : first(pr.first), second(pr.second) {}
     
+    pair(): first(), second() {}
+    pair(const first_type &f, const second_type &s): first(f), second(s) {}
+    ~pair() {}
+};
+
 template < typename T >
 struct less
 {
