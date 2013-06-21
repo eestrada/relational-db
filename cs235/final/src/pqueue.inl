@@ -52,11 +52,11 @@ void pqueue<T, Compare, Container>::pop()
 
     while(true)
     {
-        int lchild = (2 * parent) + 1, rchild = lchild + 1;
+        size_t lchild = (2 * parent) + 1, rchild = lchild + 1;
 
         if(lchild >= seq.size()) break;
 
-        int min_child = lchild;
+        size_t min_child = lchild;
         if(rchild < seq.size() and compare_func(seq.at(rchild), seq.at(lchild)))
             { min_child = rchild; }
 

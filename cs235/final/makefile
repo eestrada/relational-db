@@ -1,15 +1,14 @@
-BINDIR = ./bin
-BIN = $(BINDIR)/test.bin
+BIN = ./test.bin
 INPUT = cat test_input.txt
 OUTPUT = OUTPUT.txt
-ARGS = input.txt output.txt
+ARGS = input.txt
 
 SRCDIR = ./src
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 INCS = $(wildcard $(SRCDIR)/*.h*) $(wildcard $(SRCDIR)/*.inl)
 
 CXX ?= c++
-CXXFLAGS = -std=c++11 -pedantic -g -Wall -I$(SRCDIR)/
+CXXFLAGS = -ansi -pedantic -g -Wall -I$(SRCDIR)/
 #CXXFLAGS = -ansi -pedantic -g -Wall -I./ -I./inc/ -I./src/
 
 .PHONY : run bin test clean memcheck
@@ -17,13 +16,13 @@ CXXFLAGS = -std=c++11 -pedantic -g -Wall -I$(SRCDIR)/
 bin : $(BIN)
 
 run : $(BIN)
-	$(INPUT) | $(BIN) > $(OUTPUT)
+	$(BIN) $(ARGS)
 
 test : clean memcheck
 
 clean :
 	@ echo "Removing generated files"
-	rm -rf $(BINDIR)
+	rm -f $(BIN)
 	rm -f $(OUTPUT)
 
 memcheck : $(BIN) 
@@ -33,7 +32,6 @@ memcheck : $(BIN)
 	@ echo
 
 $(BIN) : $(SRCS) $(INCS)
-	@- mkdir -p $(BINDIR)
 	@ echo "Compiling binary"
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRCS)
 	@ echo

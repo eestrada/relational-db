@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -25,7 +26,9 @@ std::ostream & operator<<(std::ostream &out, ede::pqueue<T> pq)
 template < typename T >
 std::ostream & operator<<(std::ostream &out, const std::vector<T> &v)
 {
-    for(auto iter = v.cbegin(); iter != v.cend(); ++iter)
+    typename std::vector<T>::const_iterator iter;
+
+    for(iter = v.begin(); iter != v.end(); ++iter)
     {
         out << *iter << ", ";
     }
@@ -48,7 +51,9 @@ void rand_seq( ede::pqueue<T> &seq )
 
     std::random_shuffle( v.begin(), v.end() );
 
-    for(auto iter = v.begin(); iter != v.end(); ++iter)
+    typename std::vector<T>::iterator iter;
+
+    for(iter = v.begin(); iter != v.end(); ++iter)
     {
         seq.push(*iter);
     }
@@ -73,8 +78,28 @@ void rand_seq( ede::pqueue<T> &seq )
 int main(int argc, char **argv)
 {
     ede::pqueue<int> test;
+    //char input[1024];
+    std::string input;
 
-    rand_seq(test);
+    //rand_seq(test);
+
+    if(argc)
+    {
+        input = argv[1];
+    }
+    else
+    {
+        std::cout << "Please enter the file to read in: " << std::flush;
+        std::cin >> input;
+    }
+    std::ifstream in(input.c_str());
+    std::ofstream out("OUTPUT.txt");
+    std::ofstream hout("HASH_OUTPUT.txt");
+
+    huffman h(in);
+
+    h.output(out);
+    h.hash_output(hout);
 
     return EXIT_SUCCESS;
 }

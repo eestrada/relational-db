@@ -31,7 +31,7 @@ public: // public member function declarations
     bool empty() const;
     size_t size() const;
 
-protected: // protected member variables
+public: // protected member variables
     Container seq;
     Compare compare_func;
 };

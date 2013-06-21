@@ -33,7 +33,7 @@ deque<T>::deque(const deque<T> &other) :
     rear_index(other.capacity - 1),
     the_data(new T[other.capacity])
 {
-    for(auto i = 0; i < other.size(); ++i)
+    for(size_t i = 0; i < other.size(); ++i)
     {
         this->push_back(other.at(i));
     }
