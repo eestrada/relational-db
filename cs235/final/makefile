@@ -1,6 +1,6 @@
 BIN = ./test.bin
 INPUT = cat test_input.txt
-OUTPUT = OUTPUT.txt
+OUTPUT = OUTPUT.txt HASH_OUTPUT.txt
 ARGS = input.txt
 
 SRCDIR = ./src
