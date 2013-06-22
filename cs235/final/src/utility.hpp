@@ -21,7 +21,32 @@ struct pair
     pair(): first(), second() {}
     pair(const first_type &f, const second_type &s): first(f), second(s) {}
     ~pair() {}
+
+    /*
+    template < typename S, typename T >
+    bool operator==(const pair<S,T> &pr) const
+    {return this->first == pr.first;}
+    */
 };
+
+
+template < typename U, typename V >
+struct key_check
+{
+    U key;
+
+    key_check(const U &k) : key(k) {}
+
+    bool operator()(const pair<U, V> &pr) const
+    {
+        return key == pr.first;
+    }
+
+private:
+    key_check() : key() {}
+    
+};
+
 
 template < typename T >
 struct less
