@@ -1,16 +1,18 @@
 CXX ?= c++
 CXXFLAGS = -Wall -pedantic -ansi
-BIN = gl3
+BIN = gl3.bin
 
-run: compile
+.PHONY: run gl3 glut3 glew3
+
+run: gl3
 	./$(BIN)
 
-compile:
+gl3:
 	$(CXX) $(CXXFLAGS) -o $(BIN) gl3.cpp -lGL -lX11
 
-glut:
-	$(CXX) $(CXXFLAGS) -o glut3 glut3.cpp -lGL -lX11 -lglut
+glut3:
+	$(CXX) $(CXXFLAGS) -o glut3.bin glut3.cpp -lGL -lX11 -lglut
 	
-glew:
-	$(CXX) $(CXXFLAGS) -o glew3 glew3.cpp -lGL -lX11 -lGLEW -lglut
+glew3:
+	$(CXX) $(CXXFLAGS) -o glew3.bin glew3.cpp -lGL -lX11 -lGLEW -lglut
 	
