@@ -5,11 +5,13 @@
 #include <vector>
 #include <string>
 #include <istream>
-//#include <fstream>
 #include <sstream>
+#include <fstream>
 #include <cstdio>
 #include "trimesh.hpp"
 
+namespace cg
+{
 namespace objparser
 {
     triangle parse_tri_line(std::istream &in)
@@ -39,13 +41,13 @@ namespace objparser
         return t;
     }
 
-    std::auto_ptr<trimesh> parse(std::istream &in)
+    std::unique_ptr<trimesh> parse(std::istream &in)
     {
         //std::ifstream objfile(fname.c_str());
         std::string line, tmp;
         std::istringstream strm;
 
-        std::auto_ptr<trimesh> tm_ptr(new trimesh());
+        std::unique_ptr<trimesh> tm_ptr(new trimesh());
 
         while(!in.eof())
         {
@@ -59,7 +61,7 @@ namespace objparser
 
             if(tmp == "v")
             {
-                position p;
+                point p;
                 strm >> p.x >> p.y >> p.z;
                 tm_ptr->pts.push_back(p);
             }
@@ -85,6 +87,22 @@ namespace objparser
 
         return tm_ptr;
     }
-}
+
+    // Convenience function to use filename string instead of explicit stream
+    std::unique_ptr<trimesh> parse_file(const std::string &fname)
+    {
+        std::cerr << fname << std::endl;
+        std::ifstream fstrm;
+        //fstrm.exceptions(std::ifstream::failbit);
+
+        fstrm.open(fname.c_str());
+
+        auto tm = parse(fstrm);
+
+        return tm;
+    }
+
+} // end namespace objparser
+} // end namespace cg
 
 #endif // end include guard

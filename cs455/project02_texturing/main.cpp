@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 // TODO: Possibly place X11 and GL in namespaces. This should help distinguish what 
 // functions are coming from where (most are clear, but some are pretty 
@@ -35,6 +36,8 @@ namespace ede
 {
 const unsigned int BUFFER_MODE = GLUT_DOUBLE;
 const int XCONST = 512, YCONST = 512;
+
+std::vector<cg::trimesh> meshlist;
 
 /* report GL errors, if any, to stderr */
 //void checkError(const char *functionName)
@@ -77,9 +80,11 @@ std::string load_file_as_str(const std::string &fname)
 
 void test_obj_parser()
 {
-    std::istringstream strm(load_file_as_str("test.obj"));
+    //std::istringstream strm(load_file_as_str("test.obj"));
 
-    auto tm = objparser::parse(strm);
+    //auto tm = cg::objparser::parse(strm);
+
+    auto tm = cg::objparser::parse_file("test.obj");
 
     std::cout << *tm;
 }
@@ -150,7 +155,7 @@ GLuint loadPPM(const char *filename) {
 
     glGenTextures(1, &textureID);
 
-    std::cerr << "Generated texture ID: " << textureID;
+    std::cerr << "Generated texture ID: " << textureID << std::endl;
 
     glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -161,6 +166,7 @@ GLuint loadPPM(const char *filename) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	//Ignore surface color
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
     //Define the texture
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLuint)width, (GLuint)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, theTexture);
 
@@ -176,13 +182,13 @@ void draw()
     glBegin(GL_TRIANGLES);
         //while(false)
         //{
-            glVertex3f(0.5, 0.5,0.0);
-            glVertex3f(-0.5, 0.5,0.0);
-            glVertex3f(0.5, -0.5,0.0);
+            glVertex3f(0.0, 0.0,0.0);
+            glVertex3f(0.0, 1.0,0.0);
+            glVertex3f(1.0, 1.0,0.0);
 
-            glTexCoord2f(0.5, 0.5);
-            glTexCoord2f(0.5, 0.5);
-            glTexCoord2f(0.5, 0.5);
+            glTexCoord2f(0.0, 0.0);
+            glTexCoord2f(0.0, 1.0);
+            glTexCoord2f(1.0, 1.0);
         //}
     glEnd();
 }
@@ -243,6 +249,14 @@ void initGL(void)
     //GLuint tmp = loadPPM("./test.ppm");
     loadPPM("./test.ppm");
 
+    glEnable(GL_TEXTURE_2D);
+    glShadeModel(GL_SMOOTH);
+    //glClearColor(0.0, 0.0, 0.0, 0.5);
+    //glClearDepth(1.0);
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUEL);
+    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
     checkGlError("init");
 }
 
@@ -265,7 +279,7 @@ int main(int argc, char **argv)
     //std::cerr << "Main window ID: " << main_window_id << std::endl;
 
     // test obj file parser
-    //test_obj_parser();
+    test_obj_parser();
 
     //dumpInfo ();
     initGL();

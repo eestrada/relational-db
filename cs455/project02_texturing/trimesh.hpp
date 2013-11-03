@@ -3,28 +3,11 @@
 
 #include <ostream>
 #include <vector>
-struct vector
-{
-    float x, y, z;
-};
 
-struct hvector
+#include "vector3.hpp"
+#include "hvector.hpp"
+namespace cg
 {
-    float x, y, z, w;
-};
-
-struct position : public vector
-{
-};
-
-struct normal : public vector
-{
-};
-
-struct texcoords : public vector
-{
-};
-
 struct triangle
 {
     int pos[3];
@@ -34,31 +17,15 @@ struct triangle
 
 struct trimesh
 {
-    std::vector<position> pts;
+    std::vector<point> pts;
     std::vector<normal> nmls;
     std::vector<texcoords> uvs;
     std::vector<triangle> tris;
 };
 
-inline std::ostream & operator<<(std::ostream &out, const position &p)
-{
-    out << "v" << " " << p.x << " " << p.y << " " << p.z;
-    return out;
-}
+} //end namespace
 
-inline std::ostream & operator<<(std::ostream &out, const normal &n)
-{
-    out << "vn" << " " << n.x << " " << n.y << " " << n.z;
-    return out;
-}
-
-inline std::ostream & operator<<(std::ostream &out, const texcoords &tex)
-{
-    out << "vt" << " " << tex.x << " " << tex.y << " " << tex.z;
-    return out;
-}
-
-inline std::ostream & operator<<(std::ostream &out, const triangle &t)
+inline std::ostream & operator<<(std::ostream &out, const cg::triangle &t)
 {
     // Add one to these for printing to obj format indexing
     out << "f" << " ";
@@ -68,7 +35,7 @@ inline std::ostream & operator<<(std::ostream &out, const triangle &t)
     return out;
 }
 
-inline std::ostream & operator<<(std::ostream &out, const trimesh &tm)
+inline std::ostream & operator<<(std::ostream &out, const cg::trimesh &tm)
 {
     out << "# vertices" << '\n';
     for(auto pt_iter = tm.pts.cbegin(); pt_iter != tm.pts.cend(); ++pt_iter)
