@@ -1,39 +1,60 @@
 #if !defined(MATRIX4X4_HPP)
 #define MATRIX4X4_HPP
 
+#include <stdexcept>
+
 namespace cg
 {
 
-template<unsigned char COL, unsigned char ROW>
+template<size_t COL, size_t ROW>
 class Matrix
 {
 private:
-    float mat[COL][ROW];
+    double mat[COL][ROW];
     size_t col, row;
 
 public:
     Matrix(float ident);
 
-    getVal(int col, int row);
+    Matrix transposed();
+    {
+        for()
+        {
+            for
+        }
+    }
 
-    setVal(int col, int row, float val);
+    double & at(size_t col, size_t row)
+    {
+        if(col < COL && row < ROW)
+            return mat[col][row];
+        else
+            throw std::out_of_range("Matrix indices out of range");
+    }
 
-    float & index(size_t col, size_t row);
-
-    const float & index(size_t col, size_t row) const;
+    const double & at(size_t col, size_t row) const;
+    {
+        if(col < COL && row < ROW)
+            return mat[col][row];
+        else
+            throw std::out_of_range("Matrix indices out of range");
+    }
 };
 
 class Mat4x4
 {
 private:
-    float mat[4][4];
+    double mat[4][4];
 
 public:
-    Matrix4x4(float ident);
+    Matrix4x4(double ident);
 
-    getVal(int col, int row);
+    double getVal(int col, int row)
+    {
+        return mat[col][row];
+    }
 
-    setVal(int col, int row, float val);
+    void setVal(int col, int row, double val)
 };
 
 }
