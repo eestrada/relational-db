@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <array>
 
 // TODO: Possibly place X11 and GL in namespaces. This should help distinguish what 
 // functions are coming from where (most are clear, but some are pretty 
@@ -263,13 +264,25 @@ void reshape(int x, int y)
     checkGlError ("reshape");
 }
 
+void load_meshes(void)
+{
+    std::array<std::string, 2> fnames = {"./crayon.obj", "./crayon_box.obj"};
+
+    for(int i = 0; i < 1; ++i)
+    {
+        auto tm_uptr = cg::objparser::parse_file(fnames[i]);
+        std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
+
+        meshvec.push_back(tm_shared);
+    }
+}
+
+void load_textures(void)
+{
+}
 
 void initGL(void)
 {
-    auto tm_ptr = cg::objparser::parse_file("./crayon.obj");
-    std::shared_ptr<cg::trimesh> tmp_shared(tm_ptr.release());
-
-    meshvec.push_back(tmp_shared);
     /*
     GLuint texid;
 
@@ -307,7 +320,8 @@ void initGL(void)
     glMatrixMode(GL_MODELVIEW);
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    loadPPM("./test.ppm");
+    load_meshes();
+    loadPPM("./textures/crayon_texture_file.ppm");
     checkGlError("initGL");
 }
 
