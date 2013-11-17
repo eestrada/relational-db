@@ -16,6 +16,7 @@
 // ambiguous).
 
 #include <stdio.h>
+#include <string.h>
 #include <malloc.h>
 #include <unistd.h>
 //#include <GL/glut.h>
@@ -41,7 +42,7 @@
 namespace ede
 {
 const unsigned int BUFFER_MODE = GLUT_DOUBLE;
-const int XCONST = 512, YCONST = 512;
+const int XCONST = 1024, YCONST = 1024;
 
 typedef std::vector< std::shared_ptr<cg::trimesh> > mesh_ptr_vec;
 mesh_ptr_vec meshvec;
@@ -160,6 +161,19 @@ GLuint loadPPM(const char *filename) {
     }
     fclose(inFile);
 
+/*
+    bool flip = true;
+    if(flip)
+    {
+        uint32_t *tmpbuff = (uint32_t *)malloc(memSize);
+        uint32_t *textureCast = (uint32_t *)theTexture;
+
+        memcpy(tmpbuff, theTexture, memSize);
+
+        for (int i = 0; i < memSize; i++) {
+    }
+*/
+
     GLuint textureID = 0; //OpenGL texture ID to be returned
 
     glGenTextures(1, &textureID);
@@ -231,8 +245,10 @@ void draw()
     glLoadIdentity();
 
 
-    glTranslated(0.0,-0.5,1.0);
+    glTranslated(0.0,-0.0,1.0);
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glScaled(3.0,3.0,1.0);
     draw_meshes(meshvec);
 }
 
@@ -266,9 +282,9 @@ void reshape(int x, int y)
 
 void load_meshes(void)
 {
-    std::array<std::string, 2> fnames = {"./crayon.obj", "./crayon_box.obj"};
+    std::array<std::string, 2> fnames = {{"./xformed_crayon.obj", "./xformed_box.obj"}};
 
-    for(int i = 0; i < 1; ++i)
+    for(int i = 1; i < 2; ++i)
     {
         auto tm_uptr = cg::objparser::parse_file(fnames[i]);
         std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
@@ -321,7 +337,12 @@ void initGL(void)
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     load_meshes();
-    loadPPM("./textures/crayon_texture_file.ppm");
+    loadPPM("./textures/box_texture.ppm");
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+    //glScaled(1.0,-1.0,1.0);
+    glRotated(180.0, 0.0,0.0,1.0);
+   // glTranslated(1.0,1.0,0.0);
     checkGlError("initGL");
 }
 
