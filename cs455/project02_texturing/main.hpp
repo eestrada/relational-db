@@ -27,14 +27,14 @@
 //#include <X11/Xlib.h>
 //#include <X11/Xutil.h>
 
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
 
 
 /* Include my headers */
 
-#include "objparser.hpp"
+#include "cg/objparser.hpp"
 
 /* Global vars */
 
@@ -42,7 +42,7 @@
 namespace ede
 {
 const unsigned int BUFFER_MODE = GLUT_DOUBLE;
-const int XCONST = 1024, YCONST = 1024;
+const int XCONST = 768, YCONST = 768;
 
 typedef std::vector< std::shared_ptr<cg::trimesh> > mesh_ptr_vec;
 mesh_ptr_vec meshvec;
@@ -248,7 +248,7 @@ void draw()
     glTranslated(0.0,-0.0,1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glScaled(3.0,3.0,1.0);
+    glScaled(-3.0,3.0,1.0);
     draw_meshes(meshvec);
 }
 
@@ -284,7 +284,7 @@ void load_meshes(void)
 {
     std::array<std::string, 2> fnames = {{"./xformed_crayon.obj", "./xformed_box.obj"}};
 
-    for(int i = 1; i < 2; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         auto tm_uptr = cg::objparser::parse_file(fnames[i]);
         std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
@@ -337,11 +337,12 @@ void initGL(void)
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     load_meshes();
-    loadPPM("./textures/box_texture.ppm");
+    loadPPM("./textures/crayon_texture_file.ppm");
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
-    //glScaled(1.0,-1.0,1.0);
-    glRotated(180.0, 0.0,0.0,1.0);
+    glScaled(1.0,-1.0,1.0);
+    glTranslated(0.0,1.0,0.0);
+    //glRotated(180.0, 0.0,0.0,1.0);
    // glTranslated(1.0,1.0,0.0);
     checkGlError("initGL");
 }
