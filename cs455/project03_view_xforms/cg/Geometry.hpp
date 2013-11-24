@@ -1,14 +1,22 @@
-#if !defined(TRIMESH_HPP)
-#define TRIMESH_HPP
+#if !defined(GEOMETRY_HPP)
+#define GEOMETRY_HPP
 
 #include <ostream>
 #include <vector>
 
 #include "vector3.hpp"
 #include "hvector.hpp"
+#include "Matrix4x4.hpp"
 
 namespace cg
 {
+
+struct Geometry
+{
+    virtual void draw(const Mat4x4 &mat) = 0;
+};
+
+
 struct triangle
 {
     int pos[3];
@@ -16,12 +24,17 @@ struct triangle
     int tex[3];
 };
 
-struct trimesh
+struct trimesh : public Geometry
 {
     std::vector<point> pts;
     std::vector<normal> nmls;
     std::vector<texcoords> uvs;
     std::vector<triangle> tris;
+
+    virtual void draw(const Mat4x4 &mat)
+    {
+        return;
+    }
 };
 
 } //end namespace
@@ -65,4 +78,8 @@ inline std::ostream & operator<<(std::ostream &out, const cg::trimesh &tm)
     return out;
 }
 
-#endif // end include guard
+
+
+#endif //finish include guard
+
+

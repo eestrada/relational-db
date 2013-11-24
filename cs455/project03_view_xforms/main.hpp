@@ -2,7 +2,6 @@
 #define MAIN_HPP
 
 /* Include C++ standard headers */
-#include "exceptions.hpp"
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
@@ -34,7 +33,9 @@
 
 /* Include my headers */
 
+#include "exceptions.hpp"
 #include "cg/objparser.hpp"
+#include "cg/image.hpp"
 
 /* Global vars */
 
@@ -282,7 +283,7 @@ void reshape(int x, int y)
 
 void load_meshes(void)
 {
-    std::array<std::string, 2> fnames = {{"./xformed_crayon.obj", "./xformed_box.obj"}};
+    std::array<std::string, 2> fnames = {{"./geo/ParkingLot.obj", "./xformed_box.obj"}};
 
     for(int i = 0; i < 1; ++i)
     {
@@ -337,7 +338,7 @@ void initGL(void)
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     load_meshes();
-    loadPPM("./textures/crayon_texture_file.ppm");
+    loadPPM("./textures/ParkingLot.ppm");
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
     glScaled(1.0,-1.0,1.0);

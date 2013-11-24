@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include "hvector.hpp"
+#include "image.hpp"
 
 namespace cg
 {
