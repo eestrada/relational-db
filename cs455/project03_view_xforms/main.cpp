@@ -2,6 +2,14 @@
 
 #include "main.hpp"
 
+void flush_all(void)
+{
+    std::cout.flush();
+    std::clog.flush();
+    std::cerr.flush();
+}
+
+
 int main(int argc, char **argv)
 {
     int retval = 0;
@@ -10,7 +18,7 @@ int main(int argc, char **argv)
     {
         retval = ede::main(argc, argv);
     }
-    catch(system_exit &e)
+    catch(const err::system_exit &e)
     {
         if (e.code() != 0)
         {
@@ -18,9 +26,15 @@ int main(int argc, char **argv)
         }
         retval = e.code();
     }
-    catch(std::exception &e)
+    catch(const err::exception &e)
     {
         std::cerr << "There was an unexpected exit due to the following exception: ";
+        std::cerr << e.what() << std::endl;
+        retval = 1;
+    }
+    catch(const std::exception &e)
+    {
+        std::cerr << "There was an unexpected exit due to the following standard exception: ";
         std::cerr << e.what() << std::endl;
         retval = 1;
     }
@@ -30,6 +44,7 @@ int main(int argc, char **argv)
         retval = 2;
     }
 
+    flush_all();
     return retval;
 
 }

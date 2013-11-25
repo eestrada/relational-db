@@ -64,10 +64,10 @@ struct colorRGB : public vector
         return this->to_hvector(1.0);
     }
 
-    operator colorRGBA() const
+    operator image::colorRGBA() const
     {
 
-        colorRGBA clr;
+        image::colorRGBA clr;
 
         clr.x = this->x;
         clr.y = this->y;

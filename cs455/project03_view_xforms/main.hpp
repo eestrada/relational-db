@@ -9,15 +9,12 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <locale>
 
-// TODO: Possibly place X11 and GL in namespaces. This should help distinguish what 
-// functions are coming from where (most are clear, but some are pretty 
-// ambiguous).
-
-#include <stdio.h>
-#include <string.h>
-#include <malloc.h>
-#include <unistd.h>
+/* Include C standard headers */
+#include <cstdio>
+#include <cstring>
+//#include <unistd.h>
 //#include <GL/glut.h>
 //#include <glut.h>
 //#include "texture.h"
@@ -33,9 +30,10 @@
 
 /* Include my headers */
 
-#include "exceptions.hpp"
+#include "utils/exceptions.hpp"
 #include "cg/objparser.hpp"
 #include "cg/image.hpp"
+#include "utils/system.hpp"
 
 /* Global vars */
 
@@ -89,92 +87,12 @@ std::string load_file_as_str(const std::string &fname)
         return fileData.str();
 }
 
-void test_obj_parser()
+
+GLuint loadGLTexture(const char *filename)
 {
-    //std::istringstream strm(load_file_as_str("test.obj"));
+    cg::image::bitmap image = cg::image::loadPPM(filename);
 
-    //auto tm = cg::objparser::parse(strm);
-
-    auto tm = cg::objparser::parse_file("test.obj");
-
-    std::cout << *tm;
-}
-
-
-////////////////////////////////////////////////////////////
-// Load OpenGL textures from binary ppm files
-////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////
-// FUNCTION LoadPPM(char *)
-// Load a binary ppm file into an OpenGL texture and return the OpenGL texture reference ID
-////////////////////////////////////////////////////////////
-
-GLuint loadPPM(const char *filename) {
-
-    FILE *inFile; //File pointer
-	char buffer[100]; //Input buffer
-    GLubyte *theTexture; //Texture buffer pointer
-	unsigned char c; //Input character
-	int width, height, maxVal, pixelSize; //Image characteristics from ppm file
-
-
-	//Try to open the file for reading
-	if( (inFile = fopen(filename, "rb")) == NULL) {
-		fprintf (stderr, "cannot open %s\n", filename);
-		exit(-1);
-	}
-
-	//Read file type identifier (magic number)
-	fgets(buffer, sizeof(buffer), inFile);
-	if ((buffer[0] != 'P') || (buffer[1] != '6')) {
-		fprintf (stderr, "not a binary ppm file %s\n", filename);
-		exit(-1);
-    }
-
-	if(buffer[2] == 'A')
-		pixelSize = 4;
-	else
-		pixelSize = 3;
-
-	//Read image size
-	do fgets(buffer, sizeof (buffer), inFile);
-	while (buffer[0] == '#');
-	sscanf (buffer, "%d %d", &width, &height);
-
-	//Read maximum pixel value (usually 255)
-	do fgets (buffer, sizeof (buffer), inFile);
-	while (buffer[0] == '#');
-	sscanf (buffer, "%d", &maxVal);
-
-	//Allocate RGBA texture buffer
-	int memSize = width * height * 4 * sizeof(GLubyte);
-	theTexture = (GLubyte *)malloc(memSize);
-
-	// read RGB data and set alpha value
-	for (int i = 0; i < memSize; i++) {
-		if ((i % 4) < 3 || pixelSize == 4) {
-			c = fgetc(inFile);
-			theTexture[i]=(GLubyte) c;
-        }
-		else theTexture[i] = (GLubyte) 255; //Set alpha to opaque
-    }
-    fclose(inFile);
-
-/*
-    bool flip = true;
-    if(flip)
-    {
-        uint32_t *tmpbuff = (uint32_t *)malloc(memSize);
-        uint32_t *textureCast = (uint32_t *)theTexture;
-
-        memcpy(tmpbuff, theTexture, memSize);
-
-        for (int i = 0; i < memSize; i++) {
-    }
-*/
-
+    // Bind to gl state machine
     GLuint textureID = 0; //OpenGL texture ID to be returned
 
     glGenTextures(1, &textureID);
@@ -186,21 +104,23 @@ GLuint loadPPM(const char *filename) {
     //Set texture parameters
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	//Ignore surface color
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     //Define the texture
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLuint)width, (GLuint)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, theTexture);
-
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.raw());
     //Create mipmaps
-    //gluBuild2DMipmaps(GL_TEXTURE_2D, 4, (GLuint)width, (GLuint)height, GL_RGBA, GL_UNSIGNED_BYTE, theTexture);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, image.width, image.height, GL_RGBA, GL_UNSIGNED_BYTE, image.raw());
 
-    free(theTexture);
-    return(textureID);
+    // PPMs come in upside down, so correct this.
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+    glScaled(1.0,-1.0,1.0);
+    glTranslated(0.0,1.0,0.0);
+
+    return textureID;
 }
 
 void draw_meshes(const mesh_ptr_vec &mv)
@@ -242,15 +162,25 @@ void draw_meshes(const mesh_ptr_vec &mv)
 
 void draw()
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
 
 
-    glTranslated(0.0,-0.0,1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glScaled(-3.0,3.0,1.0);
+    //glTranslated(0.0,-0.0,1.0);
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
+    //glScaled(-3.0,3.0,1.0);
     draw_meshes(meshvec);
+
+    std::unique_ptr<double[]> d(new double[4]);
+
+    glGetClipPlane(GL_CLIP_PLANE0, d.get());
+
+    for(int i = 0; i < 4; ++i)
+    {
+        std::clog << d[i] << " ";
+    }
+    std::clog << std::endl;
 }
 
 void display(void)
@@ -271,7 +201,7 @@ void display(void)
 
 void idle(void)
 {
-    usleep(100000); // SLEEP!
+    sleep(1); // SLEEP!
     checkGlError ("idle");
 }
 
@@ -283,7 +213,7 @@ void reshape(int x, int y)
 
 void load_meshes(void)
 {
-    std::array<std::string, 2> fnames = {{"./geo/ParkingLot.obj", "./xformed_box.obj"}};
+    std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./xformed_box.obj"}};
 
     for(int i = 0; i < 1; ++i)
     {
@@ -338,13 +268,12 @@ void initGL(void)
     //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     load_meshes();
-    loadPPM("./textures/ParkingLot.ppm");
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-    glScaled(1.0,-1.0,1.0);
-    glTranslated(0.0,1.0,0.0);
+    loadGLTexture("./textures/ParkingLot.ppm");
     //glRotated(180.0, 0.0,0.0,1.0);
    // glTranslated(1.0,1.0,0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1.0,1.0,1.0,-1.0,0.01,100000);
     checkGlError("initGL");
 }
 
@@ -354,7 +283,7 @@ void keyboard(unsigned char key, int x, int y)
     {
         case 27:                    // if ASCII escape is hit
             std::cerr << "Escape key pressed. Exiting program." << std::endl;
-            throw system_exit();    // then exit the program
+            throw err::system_exit();    // then exit the program
             break;
         default:                    // Otherwise do nothing
             break;
@@ -386,6 +315,15 @@ void special(int key, int x, int y)
 // about the function being named main.
 int main(int argc, char **argv)
 {
+    // Set locale US English, UTF-8.
+    std::locale::global(std::locale("en_US.utf8"));
+    // Force the only pre-existing iostream objects to follow suit. All new 
+    // iostream objects will simply inherit the global locale at instantiation.
+    std::cout.imbue(std::locale());
+    std::cerr.imbue(std::locale());
+    std::clog.imbue(std::locale());
+    std::cin.imbue(std::locale());
+
     glutInit(&argc, argv);
     glutInitDisplayMode (BUFFER_MODE | GLUT_RGB);
 
