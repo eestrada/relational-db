@@ -1,5 +1,5 @@
 CXX ?= c++
-CXXFLAGS = -Wall -pedantic -std=c++11
+CXXFLAGS = -Wall -pedantic -std=c++0x
 # CXXFLAGS = -Wall -pedantic -ansi # uncomment if C++11 is not supported
 BIN = RUN_ME.bin
 

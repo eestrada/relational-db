@@ -24,8 +24,8 @@
 //#include <X11/Xutil.h>
 
 #include <GL/glut.h>
-//#include <GL/gl.h>
-//#include <GL/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 
 /* Include my headers */
@@ -201,7 +201,7 @@ void display(void)
 
 void idle(void)
 {
-    sleep(1); // SLEEP!
+    usleep(1000); // SLEEP!
     checkGlError ("idle");
 }
 
@@ -213,7 +213,7 @@ void reshape(int x, int y)
 
 void load_meshes(void)
 {
-    std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./xformed_box.obj"}};
+    std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./geo/xformed_box.obj"}};
 
     for(int i = 0; i < 1; ++i)
     {
@@ -273,7 +273,8 @@ void initGL(void)
    // glTranslated(1.0,1.0,0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-1.0,1.0,1.0,-1.0,0.01,100000);
+    //glOrtho(-1.0,1.0,1.0,-1.0,0.01,100000);
+    gluPerspective(45,1.0,0.01,100000);
     checkGlError("initGL");
 }
 
