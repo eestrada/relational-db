@@ -40,21 +40,21 @@
 
 namespace ede
 {
-const unsigned int BUFFER_MODE = GLUT_DOUBLE;
-const int XCONST = 768, YCONST = 768;
+int draw_width = 1280;
+int draw_height = 720;
 
 typedef std::vector< std::shared_ptr<cg::trimesh> > mesh_ptr_vec;
 mesh_ptr_vec meshvec;
 
 std::vector<cg::trimesh> meshlist;
 
-/* report GL errors, if any, to stderr */
+/* report GL errors, if any, to std::cerr */
 //void checkError(const char *functionName)
 void checkGlError(const std::string &functionName)
 {
     GLenum error;
     while (( error = glGetError() ) != GL_NO_ERROR) {
-        std::cerr << "Run function: " << functionName << "\n" ;
+        std::cerr << "When running function: " << functionName << "\n" ;
         std::cerr << "Detected GL error 0x";
         std::cerr << std::hex << error << std::dec << "\n";
         //fprintf (stderr, "GL error 0x%X detected in %s\n", error, functionName);
@@ -160,7 +160,7 @@ void draw_meshes(const mesh_ptr_vec &mv)
     }
 }
 
-void draw()
+void draw(void)
 {
     //glMatrixMode(GL_PROJECTION);
     //glLoadIdentity();
@@ -174,6 +174,7 @@ void draw()
 
     std::unique_ptr<double[]> d(new double[4]);
 
+    /*
     glGetClipPlane(GL_CLIP_PLANE0, d.get());
 
     for(int i = 0; i < 4; ++i)
@@ -181,6 +182,7 @@ void draw()
         std::clog << d[i] << " ";
     }
     std::clog << std::endl;
+    */
 }
 
 void display(void)
@@ -190,11 +192,12 @@ void display(void)
     //glClearColor ( 1, 0.5, 0.0, 1 );
     glClearColor ( 0.0, 0.0, 0.0, 1 );
     glClear ( GL_COLOR_BUFFER_BIT );
+    glLoadIdentity();
+    glViewport(0,0, draw_width, draw_height);
     draw ();
     glFlush ();
 
-    if(BUFFER_MODE == GLUT_DOUBLE)
-        glutSwapBuffers ();
+    glutSwapBuffers ();
 
     checkGlError ("display");
 }
@@ -207,7 +210,17 @@ void idle(void)
 
 void reshape(int x, int y)
 {
-    glutReshapeWindow(XCONST, YCONST);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45,(double(x)/double(y)),0.1,100000);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glutPostRedisplay();
+    glFlush();
+
+    draw_width = x;
+    draw_height = y;
+
     checkGlError ("reshape");
 }
 
@@ -312,29 +325,52 @@ void special(int key, int x, int y)
     }
 }
 
-// Since we are inside a namespace the compiler/linker will not complain
-// about the function being named main.
-int main(int argc, char **argv)
+void flush_all(void)
 {
-    // Set locale US English, UTF-8.
-    std::locale::global(std::locale("en_US.utf8"));
+    std::cout.flush();
+    std::clog.flush();
+    std::cerr.flush();
+}
+
+void set_locale(void)
+{
+    // Attempt to force locale to US English, UTF-8.
+    try
+    {
+        std::locale::global(std::locale("en_US.utf8"));
+    }
+    catch (std::runtime_error)
+    {
+        throw err::system_exit("The required locale is not installed. "
+                                 "Please install: en_US.utf8", 8);
+    }
+
+    // Success!
     // Force the only pre-existing iostream objects to follow suit. All new 
     // iostream objects will simply inherit the global locale at instantiation.
     std::cout.imbue(std::locale());
     std::cerr.imbue(std::locale());
     std::clog.imbue(std::locale());
     std::cin.imbue(std::locale());
+}
+
+// Since we are inside a namespace the compiler/linker will not complain
+// about the function being named main.
+int main(int argc, char **argv)
+{
+    std::atexit(flush_all);
+    set_locale();
 
     glutInit(&argc, argv);
-    glutInitDisplayMode (BUFFER_MODE | GLUT_RGB);
+    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
 
     //glutInitContextVersion (3, 1);
     //glutInitContextFlags (GLUT_COMPATIBILITY_PROFILE | GLUT_DEBUG);
     //glutInitContextFlags (GLUT_FORWARD_COMPATIBLE | GLUT_CORE_PROFILE | GLUT_DEBUG);
 
-    glutInitWindowSize (XCONST, YCONST); 
+    glutInitWindowSize (draw_width, draw_height); 
     glutInitWindowPosition (0, 0);
-    glutCreateWindow ("OpenGL 2.1 context via FreeGLUT");
+    glutCreateWindow ("CS455 Viewport transforms");
     //int main_window_id = glutCreateWindow ("OpenGL 2.1 context via FreeGLUT");
 
     //std::cerr << "Main window ID: " << main_window_id << std::endl;
@@ -354,7 +390,7 @@ int main(int argc, char **argv)
 
     // Start GLUT main loop
     glutMainLoop();
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 }

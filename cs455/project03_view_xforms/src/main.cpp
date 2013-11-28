@@ -1,14 +1,4 @@
-/* Include my headers */
-
 #include "main.hpp"
-
-void flush_all(void)
-{
-    std::cout.flush();
-    std::clog.flush();
-    std::cerr.flush();
-}
-
 
 int main(int argc, char **argv)
 {
@@ -44,8 +34,6 @@ int main(int argc, char **argv)
         retval = 2;
     }
 
-    flush_all();
     return retval;
-
 }
 
