@@ -1,23 +1,47 @@
+BIN = ./test.bin
+INPUT = cat test_input.txt
+#ARGS = input.txt
+
+SRCDIR = ./src
+INCDIR = ./inc
+OBJDIR = ./obj
+OBJS = obj/main.o 
+
+SRCS = $(wildcard $(SRCDIR)/*.cpp)
+INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/*.hpp)
+
+OGLLIBS ?= -lglut -lGLU -IGLU
+INCLUDES= -I$(INCDIR)/
 CXX ?= c++
-CXXFLAGS = -Wall -pedantic -std=c++0x
-# CXXFLAGS = -Wall -pedantic -ansi # uncomment if C++11 is not supported
-BIN = RUN_ME.bin
+CXXFLAGS = -std=c++0x -g -Wall -pedantic $(INCLUDES)
 
-.PHONY: run compile gl3 glut3 glew3
+.PHONY : run bin test clean memcheck
 
-run: compile
-	./$(BIN)
-	rm ./$(BIN)
+run : $(BIN)
+	@ echo "Testing executable"
+	$(BIN) $(ARGS)
 
-compile:
-	$(CXX) $(CXXFLAGS) -o $(BIN) main.cpp -lglut -lGLU -lGL -lX11
+bin : $(BIN)
 
-gl3:
-	$(CXX) $(CXXFLAGS) -o gl3.bin gl3.cpp -lGL -lX11
+test : clean memcheck
 
-glut3:
-	$(CXX) $(CXXFLAGS) -o glut3.bin glut3.cpp -lGL -lX11 -lglut
-	
-glew3:
-	$(CXX) $(CXXFLAGS) -o glew3.bin glew3.cpp -lGL -lX11 -lGLEW -lglut
-	
+clean :
+	@ echo "Removing generated files"
+	rm -f $(BIN)
+	rm -rf $(OBJDIR)
+
+memcheck : $(BIN) 
+	@ echo "Running valgrind to check for memory leaks"
+	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
+	--show-reachable=yes $(BIN) $(ARGS)
+	@ echo
+
+$(BIN) : $(OBJS) $(INCS)
+	@ echo "Compiling binary"
+	$(CXX) -o $(BIN) $(OBJS) $(INCLUDES) $(OGLLIBS)
+	@ echo
+
+obj/%.o : src/%.cpp $(INCS)
+	@- mkdir -p $(OBJDIR)
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
+	@ echo
