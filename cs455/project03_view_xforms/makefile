@@ -5,7 +5,7 @@ INPUT = cat test_input.txt
 SRCDIR = ./src
 INCDIR = ./inc
 OBJDIR = ./obj
-OBJS = obj/main.o 
+OBJS = $(OBJDIR)/main.o $(OBJDIR)/Geometry.o $(OBJDIR)/image.o
 
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/*.hpp)

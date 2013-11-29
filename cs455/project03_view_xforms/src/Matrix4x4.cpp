@@ -2,7 +2,6 @@
 #define MATRIX4X4_HPP
 
 #include <stdexcept>
-#include "utils/exceptions.hpp"
 
 namespace cg
 {

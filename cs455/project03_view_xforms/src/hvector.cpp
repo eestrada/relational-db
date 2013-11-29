@@ -6,7 +6,7 @@
 #include <valarray>
 #include <stdexcept>
 
-#include "cg_utils.hpp"
+#include "utils.hpp"
 
 namespace cg
 {

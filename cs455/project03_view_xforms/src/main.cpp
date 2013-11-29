@@ -20,18 +20,18 @@ int main(int argc, char **argv)
     {
         std::cerr << "There was an unexpected exit due to the following exception: ";
         std::cerr << e.what() << std::endl;
-        retval = 1;
+        retval = 3;
     }
     catch(const std::exception &e)
     {
         std::cerr << "There was an unexpected exit due to the following standard exception: ";
         std::cerr << e.what() << std::endl;
-        retval = 1;
+        retval = 2;
     }
     catch(...)
     {
         std::cerr << "An uncatchable exception was thrown. Abnormal exit." << std::endl;
-        retval = 2;
+        retval = 1;
     }
 
     return retval;

@@ -92,7 +92,7 @@ typedef point point3;
 } //end namespace
 
 
-inline cg::vector hvector_to_vector(const cg::hvector &hv)
+cg::vector hvector_to_vector(const cg::hvector &hv)
 {
     cg::vector v;
 
