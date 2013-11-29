@@ -17,7 +17,6 @@
 //#include <unistd.h>
 //#include <GL/glut.h>
 //#include <glut.h>
-//#include "texture.h"
 
 //#include <unistd.h>
 //#include <X11/Xlib.h>
@@ -30,18 +29,25 @@
 
 /* Include my headers */
 
+//#include "texture.h"
 #include "utils/exceptions.hpp"
 #include "cg/objparser.hpp"
 #include "cg/image.hpp"
+#include "cg/Object.hpp"
 #include "utils/system.hpp"
+#include "utils/ASCII_codes.h"
 
 /* Global vars */
 
+/* Macros */
 
 namespace ede
 {
 int draw_width = 1280;
 int draw_height = 720;
+
+bool up_pressed = false, down_pressed = false, left_pressed = false, right_pressed = false,
+    W_pressed = false, A_pressed = false, S_pressed = false, D_pressed = false;
 
 typedef std::vector< std::shared_ptr<cg::trimesh> > mesh_ptr_vec;
 mesh_ptr_vec meshvec;
@@ -278,7 +284,7 @@ void initGL(void)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glMatrixMode(GL_MODELVIEW);
-    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     load_meshes();
     loadGLTexture("./textures/ParkingLot.ppm");
@@ -295,9 +301,25 @@ void keyboard(unsigned char key, int x, int y)
 {
     switch ( key )
     {
-        case 27:                    // if ASCII escape is hit
+        case ASCII_ESCAPE:
             std::cerr << "Escape key pressed. Exiting program." << std::endl;
             throw err::system_exit();    // then exit the program
+            break;
+        case 'w':
+        case 'W':
+            std::cerr << "'W' key pressed." << std::endl;
+            break;
+        case 'a':
+        case 'A':
+            std::cerr << "'A' key pressed." << std::endl;
+            break;
+        case 's':
+        case 'S':
+            std::cerr << "'S' key pressed." << std::endl;
+            break;
+        case 'd':
+        case 'D':
+            std::cerr << "'D' key pressed." << std::endl;
             break;
         default:                    // Otherwise do nothing
             break;

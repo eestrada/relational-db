@@ -8,7 +8,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdio>
-#include "trimesh.hpp"
+#include "Geometry.hpp"
 
 namespace cg
 {

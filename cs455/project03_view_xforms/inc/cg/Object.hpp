@@ -11,14 +11,26 @@ namespace scene
 class object
 {
 public: // Functions
-    object() : transform(1.0f), parent(){}
-    cg::Mat4x4 getFinalXform();
+    object() : transform(1.0f), parent(NULL){}
+    cg::Mat4x4 getFinalXform()
+    {
+        cg::Mat4x4 retval = transform;
+        if (parent != NULL)
+        {
+            cg::Mat4x4 pxform = parent->getFinalXform();
+            return retval * pxform;
+        }
+        else
+        {
+            return transform;
+        }
+    }
 
     virtual void draw() = 0;
 
 public: // Variables
-    std::shared_ptr<object> parent;
     cg::Mat4x4 transform;
+    object *parent;
 
 protected: // Functions
 

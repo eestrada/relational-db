@@ -10,7 +10,7 @@ OBJS = obj/main.o
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/*.hpp)
 
-OGLLIBS ?= -lglut -lGLU -IGLU
+OGLLIBS ?= -lglut -lGLU -lGL 
 INCLUDES= -I$(INCDIR)/
 CXX ?= c++
 CXXFLAGS = -std=c++0x -g -Wall -pedantic $(INCLUDES)

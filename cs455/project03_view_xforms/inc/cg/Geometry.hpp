@@ -33,6 +33,7 @@ struct trimesh : public Geometry
 
     virtual void draw(const Mat4x4 &mat)
     {
+        throw false;
         return;
     }
 };
