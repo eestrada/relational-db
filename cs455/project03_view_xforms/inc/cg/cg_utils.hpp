@@ -2,12 +2,15 @@
 #define UTILS_HPP
 
 #include <stdexcept>
+#include <cmath>
 
 namespace cg
 {
 
 namespace utils
 {
+    const static long double PI = std::acos(-1.0L);
+
     template <typename T>
     T clamp(T value, T max, T min)
     {
@@ -34,6 +37,18 @@ namespace utils
 
         bias = clamp((value - oldmin)/(oldmax - oldmin), 0.0, 1.0);
         return mix(newmin, newmax, bias);
+    }
+
+    template <typename T>
+    T radians(T degrees)
+    {
+        return degrees * (PI/180.0L);
+    }
+
+    template <typename T>
+    T degrees(T radians)
+    {
+        return radians * (180.0L/PI);
     }
 } // end namespace utils
 

@@ -1,36 +1,26 @@
 #if !defined(OBJECT_HPP)
 #define OBJECT_HPP
 #include <memory>
+#include <GL/gl.h>
 
-#include "Matrix4x4.hpp"
+#include "Matrix.hpp"
 #include "Geometry.hpp"
 
-namespace scene
+namespace obj
 {
 
 class object
 {
 public: // Functions
-    object() : transform(1.0f), parent(NULL){}
-    cg::Mat4x4 getFinalXform()
-    {
-        cg::Mat4x4 retval = transform;
-        if (parent != NULL)
-        {
-            cg::Mat4x4 pxform = parent->getFinalXform();
-            return retval * pxform;
-        }
-        else
-        {
-            return transform;
-        }
-    }
+    cg::Mat4x4 getFinalXform() const;
 
-    virtual void draw() = 0;
+    virtual void set_geo(std::shared_ptr<cg::Geometry> g_in);
+    virtual void set_texid(GLuint texid);
+    virtual void draw();
 
 public: // Variables
     cg::Mat4x4 transform;
-    object *parent;
+    std::shared_ptr<object> parent;
 
 protected: // Functions
 
@@ -41,26 +31,26 @@ protected: // Variables
 class geo : public object
 {
 public:
+    virtual void set_geo(std::shared_ptr<cg::Geometry> g_in);
+    virtual void set_texid(GLuint texid);
+    virtual void draw();
+
     std::shared_ptr<cg::Geometry> g;
-    void draw();
-
-protected:
-
+    GLuint texid;
 };
 
 class null : public object
 {
-    virtual void draw(){}
 };
 
 class camera : public object
 {
-    virtual void draw(){}
+    virtual void draw();
 };
 
 class light : public object
 {
-    virtual void draw(){}
+    virtual void draw();
 };
 
 }

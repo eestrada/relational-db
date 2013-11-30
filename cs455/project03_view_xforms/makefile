@@ -5,10 +5,10 @@ INPUT = cat test_input.txt
 SRCDIR = ./src
 INCDIR = ./inc
 OBJDIR = ./obj
-OBJS = $(OBJDIR)/main.o $(OBJDIR)/Geometry.o $(OBJDIR)/image.o
+OBJS = $(OBJDIR)/main.o $(OBJDIR)/Geometry.o $(OBJDIR)/image.o $(OBJDIR)/vector3.o $(OBJDIR)/hvector.o $(OBJDIR)/Matrix.o $(OBJDIR)/Object.o $(OBJDIR)/objparser.o
 
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
-INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/*.hpp)
+INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/cg/*.h*) $(wildcard $(INCDIR)/utils/*.h*)
 
 OGLLIBS ?= -lglut -lGLU -lGL 
 INCLUDES= -I$(INCDIR)/

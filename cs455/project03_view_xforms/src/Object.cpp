@@ -1,68 +1,53 @@
-#if !defined(OBJECT_HPP)
-#define OBJECT_HPP
-#include <memory>
+#include <GL/gl.h>
+#include "cg/Object.hpp"
 
-#include "Matrix4x4.hpp"
-#include "Geometry.hpp"
-
-namespace scene
+namespace obj
 {
 
-class object
+cg::Mat4x4 object::getFinalXform() const
 {
-public: // Functions
-    object() : transform(1.0f), parent(NULL){}
-    cg::Mat4x4 getFinalXform()
+    if (parent != NULL)
     {
-        cg::Mat4x4 retval = transform;
-        if (parent != NULL)
-        {
-            cg::Mat4x4 pxform = parent->getFinalXform();
-            return retval * pxform;
-        }
-        else
-        {
-            return transform;
-        }
+        cg::Mat4x4 pxform = parent->getFinalXform();
+        return transform * pxform;
     }
-
-    virtual void draw() = 0;
-
-public: // Variables
-    cg::Mat4x4 transform;
-    object *parent;
-
-protected: // Functions
-
-protected: // Variables
-
-};
-
-class geo : public object
-{
-public:
-    std::shared_ptr<cg::Geometry> g;
-    void draw();
-
-protected:
-
-};
-
-class null : public object
-{
-    virtual void draw(){}
-};
-
-class camera : public object
-{
-    virtual void draw(){}
-};
-
-class light : public object
-{
-    virtual void draw(){}
-};
-
+    else
+    {
+        return transform;
+    }
 }
-#endif //finish include guard
+
+void object::set_texid(GLuint texid){}
+
+void object::set_geo(std::shared_ptr<cg::Geometry> g_in){}
+
+void object::draw()
+{
+}
+
+void geo::set_geo(std::shared_ptr<cg::Geometry> g_in)
+{
+    this->g = g_in;
+}
+
+void geo::set_texid(GLuint texid)
+{
+    this->texid = texid;
+}
+
+void geo::draw()
+{
+    glBindTexture(GL_TEXTURE_2D, this->texid);
+    this->g->draw(this->getFinalXform());
+}
+
+void camera::draw()
+{
+}
+
+void light::draw()
+{
+}
+
+} // end namespace obj
 

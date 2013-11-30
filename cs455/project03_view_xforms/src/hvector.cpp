@@ -1,31 +1,50 @@
-#if !defined(HVECTOR_HPP)
-#define HVECTOR_HPP
-
 #include <ostream>
-#include <vector>
-#include <valarray>
-#include <stdexcept>
-
-#include "utils.hpp"
+#include "cg/hvector.hpp"
 
 namespace cg
 {
 
-struct hvector
+hvector::hvector() : x(0.0),y(0.0),z(0.0),w(0.0) {}
+
+hvector::hvector(double v) : x(v),y(v),z(v),w(v) {}
+
+hvector::hvector(const vector3 &other) : x(other.x),y(other.y),z(other.z),w(0.0) {}
+
+hvector::hvector(const vector3 &other, double w_in) : x(other.x),y(other.y),z(other.z),w(w_in) {}
+
+hvector::hvector(const point3 &other) : x(other.x),y(other.y),z(other.z),w(1.0) {}
+
+hvector::hvector(const hvector &other) : x(other.x),y(other.y),z(other.z),w(other.w) {}
+
+hvector::operator vector3()
 {
-    double x, y, z, w;
+    vector3 v;
+    v.x = this->x;
+    v.y = this->y;
+    v.z = this->z;
 
-    hvector dot(const hvector &other);
+    return v;
+}
 
-    hvector normalized();
-};
+hvector::operator point3()
+{
+    point3 p(vec_to_pt(this->operator vector3()));
+
+    if(this->w != 0.0)
+    {
+        p.x *= this->w;
+        p.y *= this->w;
+        p.z *= this->w;
+    }
+
+    return p;
+}
 
 } //end namespace
 
-inline std::ostream & operator<<(std::ostream &out, const cg::hvector &hv)
+std::ostream & operator<<(std::ostream &out, const cg::hvector &hv)
 {
     out << "hvector" << " " << hv.x << " " << hv.y << " " << hv.z << " " << hv.w;
     return out;
 }
 
-#endif // end include guard

@@ -6,7 +6,7 @@
 
 #include "vector3.hpp"
 #include "hvector.hpp"
-#include "Matrix4x4.hpp"
+#include "Matrix.hpp"
 
 namespace cg
 {
@@ -26,9 +26,9 @@ struct triangle
 
 struct trimesh : public Geometry
 {
-    std::vector<point> pts;
+    std::vector<point3> pts;
     std::vector<normal> nmls;
-    std::vector<texcoords> uvs;
+    std::vector<uvw> uvs;
     std::vector<triangle> tris;
 
     virtual void draw(const Mat4x4 &mat);

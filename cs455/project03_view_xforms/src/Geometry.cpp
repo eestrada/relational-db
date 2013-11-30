@@ -1,11 +1,47 @@
+#include <GL/gl.h>
+#include <iostream>
 #include "cg/Geometry.hpp"
+#include "utils/exceptions.hpp"
 
 namespace cg
 {
 
 void trimesh::draw(const Mat4x4 &mat)
 {
-    throw false;
+    //throw err::exception("Draw function not yet implemented.");
+
+    glBegin(GL_TRIANGLES);
+    for(auto tcurrent = this->tris.cbegin(); tcurrent != this->tris.cend(); ++tcurrent)
+    {
+        // first texture coordinate position
+        glTexCoord2f( this->uvs.at(tcurrent->tex[0]).u(),
+                      this->uvs.at(tcurrent->tex[0]).v());
+        // first vertex position
+        auto pt = this->pts.at(tcurrent->pos[0]);
+        glVertex3f( this->pts.at(tcurrent->pos[0]).x,
+                    this->pts.at(tcurrent->pos[0]).y,
+                    this->pts.at(tcurrent->pos[0]).z );
+
+        // second texture coordinate position
+        glTexCoord2f( this->uvs.at(tcurrent->tex[1]).u(),
+                      this->uvs.at(tcurrent->tex[1]).v());
+        // second vertex position
+        pt = this->pts.at(tcurrent->pos[1]);
+        glVertex3f( this->pts.at(tcurrent->pos[1]).x,
+                    this->pts.at(tcurrent->pos[1]).y,
+                    this->pts.at(tcurrent->pos[1]).z );
+
+        // third texture coordinate position
+        glTexCoord2f( this->uvs.at(tcurrent->tex[2]).u(),
+                      this->uvs.at(tcurrent->tex[2]).v());
+        // third vertex position
+        pt = this->pts.at(tcurrent->pos[2]);
+        glVertex3f( this->pts.at(tcurrent->pos[2]).x,
+                    this->pts.at(tcurrent->pos[2]).y,
+                    this->pts.at(tcurrent->pos[2]).z );
+    }
+    glEnd();
+
     return;
 }
 

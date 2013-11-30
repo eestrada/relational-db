@@ -34,6 +34,7 @@
 #include "cg/objparser.hpp"
 #include "cg/image.hpp"
 #include "cg/Object.hpp"
+#include "cg/cg_utils.hpp"
 #include "utils/system.hpp"
 #include "utils/ASCII_codes.h"
 
@@ -54,6 +55,8 @@ mesh_ptr_vec meshvec;
 
 std::vector<cg::trimesh> meshlist;
 
+std::vector< std::shared_ptr<obj::object> > scene;
+
 /* report GL errors, if any, to std::cerr */
 //void checkError(const char *functionName)
 void checkGlError(const std::string &functionName)
@@ -68,31 +71,6 @@ void checkGlError(const std::string &functionName)
     std::cerr << std::flush;
 }
 
-std::string load_file_as_str(const std::string &fname)
-{
-        std::ifstream file;
-        file.exceptions(std::ifstream::failbit);
-
-        try
-        {
-            file.open(fname.c_str());
-        }
-        catch(std::ios_base::failure &e)
-        {
-            std::cerr << "When opening file \"" << fname;
-            std::cerr << "\" the following exception occured: ";
-            std::cerr << e.what() << std::endl;
-
-            throw e;
-        }
- 
-        std::stringstream fileData;
-        fileData << file.rdbuf();
-        file.close();
- 
-        return fileData.str();
-}
-
 
 GLuint loadGLTexture(const char *filename)
 {
@@ -103,7 +81,7 @@ GLuint loadGLTexture(const char *filename)
 
     glGenTextures(1, &textureID);
 
-    std::cerr << "Generated texture ID: " << textureID << std::endl;
+    //std::cerr << "Generated texture ID: " << textureID << std::endl;
 
     glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -168,34 +146,17 @@ void draw_meshes(const mesh_ptr_vec &mv)
 
 void draw(void)
 {
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-
-
-    //glTranslated(0.0,-0.0,1.0);
-    //glMatrixMode(GL_MODELVIEW);
-    //glLoadIdentity();
-    //glScaled(-3.0,3.0,1.0);
-    draw_meshes(meshvec);
-
-    std::unique_ptr<double[]> d(new double[4]);
-
-    /*
-    glGetClipPlane(GL_CLIP_PLANE0, d.get());
-
-    for(int i = 0; i < 4; ++i)
+    for(auto iter = scene.cbegin(); iter != scene.cend(); ++iter)
     {
-        std::clog << d[i] << " ";
+        iter->get()->draw();
     }
-    std::clog << std::endl;
-    */
+    //draw_meshes(meshvec);
 }
 
 void display(void)
 {
     glClear (GL_COLOR_BUFFER_BIT);
 
-    //glClearColor ( 1, 0.5, 0.0, 1 );
     glClearColor ( 0.0, 0.0, 0.0, 1 );
     glClear ( GL_COLOR_BUFFER_BIT );
     glLoadIdentity();
@@ -232,6 +193,7 @@ void reshape(int x, int y)
 
 void load_meshes(void)
 {
+    /*
     std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./geo/xformed_box.obj"}};
 
     for(int i = 0; i < 1; ++i)
@@ -241,6 +203,64 @@ void load_meshes(void)
 
         meshvec.push_back(tm_shared);
     }
+    */
+
+    std::array<std::string, 3> fnames = {{"./geo/ParkingLot.obj", "./geo/car.obj", "./geo/tire.obj"}};
+    for(size_t i = 0; i < fnames.size(); ++i)
+    {
+        auto tm_uptr = cg::objparser::parse_file(fnames[i]);
+        std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
+
+        meshvec.push_back(tm_shared);
+    }
+
+    std::shared_ptr<obj::object> tmp;
+    GLuint texid = 0;
+    //parking lot
+    tmp.reset(new obj::geo());
+    tmp->set_geo(meshvec.at(0));
+    texid = loadGLTexture("./textures/ParkingLot.ppm");
+    tmp->set_texid(texid);
+    scene.push_back(tmp);
+
+    //car
+    tmp.reset(new obj::geo());
+    tmp->set_geo(meshvec.at(1));
+    texid = loadGLTexture("./textures/car.ppm");
+    tmp->set_texid(texid);
+    tmp->transform = cg::matrix::rotate_y(cg::utils::radians(60.0));
+    scene.push_back(tmp);
+
+    auto car_obj = tmp;
+
+    // TIRES
+    auto tire_geo = meshvec.at(2);
+    texid = loadGLTexture("./textures/tire.ppm");
+    //Tire, Front Left
+    tmp.reset(new obj::geo());
+    tmp->set_geo(tire_geo);
+    tmp->set_texid(texid);
+    tmp->parent = car_obj;
+    tmp->transform = cg::matrix::translate(3.3,4.4,5.5);
+    scene.push_back(tmp);
+    //Tire, Front Right
+    tmp.reset(new obj::geo());
+    tmp->set_geo(tire_geo);
+    tmp->set_texid(texid);
+    tmp->parent = car_obj;
+    scene.push_back(tmp);
+    //Tire, Back Left
+    tmp.reset(new obj::geo());
+    tmp->set_geo(tire_geo);
+    tmp->set_texid(texid);
+    tmp->parent = car_obj;
+    scene.push_back(tmp);
+    //Tire, Back Right
+    tmp.reset(new obj::geo());
+    tmp->set_geo(tire_geo);
+    tmp->set_texid(texid);
+    tmp->parent = car_obj;
+    scene.push_back(tmp);
 }
 
 void load_textures(void)

@@ -2,42 +2,26 @@
 #define VECTOR3_HPP
 
 #include <ostream>
-#include "hvector.hpp"
-#include "image.hpp"
 
 namespace cg
 {
 
 struct vector
 {
-public:
     double x, y, z;
 
-    operator hvector() const
-    {
-        return this->to_hvector(0.0);
-    }
-protected:
-    hvector to_hvector(double w) const
-    {
-        hvector hv;
+    vector();
+    vector(double v);
+    vector(const vector &other);
 
-        hv.x = this->x;
-        hv.y = this->y;
-        hv.z = this->z;
-        hv.w = w;
-
-        return hv;
-    }
+    double dot(const vector &other) const;
+    vector cross(const vector &other) const;
+    vector normalized() const;
 };
 
 
 struct point : public vector
 {
-    operator hvector() const
-    {
-        return this->to_hvector(1.0);
-    }
 };
 
 struct normal : public vector
@@ -46,80 +30,42 @@ struct normal : public vector
 
 struct texcoords : public vector
 {
-    const double & u() const {return x;}
-    double & u() {return x;}
+    const double & u() const;
+    double & u();
 
-    const double & v() const {return y;}
-    double & v() {return y;}
+    const double & v() const;
+    double & v();
 
-    const double & w() const {return z;}
-    double & w() {return z;}
+    const double & w() const;
+    double & w();
 
 };
 
 struct colorRGB : public vector
 {
-    operator hvector() const
-    {
-        return this->to_hvector(1.0);
-    }
+    const double & r() const;
+    double & r();
 
-    operator image::colorRGBA() const
-    {
+    const double & g() const;
+    double & g();
 
-        image::colorRGBA clr;
-
-        clr.x = this->x;
-        clr.y = this->y;
-        clr.z = this->z;
-        clr.w = 1.0;
-
-        return clr;
-    }
-
-    const double & r() const {return x;}
-    double & r() {return x;}
-
-    const double & g() const {return y;}
-    double & g() {return y;}
-
-    const double & b() const {return z;}
-    double & b() {return z;}
+    const double & b() const;
+    double & b();
 };
+
+point vec_to_pt(const vector &other);
+normal vec_to_nml(const vector &other);
 
 typedef vector vector3;
 typedef point point3;
+typedef texcoords uvw;
 } //end namespace
 
-
-inline cg::vector hvector_to_vector(const cg::hvector &hv)
-{
-    cg::vector v;
-
-    v.x = hv.x;
-    v.y = hv.y;
-    v.z = hv.z;
-
-    return v;
-}
-
 // Output convenience functions
-inline std::ostream & operator<<(std::ostream &out, const cg::point &p)
-{
-    out << "v" << " " << p.x << " " << p.y << " " << p.z;
-    return out;
-}
+std::ostream & operator<<(std::ostream &out, const cg::point &p);
 
-inline std::ostream & operator<<(std::ostream &out, const cg::normal &n)
-{
-    out << "vn" << " " << n.x << " " << n.y << " " << n.z;
-    return out;
-}
+std::ostream & operator<<(std::ostream &out, const cg::normal &n);
 
-inline std::ostream & operator<<(std::ostream &out, const cg::texcoords &tex)
-{
-    out << "vt" << " " << tex.x << " " << tex.y << " " << tex.z;
-    return out;
-}
+std::ostream & operator<<(std::ostream &out, const cg::texcoords &tex);
 
 #endif // end include guard

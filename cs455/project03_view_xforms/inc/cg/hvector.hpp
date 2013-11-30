@@ -2,30 +2,33 @@
 #define HVECTOR_HPP
 
 #include <ostream>
-#include <vector>
-#include <valarray>
-#include <stdexcept>
 
-#include "cg_utils.hpp"
+//#include "cg_utils.hpp"
+#include "vector3.hpp"
 
 namespace cg
 {
 
 struct hvector
 {
+    // Member variables
     double x, y, z, w;
 
-    hvector dot(const hvector &other);
+    // Constructors
+    hvector();
+    hvector(double v);
+    hvector(const vector3 &other);
+    hvector(const vector3 &other, double w);
+    hvector(const point3 &other);
+    hvector(const hvector &other);
 
-    hvector normalized();
+    // Conversion operators
+    operator vector3();
+    operator point3();
 };
 
 } //end namespace
 
-inline std::ostream & operator<<(std::ostream &out, const cg::hvector &hv)
-{
-    out << "hvector" << " " << hv.x << " " << hv.y << " " << hv.z << " " << hv.w;
-    return out;
-}
+std::ostream & operator<<(std::ostream &out, const cg::hvector &hv);
 
 #endif // end include guard

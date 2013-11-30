@@ -1,22 +1,32 @@
-#if !defined(OBJPARSER_HPP)
-#define OBJPARSER_HPP
-
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 #include <istream>
 #include <sstream>
 #include <fstream>
 #include <cstdio>
-#include "Geometry.hpp"
+#include "cg/objparser.hpp"
+#include "cg/Geometry.hpp"
 
 namespace cg
 {
 namespace objparser
 {
+    /*
+     * Incoming face is turned into a triangle fan and returned as a vector of triangles
+     */
+    std::vector<triangle> parse_ngon_line(std::istream &in)
+    {
+        std::vector<triangle> trivec;
+        return trivec;
+    }
+
+    /*
+     * The incoming face is assumed to be triangle; no checking is done in this function
+     */
     triangle parse_tri_line(std::istream &in)
     {
-        // All faces are assumed to be triangles
         triangle t;
         std::string v0, v1, v2;
         int pi, ti;
@@ -105,4 +115,3 @@ namespace objparser
 } // end namespace objparser
 } // end namespace cg
 
-#endif // end include guard

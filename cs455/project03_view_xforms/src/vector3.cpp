@@ -1,125 +1,88 @@
-#if !defined(VECTOR3_HPP)
-#define VECTOR3_HPP
-
 #include <ostream>
-#include "hvector.hpp"
-#include "image.hpp"
+#include "cg/vector3.hpp"
 
 namespace cg
 {
 
-struct vector
+vector::vector(): x(0.0), y(0.0), z(0.0){}
+
+vector::vector(double v): x(v), y(v), z(v){}
+
+vector::vector(const vector &other): x(other.x), y(other.y), z(other.z){}
+
+double vector::dot(const vector &other) const
 {
-public:
-    double x, y, z;
-
-    operator hvector() const
-    {
-        return this->to_hvector(0.0);
-    }
-protected:
-    hvector to_hvector(double w) const
-    {
-        hvector hv;
-
-        hv.x = this->x;
-        hv.y = this->y;
-        hv.z = this->z;
-        hv.w = w;
-
-        return hv;
-    }
-};
-
-
-struct point : public vector
-{
-    operator hvector() const
-    {
-        return this->to_hvector(1.0);
-    }
-};
-
-struct normal : public vector
-{
-};
-
-struct texcoords : public vector
-{
-    const double & u() const {return x;}
-    double & u() {return x;}
-
-    const double & v() const {return y;}
-    double & v() {return y;}
-
-    const double & w() const {return z;}
-    double & w() {return z;}
-
-};
-
-struct colorRGB : public vector
-{
-    operator hvector() const
-    {
-        return this->to_hvector(1.0);
-    }
-
-    operator image::colorRGBA() const
-    {
-
-        image::colorRGBA clr;
-
-        clr.x = this->x;
-        clr.y = this->y;
-        clr.z = this->z;
-        clr.w = 1.0;
-
-        return clr;
-    }
-
-    const double & r() const {return x;}
-    double & r() {return x;}
-
-    const double & g() const {return y;}
-    double & g() {return y;}
-
-    const double & b() const {return z;}
-    double & b() {return z;}
-};
-
-typedef vector vector3;
-typedef point point3;
-} //end namespace
-
-
-cg::vector hvector_to_vector(const cg::hvector &hv)
-{
-    cg::vector v;
-
-    v.x = hv.x;
-    v.y = hv.y;
-    v.z = hv.z;
-
-    return v;
+    return double();
 }
 
+vector vector::cross(const vector &other) const
+{
+    return vector();
+}
+
+vector vector::normalized() const
+{
+    return vector();
+}
+
+const double & texcoords::u() const {return x;}
+double & texcoords::u() {return x;}
+
+const double & texcoords::v() const {return y;}
+double & texcoords::v() {return y;}
+
+const double & texcoords::w() const {return z;}
+double & texcoords::w() {return z;}
+
+const double & colorRGB::r() const {return x;}
+double & colorRGB::r() {return x;}
+
+const double & colorRGB::g() const {return y;}
+double & colorRGB::g() {return y;}
+
+const double & colorRGB::b() const {return z;}
+double & colorRGB::b() {return z;}
+
+point vec_to_pt(const vector &other)
+{
+    point p;
+
+    p.x = other.x;
+    p.y = other.y;
+    p.z = other.z;
+
+    return p;
+}
+
+normal vec_to_nml(const vector &other)
+{
+    normal n;
+
+    n.x = other.x;
+    n.y = other.y;
+    n.z = other.z;
+
+    return n;
+}
+
+} //end namespace
+
 // Output convenience functions
-inline std::ostream & operator<<(std::ostream &out, const cg::point &p)
+std::ostream & operator<<(std::ostream &out, const cg::point &p)
 {
     out << "v" << " " << p.x << " " << p.y << " " << p.z;
     return out;
 }
 
-inline std::ostream & operator<<(std::ostream &out, const cg::normal &n)
+std::ostream & operator<<(std::ostream &out, const cg::normal &n)
 {
     out << "vn" << " " << n.x << " " << n.y << " " << n.z;
     return out;
 }
 
-inline std::ostream & operator<<(std::ostream &out, const cg::texcoords &tex)
+std::ostream & operator<<(std::ostream &out, const cg::texcoords &tex)
 {
     out << "vt" << " " << tex.x << " " << tex.y << " " << tex.z;
     return out;
 }
 
-#endif // end include guard
