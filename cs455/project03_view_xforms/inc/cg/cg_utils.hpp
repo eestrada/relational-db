@@ -2,6 +2,7 @@
 #define UTILS_HPP
 
 #include <stdexcept>
+#include <iostream>
 #include <cmath>
 
 namespace cg
@@ -42,13 +43,17 @@ namespace utils
     template <typename T>
     T radians(T degrees)
     {
-        return degrees * (PI/180.0L);
+        T retval = degrees * (PI/180.0L);
+        std::cerr << degrees << " in degrees is " << retval << " in radians.\n"; 
+        return retval;
     }
 
     template <typename T>
     T degrees(T radians)
     {
-        return radians * (180.0L/PI);
+        T retval = radians * (180.0L/PI);
+        std::cerr << radians << " in radians is " << retval << " in degrees.\n"; 
+        return retval;
     }
 } // end namespace utils
 

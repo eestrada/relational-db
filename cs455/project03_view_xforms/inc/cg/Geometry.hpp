@@ -13,6 +13,7 @@ namespace cg
 
 struct Geometry
 {
+    std::vector<point3> pts;
     virtual void draw(const Mat4x4 &mat) = 0;
 };
 
@@ -26,7 +27,6 @@ struct triangle
 
 struct trimesh : public Geometry
 {
-    std::vector<point3> pts;
     std::vector<normal> nmls;
     std::vector<uvw> uvs;
     std::vector<triangle> tris;

@@ -26,7 +26,7 @@ square_matrix<D> & square_matrix<D>::operator=(double identity)
     {
         this->at(i,i) = identity;
     }
-    std::cerr << (*this) << "\n";
+    //std::cerr << (*this) << "\n";
     return *this;
 }
 
@@ -35,13 +35,13 @@ square_matrix<D> & square_matrix<D>::operator=(const square_matrix<D> &other)
 {
     if(&other != this)
     {
-        this->clear();
+        //this->clear();
         for(uint8_t i = 0; i < (D * D); ++i)
         {
             this->operator[](i) = other[i];
         }
     }
-    std::cerr << (*this) << "\n";
+    //std::cerr << (*this) << "\n";
     return *this;
 }
 
@@ -111,6 +111,22 @@ square_matrix<D> square_matrix<D>::operator*(const square_matrix &other) const
 template <uint8_t D>
 square_matrix<D> & square_matrix<D>::operator*=(const square_matrix<D> &other)
 {
+    // make an empty matrix to hold result
+    square_matrix<D> tmp(0.0);
+    for(uint8_t i = 0; i < D; ++i)
+    {
+        for(uint8_t j = 0; j < D; ++j)
+        {
+            for(uint8_t k = 0; k < D; ++k)
+            {
+                //tmp.at(i, j) += this->at(i, k) * other.at(k, j); // original
+                tmp.at(i, j) += this->at(k, j) * other.at(i, k);
+            }
+        }
+    }
+    //std::cerr << "Result of Matrix multiply is: \n" ;
+    //std::cerr << *this << "     x\n" << other << "     =\n"<< tmp << std::endl;
+    *this = tmp;
     return *this;
 }
 

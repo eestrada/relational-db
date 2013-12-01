@@ -4,7 +4,11 @@
 #include <stdexcept>
 #include <iostream>
 #include <ostream>
-#include <stdint.h>
+#if __cplusplus == 199711L
+    #include <stdint.h>
+#else
+    #include <cstdint>
+#endif
 #include "utils/exceptions.hpp"
 
 namespace cg
@@ -86,16 +90,34 @@ Mat4x4 inverted(const Mat4x4 &m);
  */
 Mat4x4 rotate(double x, double y, double z, double radians);
 
+/*
+ * Rotate about the X axis
+ */
 Mat4x4 rotate_x(double radians);
 
+/*
+ * Rotate about the Y axis
+ */
 Mat4x4 rotate_y(double radians);
 
+/*
+ * Rotate about the Z axis
+ */
 Mat4x4 rotate_z(double radians);
 
+/*
+ * Translate Mat4x4 matrix
+ */
 Mat4x4 translate(double x, double y, double z);
 
+/*
+ * Scale Mat4x4 matrix
+ */
 Mat4x4 scale(double x, double y, double z);
 
+/*
+ * Scale Mat4x4 matrix evenly in all axes
+ */
 Mat4x4 uniform_scale(double s);
 }
 

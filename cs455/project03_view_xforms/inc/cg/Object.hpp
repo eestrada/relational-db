@@ -41,15 +41,22 @@ public:
 
 class null : public object
 {
+public:
+    virtual void enable_draw(bool enable=false);
+    virtual void draw();
+protected:
+    bool drawable;
 };
 
 class camera : public object
 {
+public:
     virtual void draw();
 };
 
 class light : public object
 {
+public:
     virtual void draw();
 };
 

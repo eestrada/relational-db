@@ -39,6 +39,17 @@ protected:
     int exit_code;
 };
 
+class not_implemented : public exception
+{
+public:
+    not_implemented(const std::string &msg = "") : exception(msg)
+    {
+        this->what_str = "Not implemented: " + this->what_str;
+    }
+    virtual ~not_implemented(){}
+protected:
+};
+
 }// end err namespace 
 
 #endif // end include guard

@@ -228,7 +228,7 @@ void load_meshes(void)
     tmp->set_geo(meshvec.at(1));
     texid = loadGLTexture("./textures/car.ppm");
     tmp->set_texid(texid);
-    tmp->transform = cg::matrix::rotate_y(cg::utils::radians(60.0));
+    tmp->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(cg::utils::radians(60.0L));
     scene.push_back(tmp);
 
     auto car_obj = tmp;
@@ -236,30 +236,33 @@ void load_meshes(void)
     // TIRES
     auto tire_geo = meshvec.at(2);
     texid = loadGLTexture("./textures/tire.ppm");
-    //Tire, Front Left
+    //Tire geo, Front Left
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = car_obj;
-    tmp->transform = cg::matrix::translate(3.3,4.4,5.5);
+    tmp->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, 0.25, 0.25);
     scene.push_back(tmp);
-    //Tire, Front Right
+    //Tire geo, Front Right
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = car_obj;
+    tmp->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
-    //Tire, Back Left
+    //Tire geo, Back Left
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = car_obj;
+    tmp->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, 0.25, 0.25);
     scene.push_back(tmp);
-    //Tire, Back Right
+    //Tire geo, Back Right
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = car_obj;
+    tmp->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
 }
 

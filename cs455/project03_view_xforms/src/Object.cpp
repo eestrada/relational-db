@@ -41,6 +41,41 @@ void geo::draw()
     this->g->draw(this->getFinalXform());
 }
 
+void null::enable_draw(bool enable)
+{
+    this->drawable = enable;
+}
+
+void null::draw()
+{
+    if(drawable)
+    {
+        cg::Mat4x4 tmp = this->getFinalXform();
+        cg::point3 pt;
+        glColor4d(0.0, 1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+            pt = tmp * cg::hvector(10.0, 0.0, 0.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+
+            pt = cg::hvector(-10.0, 0.0, 0.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+
+            pt = cg::hvector(0.0, 10.0, 0.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+
+            pt = cg::hvector(10.0, -10.0, 0.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+
+            pt = cg::hvector(10.0, 0.0, 10.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+
+            pt = cg::hvector(10.0, 0.0, -10.0, 1.0);
+            glVertex3d(pt.x, pt.y, pt.z);
+        glEnd();
+        glColor4d(1.0, 1.0, 1.0, 1.0);
+    }
+}
+
 void camera::draw()
 {
 }
