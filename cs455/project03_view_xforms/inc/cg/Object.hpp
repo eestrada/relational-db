@@ -11,6 +11,8 @@ namespace obj
 
 class object
 {
+public: // Constructors
+    object();
 public: // Functions
     cg::Mat4x4 getFinalXform() const;
 
@@ -21,11 +23,6 @@ public: // Functions
 public: // Variables
     cg::Mat4x4 transform;
     std::shared_ptr<object> parent;
-
-protected: // Functions
-
-protected: // Variables
-
 };
 
 class geo : public object
@@ -42,7 +39,7 @@ public:
 class null : public object
 {
 public:
-    virtual void enable_draw(bool enable=false);
+    virtual void enable_draw(bool enable=true);
     virtual void draw();
 protected:
     bool drawable;

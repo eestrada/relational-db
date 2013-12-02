@@ -64,6 +64,7 @@ std::vector<uint8_t> colorRGBA::to_bytes()
 
 bitmap loadPPM(const std::string &filename)
 {
+    std::cerr << "Loading file: " << filename;
     FILE *inFile; //File pointer
 	char buffer[100]; //Input buffer
 	unsigned char c; //Input character
@@ -114,6 +115,8 @@ bitmap loadPPM(const std::string &filename)
 		else image.data.push_back((uint8_t) 255); //Set alpha to opaque
     }
     std::fclose(inFile);
+
+    std::cerr << " ...Done." << std::endl;
 
     return image;
 }

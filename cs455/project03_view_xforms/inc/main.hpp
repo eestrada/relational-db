@@ -57,6 +57,7 @@ std::vector<cg::trimesh> meshlist;
 
 std::vector< std::shared_ptr<obj::object> > scene;
 
+std::shared_ptr<obj::object> car_obj, tire_fl, tire_fr, tire_bl, tire_br;
 /* report GL errors, if any, to std::cerr */
 //void checkError(const char *functionName)
 void checkGlError(const std::string &functionName)
@@ -146,6 +147,8 @@ void draw_meshes(const mesh_ptr_vec &mv)
 
 void draw(void)
 {
+    //glMatrixMode(GL_MODELVIEW);
+    //glRotated(1.0, 0.0, 1.0, 0.0); // rotate Y
     for(auto iter = scene.cbegin(); iter != scene.cend(); ++iter)
     {
         iter->get()->draw();
@@ -179,7 +182,7 @@ void reshape(int x, int y)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45,(double(x)/double(y)),0.1,100000);
+    gluPerspective(45,(double(x)/double(y)),1.0,100);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glutPostRedisplay();
@@ -191,7 +194,7 @@ void reshape(int x, int y)
     checkGlError ("reshape");
 }
 
-void load_meshes(void)
+void load_objects(void)
 {
     /*
     std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./geo/xformed_box.obj"}};
@@ -231,7 +234,7 @@ void load_meshes(void)
     tmp->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(cg::utils::radians(60.0L));
     scene.push_back(tmp);
 
-    auto car_obj = tmp;
+    car_obj = tmp;
 
     // TIRES
     auto tire_geo = meshvec.at(2);
@@ -240,30 +243,39 @@ void load_meshes(void)
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = car_obj;
-    tmp->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, 0.25, 0.25);
+    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent = car_obj;
+    tmp->parent->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
+
     //Tire geo, Front Right
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = car_obj;
-    tmp->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
+    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent = car_obj;
+    tmp->parent->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
+
     //Tire geo, Back Left
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = car_obj;
-    tmp->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, 0.25, 0.25);
+    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent = car_obj;
+    tmp->parent->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
+
     //Tire geo, Back Right
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = car_obj;
-    tmp->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
+    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent = car_obj;
+    tmp->parent->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
+
+    std::cerr << "Finished loading scene files." << std::endl;
 }
 
 void load_textures(void)
@@ -309,14 +321,29 @@ void initGL(void)
     glMatrixMode(GL_MODELVIEW);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    load_meshes();
-    loadGLTexture("./textures/ParkingLot.ppm");
+    load_objects();
+    //loadGLTexture("./textures/ParkingLot.ppm");
     //glRotated(180.0, 0.0,0.0,1.0);
    // glTranslated(1.0,1.0,0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glOrtho(-1.0,1.0,1.0,-1.0,0.01,100000);
-    gluPerspective(45,1.0,0.01,100000);
+    gluLookAt(  0.0,0.0,0.0,
+                -6.0,3.5,-10.0,
+                0.0,1.0,0.0);
+    gluPerspective(45,1.0,1.0,100.0);
+
+/*
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glTranslated(0.0, 1.0, -5.0); // Translate
+    //glRotated(0.0, 0.0, 0.0, 1.0); // rotate Z
+    glRotated(-150.0, 0.0, 1.0, 0.0); // rotate Y
+    glRotated(4.0, 1.0, 0.0, 0.0); // rotate X
+    //glScaled(1.0, 1.0, 1.0); // rotate X
+    glRotated(180.0, 0.0, 1.0, 0.0); // rotate Y
+*/
     checkGlError("initGL");
 }
 

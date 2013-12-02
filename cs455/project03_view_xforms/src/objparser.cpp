@@ -101,13 +101,14 @@ namespace objparser
     // Convenience function to use filename string instead of explicit stream
     std::unique_ptr<trimesh> parse_file(const std::string &fname)
     {
-        std::cerr << fname << std::endl;
+        std::cerr << "Parsing file: \"" << fname << "\"";
         std::ifstream fstrm;
         //fstrm.exceptions(std::ifstream::failbit);
 
         fstrm.open(fname.c_str());
 
         auto tm = parse(fstrm);
+        std::cerr << " ...Done." << std::endl;
 
         return tm;
     }

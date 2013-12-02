@@ -28,7 +28,7 @@ Mat4x4 rotate_x(double radians)
     tmp.at(2,2) = std::cos(radians);
     tmp.at(1,2) = std::sin(radians);
     tmp.at(2,1) = -std::sin(radians);
-    std::cerr << "The Mat4x4 rotated along the X axis is \n" << tmp << std::endl;
+    //std::cerr << "The Mat4x4 rotated along the X axis is \n" << tmp << std::endl;
     return tmp;
 }
 
@@ -39,7 +39,7 @@ Mat4x4 rotate_y(double radians)
     tmp.at(2,2) = std::cos(radians);
     tmp.at(2,0) = std::sin(radians);
     tmp.at(0,2) = -std::sin(radians);
-    std::cerr << "The Mat4x4 rotated along the Y axis is \n" << tmp << std::endl;
+    //std::cerr << "The Mat4x4 rotated along the Y axis is \n" << tmp << std::endl;
     return tmp;
 }
 
@@ -50,7 +50,7 @@ Mat4x4 rotate_z(double radians)
     tmp.at(1,1) = std::cos(radians);
     tmp.at(1,0) = -std::sin(radians);
     tmp.at(0,1) = std::sin(radians);
-    std::cerr << "The Mat4x4 rotated along the Y axis is \n" << tmp << std::endl;
+    //std::cerr << "The Mat4x4 rotated along the Y axis is \n" << tmp << std::endl;
     return tmp;
 }
 

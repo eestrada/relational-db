@@ -4,6 +4,8 @@
 namespace obj
 {
 
+object::object() : transform(1.0), parent() {}
+
 cg::Mat4x4 object::getFinalXform() const
 {
     if (parent != NULL)
@@ -52,6 +54,7 @@ void null::draw()
     {
         cg::Mat4x4 tmp = this->getFinalXform();
         cg::point3 pt;
+        glBindTexture(GL_TEXTURE_2D, 0);
         glColor4d(0.0, 1.0, 0.0, 1.0);
         glBegin(GL_LINES);
             pt = tmp * cg::hvector(10.0, 0.0, 0.0, 1.0);

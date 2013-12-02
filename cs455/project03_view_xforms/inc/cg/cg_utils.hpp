@@ -21,9 +21,9 @@ namespace utils
     }
 
     template <typename T>
-    T mix(T a, T b, T bias)
+    T mix(T a, T b, double bias)
     {
-        T complement = 1 - bias;
+        double complement = 1 - bias;
 
         a = a * bias;
         b = b * complement;
@@ -34,25 +34,23 @@ namespace utils
     template <typename T>
     T fit(T value, T oldmin, T oldmax, T newmin, T newmax)
     {
-        T bias;
-
-        bias = clamp((value - oldmin)/(oldmax - oldmin), 0.0, 1.0);
+        double bias = clamp(static_cast<double>(value - oldmin)/static_cast<double>(oldmax - oldmin), 0.0, 1.0);
         return mix(newmin, newmax, bias);
     }
 
     template <typename T>
-    T radians(T degrees)
+    double radians(T degrees)
     {
-        T retval = degrees * (PI/180.0L);
-        std::cerr << degrees << " in degrees is " << retval << " in radians.\n"; 
+        double retval = static_cast<double>(degrees) * (PI/180.0L);
+        //std::cerr << degrees << " in degrees is " << retval << " in radians.\n";
         return retval;
     }
 
     template <typename T>
-    T degrees(T radians)
+    double degrees(T radians)
     {
-        T retval = radians * (180.0L/PI);
-        std::cerr << radians << " in radians is " << retval << " in degrees.\n"; 
+        double retval = static_cast<double>(radians) * (180.0L/PI);
+        //std::cerr << radians << " in radians is " << retval << " in degrees.\n";
         return retval;
     }
 } // end namespace utils
