@@ -22,7 +22,7 @@
 //#include <X11/Xlib.h>
 //#include <X11/Xutil.h>
 
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -50,14 +50,12 @@ int draw_height = 720;
 bool up_pressed = false, down_pressed = false, left_pressed = false, right_pressed = false,
     W_pressed = false, A_pressed = false, S_pressed = false, D_pressed = false;
 
-typedef std::vector< std::shared_ptr<cg::trimesh> > mesh_ptr_vec;
-mesh_ptr_vec meshvec;
+typedef std::shared_ptr<obj::object> obj_ptr;
 
-std::vector<cg::trimesh> meshlist;
+std::vector< obj_ptr > scene;
 
-std::vector< std::shared_ptr<obj::object> > scene;
+obj_ptr camera, car_obj, tire_fl, tire_fr, tire_bl, tire_br;
 
-std::shared_ptr<obj::object> car_obj, tire_fl, tire_fr, tire_bl, tire_br;
 /* report GL errors, if any, to std::cerr */
 //void checkError(const char *functionName)
 void checkGlError(const std::string &functionName)
@@ -67,7 +65,6 @@ void checkGlError(const std::string &functionName)
         std::cerr << "When running function: " << functionName << "\n" ;
         std::cerr << "Detected GL error 0x";
         std::cerr << std::hex << error << std::dec << "\n";
-        //fprintf (stderr, "GL error 0x%X detected in %s\n", error, functionName);
     }
     std::cerr << std::flush;
 }
@@ -77,20 +74,19 @@ GLuint loadGLTexture(const char *filename)
 {
     cg::image::bitmap image = cg::image::loadPPM(filename);
 
-    // Bind to gl state machine
     GLuint textureID = 0; //OpenGL texture ID to be returned
 
+    // Generate ID
     glGenTextures(1, &textureID);
 
-    //std::cerr << "Generated texture ID: " << textureID << std::endl;
-
+    // Bind to gl state machine
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     //Set texture parameters
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	//Ignore surface color
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -105,84 +101,47 @@ GLuint loadGLTexture(const char *filename)
     glScaled(1.0,-1.0,1.0);
     glTranslated(0.0,1.0,0.0);
 
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
     return textureID;
-}
-
-void draw_meshes(const mesh_ptr_vec &mv)
-{
-    for(auto iter = mv.cbegin(); iter != mv.cend(); ++iter)
-    {
-        auto iteri = *iter;
-
-        glBegin(GL_TRIANGLES);
-        for(auto iterj = iteri->tris.cbegin(); iterj != iteri->tris.cend(); ++iterj)
-        {
-            // first texture coordinate position
-            glTexCoord2f( iteri->uvs.at(iterj->tex[0]).x,
-                          iteri->uvs.at(iterj->tex[0]).y);
-            // first vertex position
-            glVertex3f( iteri->pts.at(iterj->pos[0]).x,
-                        iteri->pts.at(iterj->pos[0]).y,
-                        iteri->pts.at(iterj->pos[0]).z );
-
-            // second texture coordinate position
-            glTexCoord2f( iteri->uvs.at(iterj->tex[1]).x,
-                          iteri->uvs.at(iterj->tex[1]).y);
-            // second vertex position
-            glVertex3f( iteri->pts.at(iterj->pos[1]).x,
-                        iteri->pts.at(iterj->pos[1]).y,
-                        iteri->pts.at(iterj->pos[1]).z );
-
-            // third texture coordinate position
-            glTexCoord2f( iteri->uvs.at(iterj->tex[2]).x,
-                          iteri->uvs.at(iterj->tex[2]).y);
-            // third vertex position
-            glVertex3f( iteri->pts.at(iterj->pos[2]).x,
-                        iteri->pts.at(iterj->pos[2]).y,
-                        iteri->pts.at(iterj->pos[2]).z );
-        }
-        glEnd();
-    }
 }
 
 void draw(void)
 {
-    //glMatrixMode(GL_MODELVIEW);
-    //glRotated(1.0, 0.0, 1.0, 0.0); // rotate Y
     for(auto iter = scene.cbegin(); iter != scene.cend(); ++iter)
     {
         iter->get()->draw();
     }
-    //draw_meshes(meshvec);
 }
 
 void display(void)
 {
-    glClear (GL_COLOR_BUFFER_BIT);
-
-    glClearColor ( 0.0, 0.0, 0.0, 1 );
-    glClear ( GL_COLOR_BUFFER_BIT );
+    glClearColor( 0.0, 0.0, 0.0, 1 );
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearDepth(1.0);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glViewport(0,0, draw_width, draw_height);
-    draw ();
-    glFlush ();
 
-    glutSwapBuffers ();
+    draw();
+    glFlush();
 
-    checkGlError ("display");
+    glutSwapBuffers();
+
+    checkGlError("display");
 }
 
 void idle(void)
 {
-    usleep(1000); // SLEEP!
-    checkGlError ("idle");
+    //usleep(1000); // SLEEP!
+    checkGlError("idle");
 }
 
 void reshape(int x, int y)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45,(double(x)/double(y)),1.0,100);
+    gluPerspective(45, (double(x)/double(y)), 0.1, 100000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glutPostRedisplay();
@@ -191,54 +150,41 @@ void reshape(int x, int y)
     draw_width = x;
     draw_height = y;
 
-    checkGlError ("reshape");
+    checkGlError("reshape");
 }
 
 void load_objects(void)
 {
-    /*
-    std::array<std::string, 2> fnames = {{"./geo/xformed_crayon.obj", "./geo/xformed_box.obj"}};
+    camera.reset(new obj::camera);
+    camera->transform = cg::matrix::translate(0,2,0) * cg::matrix::rotate_y(30);
 
-    for(int i = 0; i < 1; ++i)
-    {
-        auto tm_uptr = cg::objparser::parse_file(fnames[i]);
-        std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
-
-        meshvec.push_back(tm_shared);
-    }
-    */
-
-    std::array<std::string, 3> fnames = {{"./geo/ParkingLot.obj", "./geo/car.obj", "./geo/tire.obj"}};
-    for(size_t i = 0; i < fnames.size(); ++i)
-    {
-        auto tm_uptr = cg::objparser::parse_file(fnames[i]);
-        std::shared_ptr<cg::trimesh> tm_shared(tm_uptr.release());
-
-        meshvec.push_back(tm_shared);
-    }
+    obj::object::scene_camera = camera;
 
     std::shared_ptr<obj::object> tmp;
     GLuint texid = 0;
+
     //parking lot
     tmp.reset(new obj::geo());
-    tmp->set_geo(meshvec.at(0));
+    tmp->set_geo(cg::objparser::parse_file("./geo/ParkingLot.obj"));
     texid = loadGLTexture("./textures/ParkingLot.ppm");
     tmp->set_texid(texid);
     scene.push_back(tmp);
 
     //car
     tmp.reset(new obj::geo());
-    tmp->set_geo(meshvec.at(1));
+    tmp->set_geo(cg::objparser::parse_file("./geo/car.obj"));
     texid = loadGLTexture("./textures/car.ppm");
     tmp->set_texid(texid);
-    tmp->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(cg::utils::radians(60.0L));
+    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(60.0);
     scene.push_back(tmp);
 
     car_obj = tmp;
 
-    // TIRES
-    auto tire_geo = meshvec.at(2);
+    // Tire data is shared between all instances
+    auto tire_geo = cg::objparser::parse_file("./geo/tire.obj");
     texid = loadGLTexture("./textures/tire.ppm");
+
     //Tire geo, Front Left
     tmp.reset(new obj::geo());
     tmp->set_geo(tire_geo);
@@ -247,6 +193,9 @@ void load_objects(void)
     tmp->parent->parent = car_obj;
     tmp->parent->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
+    scene.push_back(tmp->parent);
+
+    tire_fl = tmp;
 
     //Tire geo, Front Right
     tmp.reset(new obj::geo());
@@ -256,6 +205,9 @@ void load_objects(void)
     tmp->parent->parent = car_obj;
     tmp->parent->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
+    scene.push_back(tmp->parent);
+
+    tire_fr = tmp;
 
     //Tire geo, Back Left
     tmp.reset(new obj::geo());
@@ -265,6 +217,9 @@ void load_objects(void)
     tmp->parent->parent = car_obj;
     tmp->parent->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
+    scene.push_back(tmp->parent);
+
+    tire_bl = tmp;
 
     //Tire geo, Back Right
     tmp.reset(new obj::geo());
@@ -274,81 +229,36 @@ void load_objects(void)
     tmp->parent->parent = car_obj;
     tmp->parent->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
+    scene.push_back(tmp->parent);
 
+    tire_br = tmp;
+
+    // Done!
     std::cerr << "Finished loading scene files." << std::endl;
-}
-
-void load_textures(void)
-{
 }
 
 void initGL(void)
 {
-    /*
-    GLuint texid;
-
-    glGenTextures(1, &texid);
-
-    glBindTexture(GL_TEXTURE_2D, texid);
-
-    GLubyte test[] = {255, 0, 0};
-
-    glTexImage2D(   GL_TEXTURE_2D, //target
-                    0, //MIPMAP level
-                    GL_RGB, //internal Format
-                    1, //width
-                    1, //height
-                    0, //border width
-                    GL_RGB, //format
-                    GL_UNSIGNED_BYTE, //type
-                    test); //data
-
-    // Linear Filtering
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    */
-
-    //GLuint tmp = loadPPM("./test.ppm");
-
     glShadeModel(GL_SMOOTH);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_TEXTURE_2D);
-    //glClearColor(0.0, 0.0, 0.0, 0.5);
-    //glClearDepth(1.0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glMatrixMode(GL_MODELVIEW);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
 
     load_objects();
-    //loadGLTexture("./textures/ParkingLot.ppm");
-    //glRotated(180.0, 0.0,0.0,1.0);
-   // glTranslated(1.0,1.0,0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glOrtho(-1.0,1.0,1.0,-1.0,0.01,100000);
-    gluLookAt(  0.0,0.0,0.0,
-                -6.0,3.5,-10.0,
-                0.0,1.0,0.0);
-    gluPerspective(45,1.0,1.0,100.0);
+    gluPerspective(45, 1, 0.1, 100000);
 
-/*
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glTranslated(0.0, 1.0, -5.0); // Translate
-    //glRotated(0.0, 0.0, 0.0, 1.0); // rotate Z
-    glRotated(-150.0, 0.0, 1.0, 0.0); // rotate Y
-    glRotated(4.0, 1.0, 0.0, 0.0); // rotate X
-    //glScaled(1.0, 1.0, 1.0); // rotate X
-    glRotated(180.0, 0.0, 1.0, 0.0); // rotate Y
-*/
     checkGlError("initGL");
 }
 
 void keyboard(unsigned char key, int x, int y)
 {
+    const double amt = 0.1, rot = 10;
     switch ( key )
     {
         case ASCII_ESCAPE:
@@ -358,43 +268,86 @@ void keyboard(unsigned char key, int x, int y)
         case 'w':
         case 'W':
             std::cerr << "'W' key pressed." << std::endl;
+            camera->transform *= cg::matrix::translate(0,0,-amt);
             break;
         case 'a':
         case 'A':
             std::cerr << "'A' key pressed." << std::endl;
+            camera->transform *= cg::matrix::translate(-amt,0,0);
             break;
         case 's':
         case 'S':
             std::cerr << "'S' key pressed." << std::endl;
+            camera->transform *= cg::matrix::translate(0,0,amt);
             break;
         case 'd':
         case 'D':
             std::cerr << "'D' key pressed." << std::endl;
+            camera->transform *= cg::matrix::translate(amt,0,0);
             break;
-        default:                    // Otherwise do nothing
+        case 'q':
+        case 'Q':
+            std::cerr << "'Q' key pressed." << std::endl;
+            camera->transform *= cg::matrix::rotate_y(amt * rot);
+            break;
+        case 'e':
+        case 'E':
+            std::cerr << "'E' key pressed." << std::endl;
+            camera->transform *= cg::matrix::rotate_y(-amt * rot);
+            break;
+        case 'z':
+        case 'Z':
+            std::cerr << "'Z' key pressed." << std::endl;
+            camera->transform *= cg::matrix::rotate_x(amt * rot);
+            break;
+        case 'c':
+        case 'C':
+            std::cerr << "'C' key pressed." << std::endl;
+            camera->transform *= cg::matrix::rotate_x(-amt * rot);
+            break;
+        default:
+            // Otherwise do nothing
             break;
     }
+
+    display();
 }
 
 void special(int key, int x, int y)
 {
+    const double amt = 1.0;
     switch ( key )
     {
         case GLUT_KEY_UP:
             std::cerr << "Up key pressed." << std::endl;
+            tire_fl->transform *= cg::matrix::rotate_x(amt * 8);
+            tire_bl->transform *= cg::matrix::rotate_x(amt * 8);
+            tire_fr->transform *= cg::matrix::rotate_x(-amt * 8);
+            tire_br->transform *= cg::matrix::rotate_x(-amt * 8);
             break;
         case GLUT_KEY_DOWN:
             std::cerr << "Down key pressed." << std::endl;
+            tire_fl->transform *= cg::matrix::rotate_x(-amt * 8);
+            tire_bl->transform *= cg::matrix::rotate_x(-amt * 8);
+            tire_fr->transform *= cg::matrix::rotate_x(amt * 8);
+            tire_br->transform *= cg::matrix::rotate_x(amt * 8);
             break;
         case GLUT_KEY_LEFT:
             std::cerr << "Left key pressed." << std::endl;
+            tire_fl->transform *= cg::matrix::rotate_y(-amt * 2);
+            tire_fr->transform *= cg::matrix::rotate_y(amt * 2);
             break;
         case GLUT_KEY_RIGHT:
             std::cerr << "Right key pressed." << std::endl;
+            tire_fl->transform *= cg::matrix::rotate_y(amt * 2);
+            tire_fr->transform *= cg::matrix::rotate_y(-amt * 2);
             break;
-        default:                    // Otherwise do nothing
+        default:
+            // Otherwise do nothing
             break;
     }
+
+    display();
 }
 
 void flush_all(void)
@@ -443,14 +396,7 @@ int main(int argc, char **argv)
     glutInitWindowSize (draw_width, draw_height); 
     glutInitWindowPosition (0, 0);
     glutCreateWindow ("CS455 Viewport transforms");
-    //int main_window_id = glutCreateWindow ("OpenGL 2.1 context via FreeGLUT");
 
-    //std::cerr << "Main window ID: " << main_window_id << std::endl;
-
-    // test obj file parser
-    // test_obj_parser();
-
-    //dumpInfo ();
     initGL();
 
     // Register GLUT functions

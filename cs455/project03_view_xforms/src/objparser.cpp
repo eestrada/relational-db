@@ -89,13 +89,13 @@ namespace objparser
         return t;
     }
 
-    std::unique_ptr<trimesh> parse(std::istream &in)
+    std::shared_ptr<trimesh> parse(std::istream &in)
     {
         //std::ifstream objfile(fname.c_str());
         std::string line, tmp;
         std::istringstream strm;
 
-        std::unique_ptr<trimesh> tm_ptr(new trimesh());
+        std::shared_ptr<trimesh> tm_ptr(new trimesh());
 
         while(!in.eof())
         {
@@ -138,7 +138,7 @@ namespace objparser
     }
 
     // Convenience function to use filename string instead of explicit stream
-    std::unique_ptr<trimesh> parse_file(const std::string &fname)
+    std::shared_ptr<trimesh> parse_file(const std::string &fname)
     {
         std::cerr << "Parsing file: \"" << fname << "\"";
         std::ifstream fstrm;

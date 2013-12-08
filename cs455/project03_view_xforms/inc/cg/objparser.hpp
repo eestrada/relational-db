@@ -10,10 +10,10 @@ namespace cg
 {
 namespace objparser
 {
-    std::unique_ptr<trimesh> parse(std::istream &in);
+    std::shared_ptr<trimesh> parse(std::istream &in);
 
     // Convenience function to use filename string instead of explicit stream
-    std::unique_ptr<trimesh> parse_file(const std::string &fname);
+    std::shared_ptr<trimesh> parse_file(const std::string &fname);
 
 } // end namespace objparser
 } // end namespace cg

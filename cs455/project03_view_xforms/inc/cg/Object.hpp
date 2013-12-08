@@ -23,6 +23,7 @@ public: // Functions
 public: // Variables
     cg::Mat4x4 transform;
     std::shared_ptr<object> parent;
+    static std::shared_ptr<object> scene_camera;
 };
 
 class geo : public object
