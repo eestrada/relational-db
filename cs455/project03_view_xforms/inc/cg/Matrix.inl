@@ -4,24 +4,33 @@ namespace cg
 {
 
 template <uint8_t D>
-square_matrix<D>::square_matrix(double identity) : val_ptr(new double[D * D])
+square_matrix<D>::square_matrix(double identity) : val_ptr(new double[D * D]())
 {
     *this = identity;
 }
 
 template <uint8_t D>
-square_matrix<D>::square_matrix(const square_matrix<D> &other) : val_ptr(new double[D * D])
+square_matrix<D>::square_matrix(const square_matrix<D> &other) : val_ptr(new double[D * D]())
 {
     *this = other;
 }
 
 template <uint8_t D>
-square_matrix<D>::~square_matrix() {delete[] val_ptr;}
+square_matrix<D>::square_matrix(square_matrix<D> &&other) : val_ptr(nullptr)
+{
+    *this = std::move(other);
+}
+
+template <uint8_t D>
+square_matrix<D>::~square_matrix()
+{
+    delete[] this->val_ptr;
+}
 
 template <uint8_t D>
 square_matrix<D> & square_matrix<D>::operator=(double identity)
 {
-    this->clear();
+    //this->clear();
     for(uint8_t i = 0; i < D; ++i)
     {
         this->at(i,i) = identity;
@@ -42,6 +51,19 @@ square_matrix<D> & square_matrix<D>::operator=(const square_matrix<D> &other)
         }
     }
     //std::cerr << (*this) << "\n";
+    return *this;
+}
+
+template <uint8_t D>
+square_matrix<D> & square_matrix<D>::operator=(square_matrix<D> &&other)
+{
+    if(this != &other)
+    {
+        delete[] this->val_ptr;
+        this->val_ptr = other.val_ptr;
+        other.val_ptr = nullptr;
+    }
+
     return *this;
 }
 
@@ -84,6 +106,9 @@ template <uint8_t D>
 uint8_t square_matrix<D>::dimension() const {return D;}
 
 template <uint8_t D>
+uint16_t square_matrix<D>::size() const {return D * D;}
+
+template <uint8_t D>
 square_matrix<D> square_matrix<D>::transposed() const
 {
     square_matrix<D> tmp;
@@ -113,6 +138,7 @@ square_matrix<D> & square_matrix<D>::operator*=(const square_matrix<D> &other)
 {
     // make an empty matrix to hold result
     square_matrix<D> tmp(0.0);
+
     for(uint8_t i = 0; i < D; ++i)
     {
         for(uint8_t j = 0; j < D; ++j)
@@ -126,7 +152,8 @@ square_matrix<D> & square_matrix<D>::operator*=(const square_matrix<D> &other)
     }
     //std::cerr << "Result of Matrix multiply is: \n" ;
     //std::cerr << *this << "     x\n" << other << "     =\n"<< tmp << std::endl;
-    *this = tmp;
+
+    *this = std::move(tmp); // Use move semantics to keep this cheap;
     return *this;
 }
 

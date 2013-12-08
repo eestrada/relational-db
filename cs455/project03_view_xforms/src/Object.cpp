@@ -11,7 +11,8 @@ cg::Mat4x4 object::getFinalXform() const
     if (parent != NULL)
     {
         cg::Mat4x4 pxform = parent->getFinalXform();
-        return transform * pxform;
+        // Do child transform THEN parent to get expected result
+        return pxform * transform;
     }
     else
     {

@@ -5,9 +5,11 @@
 #include <istream>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include <cstdio>
 #include "cg/objparser.hpp"
 #include "cg/Geometry.hpp"
+#include "utils/exceptions.hpp"
 
 namespace cg
 {
@@ -29,24 +31,60 @@ namespace objparser
     {
         triangle t;
         std::string v0, v1, v2;
-        int pi, ti;
+        int count;
+        int pi, ti, ni;
 
         in >> v0 >> v1 >> v2;
 
+        count = std::count(v0.begin(), v0.end(), '/');
         // Obj indices are 1-based, so compensate by decrementing the value.
         // Assume there are no normals for now
-        //std::sscanf( v0.c_str(), "%d/%d", &(t.pos[0]), &(t.tex[0]) );
-        std::sscanf( v0.c_str(), "%d/%d", &pi, &ti );
-        t.pos[0] = --pi;
-        t.tex[0] = --ti;
+        if(count == 2)
+        {
+            std::sscanf( v0.c_str(), "%d/%d/%d", &pi, &ti, &ni );
+            t.pos[0] = --pi;
+            t.tex[0] = --ti;
+            t.nml[2] = --ni;
 
-        std::sscanf( v1.c_str(), "%d/%d", &pi, &ti );
-        t.pos[1] = --pi;
-        t.tex[1] = --ti;
+            std::sscanf( v1.c_str(), "%d/%d/%d", &pi, &ti, &ni );
+            t.pos[1] = --pi;
+            t.tex[1] = --ti;
+            t.nml[2] = --ni;
 
-        std::sscanf( v2.c_str(), "%d/%d", &pi, &ti );
-        t.pos[2] = --pi;
-        t.tex[2] = --ti;
+            std::sscanf( v2.c_str(), "%d/%d/%d", &pi, &ti, &ni );
+            t.pos[2] = --pi;
+            t.tex[2] = --ti;
+            t.nml[2] = --ni;
+        }
+        else if (count == 1)
+        {
+            std::sscanf( v0.c_str(), "%d/%d", &pi, &ti );
+            t.pos[0] = --pi;
+            t.tex[0] = --ti;
+
+            std::sscanf( v1.c_str(), "%d/%d", &pi, &ti );
+            t.pos[1] = --pi;
+            t.tex[1] = --ti;
+
+            std::sscanf( v2.c_str(), "%d/%d", &pi, &ti );
+            t.pos[2] = --pi;
+            t.tex[2] = --ti;
+        }
+        else if (count == 1 && v0.length() != 0)
+        {
+            std::sscanf( v0.c_str(), "%d", &pi );
+            t.pos[0] = --pi;
+
+            std::sscanf( v1.c_str(), "%d", &pi );
+            t.pos[1] = --pi;
+
+            std::sscanf( v2.c_str(), "%d", &pi );
+            t.pos[2] = --pi;
+        }
+        else
+        {
+            throw err::exception("obj file face indices are bad, and you should feel bad.");
+        }
 
         return t;
     }
@@ -78,7 +116,8 @@ namespace objparser
             else if(tmp == "vt")
             {
                 texcoords st;
-                strm >> st.x >> st.y >> st.z;
+                //strm >> st.x >> st.y >> st.z;
+                strm >> st.x >> st.y;
                 tm_ptr->uvs.push_back(st);
             }
             else if(tmp == "vn")
