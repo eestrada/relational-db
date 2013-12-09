@@ -34,6 +34,7 @@
 #include "cg/objparser.hpp"
 #include "cg/image.hpp"
 #include "cg/Object.hpp"
+#include "cg/Transform.hpp"
 #include "cg/cg_utils.hpp"
 #include "utils/system.hpp"
 #include "utils/ASCII_codes.h"
@@ -55,6 +56,8 @@ typedef std::shared_ptr<obj::object> obj_ptr;
 std::vector< obj_ptr > scene;
 
 obj_ptr camera, car_obj, tire_fl, tire_fr, tire_bl, tire_br;
+
+cg::Transform tire_angle;
 
 /* report GL errors, if any, to std::cerr */
 //void checkError(const char *functionName)
@@ -176,7 +179,8 @@ void load_objects(void)
     texid = loadGLTexture("./tex/car.ppm");
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(60.0);
+    tmp->parent->transform = cg::matrix::translate(-2.9, 0.0, -7.7) * cg::matrix::rotate_y(60.0);
+    tmp->transform = cg::matrix::translate(0.0, 0.0, 0.545);
     scene.push_back(tmp);
 
     car_obj = tmp;
@@ -190,8 +194,9 @@ void load_objects(void)
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = car_obj;
-    tmp->parent->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, -0.25, 0.25);
+    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent->parent = car_obj;
+    tmp->parent->parent->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
     scene.push_back(tmp->parent);
 
@@ -202,8 +207,9 @@ void load_objects(void)
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = car_obj;
-    tmp->parent->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
+    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent->parent = car_obj;
+    tmp->parent->parent->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
     scene.push_back(tmp->parent);
 
@@ -214,8 +220,9 @@ void load_objects(void)
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = car_obj;
-    tmp->parent->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, -0.25, 0.25);
+    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent->parent = car_obj;
+    tmp->parent->parent->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
     scene.push_back(tmp->parent);
 
@@ -226,8 +233,9 @@ void load_objects(void)
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = car_obj;
-    tmp->parent->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
+    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent->parent->parent = car_obj;
+    tmp->parent->parent->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
     scene.push_back(tmp->parent);
 
@@ -316,14 +324,18 @@ void keyboard(unsigned char key, int x, int y)
 void special(int key, int x, int y)
 {
     const double amt = 1.0;
+    cg::Transform tmp(tire_angle);
     switch ( key )
     {
         case GLUT_KEY_UP:
             std::cerr << "Up key pressed." << std::endl;
-            tire_fl->transform *= cg::matrix::rotate_x(amt * 8);
-            tire_bl->transform *= cg::matrix::rotate_x(amt * 8);
-            tire_fr->transform *= cg::matrix::rotate_x(-amt * 8);
-            tire_br->transform *= cg::matrix::rotate_x(-amt * 8);
+            tire_fl->transform *= cg::matrix::rotate_x(amt * 32);
+            tire_bl->transform *= cg::matrix::rotate_x(amt * 32);
+            tire_fr->transform *= cg::matrix::rotate_x(-amt * 32);
+            tire_br->transform *= cg::matrix::rotate_x(-amt * 32);
+
+            tmp.ry *= 0.08;
+            car_obj->parent->transform *= cg::matrix::translate(0, 0, -amt * 0.12) * cg::Mat4x4(tmp);
             break;
         case GLUT_KEY_DOWN:
             std::cerr << "Down key pressed." << std::endl;
@@ -331,16 +343,27 @@ void special(int key, int x, int y)
             tire_bl->transform *= cg::matrix::rotate_x(-amt * 8);
             tire_fr->transform *= cg::matrix::rotate_x(amt * 8);
             tire_br->transform *= cg::matrix::rotate_x(amt * 8);
+
+            tmp.ry *= 0.04;
+            car_obj->parent->transform *= cg::matrix::translate(0, 0, amt * 0.03) * cg::matrix::inverted(cg::Mat4x4(tmp));
             break;
         case GLUT_KEY_LEFT:
             std::cerr << "Left key pressed." << std::endl;
-            tire_fl->transform *= cg::matrix::rotate_y(-amt * 2);
-            tire_fr->transform *= cg::matrix::rotate_y(amt * 2);
+            tire_angle.ry += amt * 2;
+            tire_angle.ry = cg::utils::clamp(tire_angle.ry, 45.0, -45.0);
+            tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
+            tire_fr->parent->transform = cg::Mat4x4(tire_angle);
+            //tire_fl->parent->transform *= cg::matrix::rotate_y(-amt * 2);
+            //tire_fr->parent->transform *= cg::matrix::rotate_y(amt * 2);
             break;
         case GLUT_KEY_RIGHT:
             std::cerr << "Right key pressed." << std::endl;
-            tire_fl->transform *= cg::matrix::rotate_y(amt * 2);
-            tire_fr->transform *= cg::matrix::rotate_y(-amt * 2);
+            tire_angle.ry -= amt * 2;
+            tire_angle.ry = cg::utils::clamp(tire_angle.ry, 45.0, -45.0);
+            tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
+            tire_fr->parent->transform = cg::Mat4x4(tire_angle);
+            //tire_fl->parent->transform *= cg::matrix::rotate_y(amt * 2);
+            //tire_fr->parent->transform *= cg::matrix::rotate_y(-amt * 2);
             break;
         default:
             // Otherwise do nothing
