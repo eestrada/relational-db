@@ -350,20 +350,16 @@ void special(int key, int x, int y)
         case GLUT_KEY_LEFT:
             std::cerr << "Left key pressed." << std::endl;
             tire_angle.ry += amt * 2;
-            tire_angle.ry = cg::utils::clamp(tire_angle.ry, 45.0, -45.0);
+            tire_angle.ry = cg::utils::clamp(tire_angle.ry, -45.0, 45.0);
             tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
             tire_fr->parent->transform = cg::Mat4x4(tire_angle);
-            //tire_fl->parent->transform *= cg::matrix::rotate_y(-amt * 2);
-            //tire_fr->parent->transform *= cg::matrix::rotate_y(amt * 2);
             break;
         case GLUT_KEY_RIGHT:
             std::cerr << "Right key pressed." << std::endl;
             tire_angle.ry -= amt * 2;
-            tire_angle.ry = cg::utils::clamp(tire_angle.ry, 45.0, -45.0);
+            tire_angle.ry = cg::utils::clamp(tire_angle.ry, -45.0, 45.0);
             tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
             tire_fr->parent->transform = cg::Mat4x4(tire_angle);
-            //tire_fl->parent->transform *= cg::matrix::rotate_y(amt * 2);
-            //tire_fr->parent->transform *= cg::matrix::rotate_y(-amt * 2);
             break;
         default:
             // Otherwise do nothing

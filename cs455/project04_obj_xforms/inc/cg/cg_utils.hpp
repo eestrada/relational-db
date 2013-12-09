@@ -13,7 +13,7 @@ namespace utils
     const static long double PI = std::acos(-1.0L);
 
     template <typename T>
-    T clamp(T value, T max, T min)
+    T clamp(T value, T min, T max)
     {
         if(value > max) return max;
         else if(value < min) return min;
