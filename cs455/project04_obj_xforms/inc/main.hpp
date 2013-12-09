@@ -166,14 +166,14 @@ void load_objects(void)
     //parking lot
     tmp.reset(new obj::geo());
     tmp->set_geo(cg::objparser::parse_file("./geo/ParkingLot.obj"));
-    texid = loadGLTexture("./textures/ParkingLot.ppm");
+    texid = loadGLTexture("./tex/ParkingLot.ppm");
     tmp->set_texid(texid);
     scene.push_back(tmp);
 
     //car
     tmp.reset(new obj::geo());
     tmp->set_geo(cg::objparser::parse_file("./geo/car.obj"));
-    texid = loadGLTexture("./textures/car.ppm");
+    texid = loadGLTexture("./tex/car.ppm");
     tmp->set_texid(texid);
     tmp->parent = std::shared_ptr<obj::object>(new obj::null());
     tmp->parent->transform = cg::matrix::translate(-2.3, 0.0, -7.4) * cg::matrix::rotate_y(60.0);
@@ -183,7 +183,7 @@ void load_objects(void)
 
     // Tire data is shared between all instances
     auto tire_geo = cg::objparser::parse_file("./geo/tire.obj");
-    texid = loadGLTexture("./textures/tire.ppm");
+    texid = loadGLTexture("./tex/tire.ppm");
 
     //Tire geo, Front Left
     tmp.reset(new obj::geo());
