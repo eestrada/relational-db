@@ -320,17 +320,17 @@ void special(int key, int x, int y)
     {
         case GLUT_KEY_UP:
             std::cerr << "Up key pressed." << std::endl;
-            tire_fl->transform *= cg::matrix::rotate_x(amt * 8);
-            tire_bl->transform *= cg::matrix::rotate_x(amt * 8);
-            tire_fr->transform *= cg::matrix::rotate_x(-amt * 8);
-            tire_br->transform *= cg::matrix::rotate_x(-amt * 8);
+            //tire_fl->transform *= cg::matrix::rotate_x(amt * 8);
+            //tire_bl->transform *= cg::matrix::rotate_x(amt * 8);
+            //tire_fr->transform *= cg::matrix::rotate_x(-amt * 8);
+            //tire_br->transform *= cg::matrix::rotate_x(-amt * 8);
             break;
         case GLUT_KEY_DOWN:
             std::cerr << "Down key pressed." << std::endl;
-            tire_fl->transform *= cg::matrix::rotate_x(-amt * 8);
-            tire_bl->transform *= cg::matrix::rotate_x(-amt * 8);
-            tire_fr->transform *= cg::matrix::rotate_x(amt * 8);
-            tire_br->transform *= cg::matrix::rotate_x(amt * 8);
+            //tire_fl->transform *= cg::matrix::rotate_x(-amt * 8);
+            //tire_bl->transform *= cg::matrix::rotate_x(-amt * 8);
+            //tire_fr->transform *= cg::matrix::rotate_x(amt * 8);
+            //tire_br->transform *= cg::matrix::rotate_x(amt * 8);
             break;
         case GLUT_KEY_LEFT:
             std::cerr << "Left key pressed." << std::endl;
