@@ -162,6 +162,7 @@ void load_objects(void)
     camera->transform = cg::matrix::translate(0,2,0) * cg::matrix::rotate_y(30);
 
     obj::object::scene_camera = camera;
+    obj::null::drawable = false;
 
     std::shared_ptr<obj::object> tmp;
     GLuint texid = 0;

@@ -18,7 +18,7 @@ public: // Functions
 
     virtual void set_geo(std::shared_ptr<cg::Geometry> g_in);
     virtual void set_texid(GLuint texid);
-    virtual void draw();
+    virtual void draw() = 0; // This makes this object an abstract class
 
 public: // Variables
     cg::Mat4x4 transform;
@@ -40,16 +40,22 @@ public:
 class null : public object
 {
 public:
-    virtual void enable_draw(bool enable=true);
     virtual void draw();
-protected:
-    bool drawable;
+
+public: // variables
+    static bool drawable;
 };
 
 class camera : public object
 {
 public:
+    camera();
     virtual void draw();
+    virtual void build_perspective();
+
+public: // Variables
+    double fovy, aspect, znear, zfar;
+    cg::Mat4x4 perspective;
 };
 
 class light : public object
