@@ -11,7 +11,18 @@ class Transform
 {
 public:
     Transform() : tx(), ty(), tz(), rx(), ry(), rz(), sx(1), sy(1), sz(1){}
-    Transform(const Transform &other) = default;
+    Transform(const Transform &other)
+    {
+        tx = other.tx;
+        ty = other.ty;
+        tz = other.tz;
+        rx = other.rx;
+        ry = other.ry;
+        rz = other.rz;
+        sx = other.sx;
+        sy = other.sy;
+        sz = other.sz;
+    }
 
     operator Mat4x4()
     {

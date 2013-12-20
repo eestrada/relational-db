@@ -53,7 +53,8 @@ public:
 
         if(e != 0)
         {
-            throw err::system_exit("POSIX error while sleeping.", errno);
+            //throw err::system_exit("POSIX error while sleeping.", errno);
+            throw err::system_exit("POSIX error while sleeping.", 20);
         }
     }
 private:

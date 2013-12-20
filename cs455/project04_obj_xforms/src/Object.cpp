@@ -5,7 +5,7 @@
 namespace obj
 {
 
-std::shared_ptr<object> object::scene_camera = std::shared_ptr<object>();
+object* object::scene_camera = NULL;
 
 bool null::drawable = true;
 
@@ -27,15 +27,9 @@ cg::Mat4x4 object::getFinalXform() const
 
 void object::set_texid(GLuint texid){}
 
-void object::set_geo(std::shared_ptr<cg::Geometry> g_in){}
+void object::set_geo(cg::Geometry* g_in){}
 
-/*
-void object::draw()
-{
-}
-*/
-
-void geo::set_geo(std::shared_ptr<cg::Geometry> g_in)
+void geo::set_geo(cg::Geometry* g_in)
 {
     this->g = g_in;
 }

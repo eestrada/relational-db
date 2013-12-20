@@ -13,7 +13,8 @@ INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/cg/*.h*) $(wildcard $(INC
 OGLLIBS ?= -lglut -lGLU -lGL 
 INCLUDES= -I$(INCDIR)/
 CXX ?= c++
-CXXFLAGS = -std=c++0x -O0 -g -Wall -pedantic $(INCLUDES)
+#CXXFLAGS = -std=c++0x -O0 -g -Wall -pedantic $(INCLUDES)
+CXXFLAGS = -std=c++03 -O0 -g -Wall -pedantic $(INCLUDES)
 
 .PHONY : run bin test clean memcheck
 

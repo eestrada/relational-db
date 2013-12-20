@@ -12,7 +12,7 @@ void trimesh::draw(const Mat4x4 &mat)
     point3 pt;
 
     glBegin(GL_TRIANGLES);
-    for(auto tcurrent = this->tris.cbegin(); tcurrent != this->tris.cend(); ++tcurrent)
+    for(std::vector<triangle>::const_iterator tcurrent = this->tris.begin(); tcurrent != this->tris.end(); ++tcurrent)
     {
         // first texture coordinate position
         glTexCoord2f( this->uvs.at(tcurrent->tex[0]).u(),
@@ -56,25 +56,25 @@ std::ostream & operator<<(std::ostream &out, const cg::triangle &t)
 std::ostream & operator<<(std::ostream &out, const cg::trimesh &tm)
 {
     out << "# vertices" << '\n';
-    for(auto pt_iter = tm.pts.cbegin(); pt_iter != tm.pts.cend(); ++pt_iter)
+    for(std::vector<cg::point3>::const_iterator pt_iter = tm.pts.begin(); pt_iter != tm.pts.end(); ++pt_iter)
     {
         out << *pt_iter << '\n';
     }
 
     out << "# normals" << '\n';
-    for(auto nml_iter = tm.nmls.cbegin(); nml_iter != tm.nmls.cend(); ++nml_iter)
+    for(std::vector<cg::normal>::const_iterator nml_iter = tm.nmls.begin(); nml_iter != tm.nmls.end(); ++nml_iter)
     {
         out << *nml_iter << '\n';
     }
 
     out << "# texture coords" << '\n';
-    for(auto uv_iter = tm.uvs.cbegin(); uv_iter != tm.uvs.cend(); ++uv_iter)
+    for(std::vector<cg::uvw>::const_iterator uv_iter = tm.uvs.begin(); uv_iter != tm.uvs.end(); ++uv_iter)
     {
         out << *uv_iter << '\n';
     }
 
     out << "# triangles" << '\n';
-    for(auto tri_iter = tm.tris.cbegin(); tri_iter != tm.tris.cend(); ++tri_iter)
+    for(std::vector<cg::triangle>::const_iterator tri_iter = tm.tris.begin(); tri_iter != tm.tris.end(); ++tri_iter)
     {
         out << *tri_iter << '\n';
     }

@@ -16,12 +16,6 @@ square_matrix<D>::square_matrix(const square_matrix<D> &other) : val_ptr(new dou
 }
 
 template <uint8_t D>
-square_matrix<D>::square_matrix(square_matrix<D> &&other) : val_ptr(nullptr)
-{
-    *this = std::move(other);
-}
-
-template <uint8_t D>
 square_matrix<D>::~square_matrix()
 {
     delete[] this->val_ptr;
@@ -51,19 +45,6 @@ square_matrix<D> & square_matrix<D>::operator=(const square_matrix<D> &other)
         }
     }
     //std::cerr << (*this) << "\n";
-    return *this;
-}
-
-template <uint8_t D>
-square_matrix<D> & square_matrix<D>::operator=(square_matrix<D> &&other)
-{
-    if(this != &other)
-    {
-        delete[] this->val_ptr;
-        this->val_ptr = other.val_ptr;
-        other.val_ptr = nullptr;
-    }
-
     return *this;
 }
 
@@ -153,7 +134,7 @@ square_matrix<D> & square_matrix<D>::operator*=(const square_matrix<D> &other)
     //std::cerr << "Result of Matrix multiply is: \n" ;
     //std::cerr << *this << "     x\n" << other << "     =\n"<< tmp << std::endl;
 
-    *this = std::move(tmp); // Use move semantics to keep this cheap;
+    *this = tmp; // Use move semantics to keep this cheap;
     return *this;
 }
 

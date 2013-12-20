@@ -8,7 +8,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <array>
 #include <locale>
 
 /* Include C standard headers */
@@ -38,6 +37,7 @@
 #include "cg/cg_utils.hpp"
 #include "utils/system.hpp"
 #include "utils/ASCII_codes.h"
+#include "utils/memory.hpp"
 
 /* Global vars */
 
@@ -51,7 +51,7 @@ int draw_height = 720;
 bool up_pressed = false, down_pressed = false, left_pressed = false, right_pressed = false,
     W_pressed = false, A_pressed = false, S_pressed = false, D_pressed = false;
 
-typedef std::shared_ptr<obj::object> obj_ptr;
+typedef obj::object* obj_ptr;
 
 std::vector< obj_ptr > scene;
 
@@ -111,9 +111,9 @@ GLuint loadGLTexture(const char *filename)
 
 void draw(void)
 {
-    for(auto iter = scene.cbegin(); iter != scene.cend(); ++iter)
+    for(std::vector<obj_ptr>::iterator iter = scene.begin(); iter != scene.end(); ++iter)
     {
-        iter->get()->draw();
+        (*iter)->draw();
     }
 }
 
@@ -158,28 +158,28 @@ void reshape(int x, int y)
 
 void load_objects(void)
 {
-    camera.reset(new obj::camera);
+    camera = (new obj::camera);
     camera->transform = cg::matrix::translate(0,2,0) * cg::matrix::rotate_y(30);
 
     obj::object::scene_camera = camera;
     obj::null::drawable = false;
 
-    std::shared_ptr<obj::object> tmp;
+    obj_ptr tmp;
     GLuint texid = 0;
 
     //parking lot
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(cg::objparser::parse_file("./geo/ParkingLot.obj"));
     texid = loadGLTexture("./tex/ParkingLot.ppm");
     tmp->set_texid(texid);
     scene.push_back(tmp);
 
     //car
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(cg::objparser::parse_file("./geo/car.obj"));
     texid = loadGLTexture("./tex/car.ppm");
     tmp->set_texid(texid);
-    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent = new obj::null();
     tmp->parent->transform = cg::matrix::translate(-2.9, 0.0, -7.7) * cg::matrix::rotate_y(60.0);
     tmp->transform = cg::matrix::translate(0.0, 0.0, 0.545);
     scene.push_back(tmp);
@@ -187,15 +187,15 @@ void load_objects(void)
     car_obj = tmp;
 
     // Tire data is shared between all instances
-    auto tire_geo = cg::objparser::parse_file("./geo/tire.obj");
+    cg::trimesh* tire_geo = cg::objparser::parse_file("./geo/tire.obj");
     texid = loadGLTexture("./tex/tire.ppm");
 
     //Tire geo, Front Left
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent = new obj::null();
+    tmp->parent->parent = new obj::null();
     tmp->parent->parent->parent = car_obj;
     tmp->parent->parent->transform = cg::matrix::translate(-0.377,0.153,-0.545) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
@@ -204,11 +204,11 @@ void load_objects(void)
     tire_fl = tmp;
 
     //Tire geo, Front Right
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent = new obj::null();
+    tmp->parent->parent = new obj::null();
     tmp->parent->parent->parent = car_obj;
     tmp->parent->parent->transform = cg::matrix::translate(0.377,0.153,-0.545) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
@@ -217,11 +217,11 @@ void load_objects(void)
     tire_fr = tmp;
 
     //Tire geo, Back Left
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent = new obj::null();
+    tmp->parent->parent = new obj::null();
     tmp->parent->parent->parent = car_obj;
     tmp->parent->parent->transform = cg::matrix::translate(-0.377,0.153,0.465) * cg::matrix::scale(-0.25, -0.25, 0.25);
     scene.push_back(tmp);
@@ -230,11 +230,11 @@ void load_objects(void)
     tire_bl = tmp;
 
     //Tire geo, Back Right
-    tmp.reset(new obj::geo());
+    tmp = (new obj::geo());
     tmp->set_geo(tire_geo);
     tmp->set_texid(texid);
-    tmp->parent = std::shared_ptr<obj::object>(new obj::null());
-    tmp->parent->parent = std::shared_ptr<obj::object>(new obj::null());
+    tmp->parent = new obj::null();
+    tmp->parent->parent = new obj::null();
     tmp->parent->parent->parent = car_obj;
     tmp->parent->parent->transform = cg::matrix::translate(0.377,0.153,0.465) * cg::matrix::uniform_scale(0.25);
     scene.push_back(tmp);
@@ -254,6 +254,7 @@ void initGL(void)
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+    glDepthRange(0.0, 1.0);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_LINE_SMOOTH);
 
@@ -403,7 +404,8 @@ void set_locale(void)
 // about the function being named main.
 int main(int argc, char **argv)
 {
-    std::atexit(flush_all);
+    //std::atexit(flush_all);
+    atexit(flush_all);
     set_locale();
 
     glutInit(&argc, argv);

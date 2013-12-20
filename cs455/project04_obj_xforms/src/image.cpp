@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <cstdint>
+#include <stdint.h>
 
 #include "cg/image.hpp"
 #include "utils/exceptions.hpp"

@@ -32,11 +32,6 @@ public:
     square_matrix(const square_matrix &other);
 
     /*
-     * Move Constructor
-     */
-    square_matrix(square_matrix &&other);
-
-    /*
      * Destructor
      */
     ~square_matrix();
@@ -50,11 +45,6 @@ public:
      * Copy Assignment
      */
     square_matrix &operator=(const square_matrix &other);
-
-    /*
-     * Move Assignment
-     */
-    square_matrix &operator=(square_matrix &&other);
 
     /*
      * Return the raw pointer to the underlying data array
