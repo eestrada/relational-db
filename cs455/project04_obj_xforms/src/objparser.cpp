@@ -92,13 +92,13 @@ namespace objparser
     trimesh* parse(std::istream &in)
     {
         //std::ifstream objfile(fname.c_str());
-        std::string line, tmp;
-        std::istringstream strm;
-
         trimesh* tm_ptr(new trimesh());
 
         while(!in.eof())
         {
+            std::string line, tmp;
+            std::istringstream strm;
+
             getline(in, line);
             if(line.empty()) continue; //if line is empty, restart loop
 
