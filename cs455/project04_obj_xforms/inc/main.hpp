@@ -51,6 +51,14 @@ int draw_height = 720;
 bool up_pressed = false, down_pressed = false, left_pressed = false, right_pressed = false,
     W_pressed = false, A_pressed = false, S_pressed = false, D_pressed = false;
 
+//#define ECHO_STUFF
+#if defined(ECHO_STUFF)
+std::ostream &echo = std::cerr;
+#else
+std::ofstream nullfd("/dev/null");
+std::ostream &echo = nullfd;
+#endif
+
 typedef obj::object* obj_ptr;
 
 std::vector< obj_ptr > scene;
@@ -281,47 +289,47 @@ void keyboard(unsigned char key, int x, int y)
     switch ( key )
     {
         case ASCII_ESCAPE:
-            std::cerr << "Escape key pressed. Exiting program." << std::endl;
+            echo << "Escape key pressed. Exiting program." << std::endl;
             throw err::system_exit();    // then exit the program
             break;
         case 'w':
         case 'W':
-            std::cerr << "'W' key pressed." << std::endl;
+            echo << "'W' key pressed." << std::endl;
             camera->transform *= cg::matrix::translate(0,0,-amt);
             break;
         case 'a':
         case 'A':
-            std::cerr << "'A' key pressed." << std::endl;
+            echo << "'A' key pressed." << std::endl;
             camera->transform *= cg::matrix::translate(-amt,0,0);
             break;
         case 's':
         case 'S':
-            std::cerr << "'S' key pressed." << std::endl;
+            echo << "'S' key pressed." << std::endl;
             camera->transform *= cg::matrix::translate(0,0,amt);
             break;
         case 'd':
         case 'D':
-            std::cerr << "'D' key pressed." << std::endl;
+            echo << "'D' key pressed." << std::endl;
             camera->transform *= cg::matrix::translate(amt,0,0);
             break;
         case 'q':
         case 'Q':
-            std::cerr << "'Q' key pressed." << std::endl;
+            echo << "'Q' key pressed." << std::endl;
             camera->transform *= cg::matrix::rotate_y(amt * rot);
             break;
         case 'e':
         case 'E':
-            std::cerr << "'E' key pressed." << std::endl;
+            echo << "'E' key pressed." << std::endl;
             camera->transform *= cg::matrix::rotate_y(-amt * rot);
             break;
         case 'z':
         case 'Z':
-            std::cerr << "'Z' key pressed." << std::endl;
+            echo << "'Z' key pressed." << std::endl;
             camera->transform *= cg::matrix::rotate_x(amt * rot);
             break;
         case 'c':
         case 'C':
-            std::cerr << "'C' key pressed." << std::endl;
+            echo << "'C' key pressed." << std::endl;
             camera->transform *= cg::matrix::rotate_x(-amt * rot);
             break;
         default:
@@ -339,7 +347,7 @@ void special(int key, int x, int y)
     switch ( key )
     {
         case GLUT_KEY_UP:
-            std::cerr << "Up key pressed." << std::endl;
+            echo << "Up key pressed." << std::endl;
             tire_fl->transform *= cg::matrix::rotate_x(amt * 32);
             tire_bl->transform *= cg::matrix::rotate_x(amt * 32);
             tire_fr->transform *= cg::matrix::rotate_x(-amt * 32);
@@ -349,7 +357,7 @@ void special(int key, int x, int y)
             car_obj->parent->transform *= cg::matrix::translate(0, 0, -amt * 0.12) * cg::Mat4x4(tmp);
             break;
         case GLUT_KEY_DOWN:
-            std::cerr << "Down key pressed." << std::endl;
+            echo << "Down key pressed." << std::endl;
             tire_fl->transform *= cg::matrix::rotate_x(-amt * 8);
             tire_bl->transform *= cg::matrix::rotate_x(-amt * 8);
             tire_fr->transform *= cg::matrix::rotate_x(amt * 8);
@@ -359,14 +367,14 @@ void special(int key, int x, int y)
             car_obj->parent->transform *= cg::matrix::translate(0, 0, amt * 0.03) * cg::matrix::inverted(cg::Mat4x4(tmp));
             break;
         case GLUT_KEY_LEFT:
-            std::cerr << "Left key pressed." << std::endl;
+            echo << "Left key pressed." << std::endl;
             tire_angle.ry += amt * 2;
             tire_angle.ry = cg::utils::clamp(tire_angle.ry, -45.0, 45.0);
             tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
             tire_fr->parent->transform = cg::Mat4x4(tire_angle);
             break;
         case GLUT_KEY_RIGHT:
-            std::cerr << "Right key pressed." << std::endl;
+            echo << "Right key pressed." << std::endl;
             tire_angle.ry -= amt * 2;
             tire_angle.ry = cg::utils::clamp(tire_angle.ry, -45.0, 45.0);
             tire_fl->parent->transform = cg::matrix::inverted(cg::Mat4x4(tire_angle));
