@@ -22,8 +22,8 @@
 //#include <X11/Xutil.h>
 
 #include <GL/freeglut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+//#include <GL/gl.h>
+//#include <GL/glu.h>
 
 
 /* Include my headers */
@@ -113,13 +113,22 @@ void draw(void)
 {
     for(std::vector<obj_ptr>::iterator iter = scene.begin(); iter != scene.end(); ++iter)
     {
+        //std::cerr << *iter << std::endl;
         (*iter)->draw();
     }
+
+    /*
+    for(int i = 0; i < scene.size(); ++i)
+    {
+        std::cerr << i << std::endl;
+        scene[i]->draw();
+    }
+    */
 }
 
 void display(void)
 {
-    glClearColor( 0.0, 0.0, 0.0, 1 );
+    glClearColor( 0.3, 0.3, 0.3, 1 );
     glClear(GL_COLOR_BUFFER_BIT);
     glClearDepth(1.0);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -250,7 +259,7 @@ void initGL(void)
 {
     glShadeModel(GL_SMOOTH);
     glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);

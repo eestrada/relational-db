@@ -136,16 +136,17 @@ int render(const obj::scene &scn, std::ostream &out)
             // Shoot primary ray
             double min = 1e9;
             rt::RayHit hit;
-            std::shared_ptr<obj::geo> object = NULL;
+            std::shared_ptr<obj::geo> object();
 
-            for(auto geo_ptr : scn.scene_geo)
+            //for(auto geo_ptr : scn.scene_geo)
+            for(auto geo_ptr = scn.scene_geo.cbegin(); geo_ptr != scn.scene_geo.cend(); ++geo_ptr)
             {
                 //std::cerr <<  geo_ptr.get() << std::endl;
-                auto rh = geo_ptr->trace(pray);
+                auto rh = geo_ptr->get()->trace(pray);
                 if(rh.distance < min)
                 {
                     min = hit.distance;
-                    object = geo_ptr;
+                    object = *geo_ptr;
                     hit = rh;
                 }
                 continue;

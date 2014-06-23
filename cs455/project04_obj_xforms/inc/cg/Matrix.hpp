@@ -5,15 +5,17 @@
 #include <iostream>
 #include <ostream>
 #include <utility>
+#include <stdint.h>
+#include "utils/exceptions.hpp"
 
+/*
 #if __cplusplus == 199711L
-    #include <stdint.h>
 #else
     #include <cstdint>
 #endif
 
 #include "utils/exceptions.hpp"
-
+*/
 namespace cg
 {
 

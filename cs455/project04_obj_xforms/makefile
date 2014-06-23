@@ -10,11 +10,11 @@ OBJS = $(OBJDIR)/main.o $(OBJDIR)/Geometry.o $(OBJDIR)/image.o $(OBJDIR)/vector3
 SRCS = $(wildcard $(SRCDIR)/*.cpp)
 INCS = $(wildcard $(INCDIR)/*.h*) $(wildcard $(INCDIR)/cg/*.h*) $(wildcard $(INCDIR)/utils/*.h*) $(wildcard $(INCDIR)/cg/*.inl) 
 
-OGLLIBS ?= -lglut -lGLU -lGL 
+OGLLIBS ?= -lGLU -lGL -lglut 
 INCLUDES= -I$(INCDIR)/
 CXX ?= c++
 #CXXFLAGS = -std=c++0x -O0 -g -Wall -pedantic $(INCLUDES)
-CXXFLAGS = -std=c++03 -O0 -g -Wall -pedantic $(INCLUDES)
+CXXFLAGS = -std=c++98 -O0 -g -Wall -pedantic $(INCLUDES)
 
 .PHONY : run bin test clean memcheck
 

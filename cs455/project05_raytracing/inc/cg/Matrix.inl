@@ -16,7 +16,7 @@ square_matrix<D>::square_matrix(const square_matrix<D> &other) : val_ptr(new dou
 }
 
 template <uint8_t D>
-square_matrix<D>::square_matrix(square_matrix<D> &&other) : val_ptr(nullptr)
+square_matrix<D>::square_matrix(square_matrix<D> &&other) : val_ptr(NULL)
 {
     *this = std::move(other);
 }
@@ -61,7 +61,7 @@ square_matrix<D> & square_matrix<D>::operator=(square_matrix<D> &&other)
     {
         delete[] this->val_ptr;
         this->val_ptr = other.val_ptr;
-        other.val_ptr = nullptr;
+        other.val_ptr = NULL;
     }
 
     return *this;

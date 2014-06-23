@@ -92,19 +92,23 @@ namespace objparser
     trimesh* parse(std::istream &in)
     {
         //std::ifstream objfile(fname.c_str());
-        std::string line, tmp;
-        std::istringstream strm;
 
         trimesh* tm_ptr(new trimesh());
 
-        while(!in.eof())
+        while(!(in.eof()))
         {
+            std::string line, tmp;
+            std::istringstream strm;
+
+            //line.clear();
             getline(in, line);
+
             if(line.empty()) continue; //if line is empty, restart loop
 
+            //strm.seekg(0);
             strm.str(line);
-            strm.seekg(0);
 
+            //tmp.clear();
             strm >> tmp;
 
             if(tmp == "v")
@@ -145,8 +149,14 @@ namespace objparser
         //fstrm.exceptions(std::ifstream::failbit);
 
         fstrm.open(fname.c_str());
+        if(fstrm.eof())
+            std::cerr << "The file is BAD!" << std::endl;
 
-        trimesh* tm = parse(fstrm);
+        std::stringstream sstrm;
+
+        sstrm << fstrm.rdbuf();
+        //trimesh* tm = parse(fstrm);
+        trimesh* tm = parse(sstrm);
         std::cerr << " ...Done." << std::endl;
 
         return tm;
