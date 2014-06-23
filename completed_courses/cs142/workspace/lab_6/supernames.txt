@@ -1,5 +1,0 @@
-5: Mouse, Minnie
-4: Mouse, Mickey
-3: McDuck, Scrooge
-2: Goof, Max
-1: Duck, Donald

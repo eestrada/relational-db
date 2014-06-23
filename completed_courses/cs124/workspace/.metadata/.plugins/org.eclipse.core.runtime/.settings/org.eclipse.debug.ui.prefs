@@ -1,7 +1,0 @@
-#Wed Mar 10 20:09:54 MST 2010
-pref_state_memento.org.eclipse.debug.ui.VariableView=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<VariablesViewMemento org.eclipse.debug.ui.SASH_DETAILS_PART\="200" org.eclipse.debug.ui.SASH_VIEW_PART\="200"/>
-org.eclipse.debug.ui.memory.columnSize\:org.eclipse.cdt.debug.core=2
-eclipse.preferences.version=1
-pref_state_memento.org.eclipse.debug.ui.RegisterView=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<VariablesViewMemento org.eclipse.debug.ui.SASH_DETAILS_PART\="200" org.eclipse.debug.ui.SASH_VIEW_PART\="200"/>
-pref_state_memento.org.eclipse.debug.ui.ExpressionView=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<VariablesViewMemento org.eclipse.debug.ui.SASH_DETAILS_PART\="200" org.eclipse.debug.ui.SASH_VIEW_PART\="200"/>
-org.eclipse.debug.ui.memory.rowSize\:org.eclipse.cdt.debug.core=16

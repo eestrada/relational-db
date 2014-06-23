@@ -1,4 +1,0 @@
-Tracing with rays
-=================
-
-Hurray!
