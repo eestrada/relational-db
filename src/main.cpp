@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "Lexer.hpp"
 
 int main(int argc, char **argv)
@@ -9,7 +10,27 @@ int main(int argc, char **argv)
 
     Lex::Lexer l(std::cin);
 
-    l.next();
+    /*
+    try
+    {
+        while(true)
+        {
+            Lex::Token t = l.next();
+            cout << string(t) << endl;
+        }
+    }
+    catch(const Lex::input_error &e)
+    {
+    }
+    catch(const Lex::end_of_stream &e)
+    {
+    }
+    */
+
+    Lex::Token t;
+    t.kind = Lex::Kind::SCHEMES;
+    cout << string(t) << endl;
     
     return EXIT_SUCCESS;
 }
+
