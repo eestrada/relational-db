@@ -2,6 +2,7 @@
 #include <sstream>
 #include <cassert>
 #include <map>
+#include <cctype>
 
 using namespace std;
 
@@ -57,12 +58,37 @@ Token::operator string()
 
 Lexer::Lexer(istream &i) : in(i), current_line(0) {}
 
-Token Lexer::next(void)
+Token Lexer::next()
 {
-    assert(!"Member function not yet implemented.");
-    Token t;
-    return t;
+    if(!cur_tok) cur_tok.reset(new Token);
+    *cur_tok = this->lex_next();
+    return *cur_tok;
 }
 
+Token Lexer::lex_next()
+{
+    while(not in.eof())
+    {
+        int ch = in.peek();
+
+        if (std::isspace(ch)) this->skip_ws();
+        if (ch == '#') this->skip_comment();
+        if (ch == '\'') return this->lex_quote();
+        if (std::isalpha(ch)) return this->lex_id();
+        if (std::ispunct(ch)) return this->lex_punct();
+    }
+
+    // If we made it down here, then we are at end of file
+    return this->lex_eof();
 }
+
+Token Lexer::lex_eof()
+{
+    Token retval;
+    retval.kind = Kind::END_OF_STRM;
+    retval.lnum = this->current_line;
+    return retval;
+}
+
+} // end of namespace
 

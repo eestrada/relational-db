@@ -15,36 +15,51 @@ class end_of_stream : public std::exception
 {
 };
 
-class input_error : public std::runtime_error
+class lexing_error : public std::runtime_error
+{
+public:
+    lexing_error(const std::string &msg) : std::runtime_error(msg){}
+};
+
+class input_error : public lexing_error
 {
 public:
     input_error(const std::string &msg, intmax_t lnum)
-        : std::runtime_error(msg), line_number(lnum){}
+        : lexing_error(msg), ln(lnum){}
 
-public:
-    const intmax_t line_number;
+    intmax_t line_number() {return ln;}
+
+private:
+    intmax_t ln;
 };
 
-enum class Kind {   
-                    START_OF_STRM,
-                    COMMA,
-                    PERIOD,
-                    Q_MARK,
-                    LEFT_PAREN,
-                    RIGHT_PAREN,
-                    COLON,
-                    COLON_DASH,
-                    SCHEMES,
-                    FACTS,
-                    RULES,
-                    QUERIES,
-                    ID,
-                    STRING,
-                    END_OF_STRM // Only used internally
-                };
+enum class Kind : char  {   
+                            START_OF_STRM,
+                            COMMA,
+                            PERIOD,
+                            Q_MARK,
+                            LEFT_PAREN,
+                            RIGHT_PAREN,
+                            COLON,
+                            COLON_DASH,
+                            SCHEMES,
+                            FACTS,
+                            RULES,
+                            QUERIES,
+                            ID,
+                            STRING,
+                            END_OF_STRM // Only used internally
+                        };
 
 struct Token
 {
+    Token() = default;
+    Token(const Token &other) = default;
+    Token(Token &&other) = default;
+
+    Token& operator=(const Token &other) = default;
+    Token& operator=(Token &&other) = default;
+
     Kind kind;
     std::unique_ptr<std::string> value;
     intmax_t lnum;
@@ -54,13 +69,26 @@ struct Token
 
 class Lexer
 {
-public:
+public: //functions
     Lexer(std::istream &input_stream);
-    Token next(void);
+    Token next();
+    Token current() const;
 
-private:
+private: //functions
+    Token lex_next();
+    void skip_ws();
+    void skip_comment();
+    Token lex_str();
+    Token lex_id();
+    Token lex_keyword();
+    Token lex_punct();
+    Token lex_eof();
+
+
+private: //data
     std::istream &in;
     intmax_t current_line;
+    std::unique_ptr<Token> cur_tok;
 };
 
 }
