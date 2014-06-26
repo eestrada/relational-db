@@ -1,6 +1,6 @@
-#include "Lexer.hpp"
-#include <cassert>
+#include "Lexer.h"
 #include <sstream>
+#include <cassert>
 #include <map>
 
 using namespace std;
@@ -22,6 +22,7 @@ const map<Kind, string> kmap = {
                                 {Kind::QUERIES, "QUERIES"},
                                 {Kind::ID, "ID"},
                                 {Kind::STRING, "STRING"},
+                                {Kind::END_OF_STRM, "END_OF_STRM"},
                                };
 
 const map<Kind, string> valmap = {

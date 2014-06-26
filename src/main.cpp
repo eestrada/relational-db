@@ -1,6 +1,6 @@
+#include "Lexer.h"
 #include <iostream>
 #include <string>
-#include "Lexer.hpp"
 
 int main(int argc, char **argv)
 {
@@ -13,9 +13,8 @@ int main(int argc, char **argv)
     /*
     try
     {
-        while(true)
+        for(auto t = l.next(); t != Lex::Token::END_OF_STRM; t = l.next())
         {
-            Lex::Token t = l.next();
             cout << string(t) << endl;
         }
     }

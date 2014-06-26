@@ -26,6 +26,7 @@ public:
 };
 
 enum class Kind {   
+                    START_OF_STRM,
                     COMMA,
                     PERIOD,
                     Q_MARK,
@@ -38,7 +39,8 @@ enum class Kind {
                     RULES,
                     QUERIES,
                     ID,
-                    STRING
+                    STRING,
+                    END_OF_STRM // Only used internally
                 };
 
 struct Token
