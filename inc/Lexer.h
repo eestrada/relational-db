@@ -27,7 +27,7 @@ public:
     input_error(const std::string &msg, intmax_t lnum)
         : lexing_error(msg), ln(lnum){}
 
-    intmax_t line_number() {return ln;}
+    intmax_t line_number() const {return ln;}
 
 private:
     intmax_t ln;
@@ -61,10 +61,10 @@ struct Token
     Token& operator=(Token &&other) = default;
 
     Kind kind;
-    std::unique_ptr<std::string> value;
+    std::string value;
     intmax_t lnum;
 
-    explicit operator std::string();
+    explicit operator std::string() const;
 };
 
 class Lexer
@@ -78,9 +78,10 @@ private: //functions
     Token lex_next();
     void skip_ws();
     void skip_comment();
+    void check_newline(int c);
     Token lex_str();
+    Token lex_keyword(const Token &id);
     Token lex_id();
-    Token lex_keyword();
     Token lex_punct();
     Token lex_eof();
 
