@@ -84,33 +84,33 @@ Token Lexer::lex_next()
     while(not in.eof())
     {
         int ch = in.peek();
-        //cerr << "Current char is: " << char(ch) << endl;
 
         if (std::isspace(ch))
         {
             //cerr << "about to skip ws\n";
             this->skip_ws();
         }
-        if (ch == '#')
+        else if (ch == '#')
         {
             //cerr << "about to skip comment\n";
             this->skip_comment();
         }
-        if (ch == '\'')
+        else if (ch == '\'')
         {
             //cerr << "about to lex string\n";
             return this->lex_str();
         }
-        if (std::isalpha(ch))
+        else if (std::isalpha(ch))
         {
             //cerr << "about to lex ID\n";
             return this->lex_id();
         }
-        if (std::ispunct(ch))
+        else if (std::ispunct(ch))
         {
             //cerr << "about to lex punctuation\n";
             return this->lex_punct();
         }
+        else throw input_error("Unrecognized character.", this->current_line);
     }
 
     // If we made it down here, then we are at end of file
@@ -124,7 +124,7 @@ void Lexer::check_newline(int c)
 
 void Lexer::skip_ws()
 {
-    for(auto c = in.peek(); std::isspace(c); c = in.peek())
+    for(int c = in.peek(); std::isspace(c); c = in.peek())
     {
         this->check_newline(c);
         in.get();
@@ -133,7 +133,7 @@ void Lexer::skip_ws()
 
 void Lexer::skip_comment()
 {
-    for(auto c = in.peek(); c != '\n'; c = in.peek())
+    for(int c = in.peek(); c != '\n'; c = in.peek())
     {
         in.get();
     }
@@ -147,10 +147,10 @@ Token Lexer::lex_str()
     retval.value = "";
     in.get(); // discard first single quote
 
-    for(auto c = in.peek(); c != '\''; c = in.peek())
+    for(int c = in.peek(); c != '\''; c = in.peek())
     {
-        //if (c == '\n') throw input_error("Newline before end of string.", this->current_line);
-        retval.value += c;
+        if (c == '\n' || c == EOF) throw input_error("Unterminated string.", this->current_line);
+        retval.value += char(c);
         in.get();
     }
     
@@ -187,9 +187,9 @@ Token Lexer::lex_id()
 
     //if(not std::isalpha(c)) throw input_error("ID must start with with alphabetical character.", this->current_line);
 
-    for(auto c = in.peek(); std::isalnum(c); c = in.peek())
+    for(int c = in.peek(); std::isalnum(c); c = in.peek())
     {
-        retval.value += c;
+        retval.value += char(c);
         in.get();
     }
 
@@ -200,24 +200,40 @@ Token Lexer::lex_id()
 
 Token Lexer::lex_punct()
 {
-    auto c = in.get();
+    int c = in.peek();
 
     Token retval;
     retval.value = c;
     retval.lnum = this->current_line;
 
     if(retval.value == strmap.at(Kind::COMMA))
+    {
         retval.kind = Kind::COMMA;
+        in.get();
+    }
     else if(retval.value == strmap.at(Kind::PERIOD))
+    {
         retval.kind = Kind::PERIOD;
+        in.get();
+    }
     else if(retval.value == strmap.at(Kind::Q_MARK))
+    {
         retval.kind = Kind::Q_MARK;
+        in.get();
+    }
     else if(retval.value == strmap.at(Kind::LEFT_PAREN))
+    {
         retval.kind = Kind::LEFT_PAREN;
+        in.get();
+    }
     else if(retval.value == strmap.at(Kind::RIGHT_PAREN))
+    {
         retval.kind = Kind::RIGHT_PAREN;
+        in.get();
+    }
     else if(retval.value == strmap.at(Kind::COLON))
     {
+        in.get();
         if(in.peek() != '-')
         {
             retval.kind = Kind::COLON;
@@ -228,8 +244,7 @@ Token Lexer::lex_punct()
             retval.kind = Kind::COLON_DASH;
         }
     }
-    else 
-        throw input_error("Unrecognized punctuation.", this->current_line);
+    else throw input_error("Unrecognized punctuation.", this->current_line);
 
     return retval;
 }

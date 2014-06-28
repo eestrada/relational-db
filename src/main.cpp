@@ -24,6 +24,8 @@ int main(int argc, char **argv)
     ofstream fout(args.at(2));
     //Lex::Lexer l(std::cin);
     Lex::Lexer l(fin);
+    //cerr << "Input file: " << args.at(1) << endl;
+    //cerr << "Output file: " << args.at(2) << endl;
     int count = 0;
 
     try
@@ -36,7 +38,7 @@ int main(int argc, char **argv)
     }
     catch(const Lex::input_error &e)
     {
-        fout << "Input Error on line " << e.line_number() << flush;
+        fout << "Input Error on line " << e.line_number() << endl;
         return EXIT_FAILURE;
     }
     fout << "Total Tokens = " << count << endl;

@@ -27,12 +27,15 @@ run : $(BIN)
 bin : $(BIN)
 
 test : clean memcheck
+	@ ./run_tests.sh
 
 clean :
 	@ echo "Removing generated files"
-	@rm -vf $(BIN)
-	@rm -vf $(OUTPUT)
-	@rm -vrf $(OBJDIR)
+	rm -vf $(BIN)
+	rm -vf $(OUTPUT)
+	rm -rf $(OBJDIR)
+	rm -rf ./output
+	rm -rf ./diffs
 
 memcheck : $(BIN) 
 	@ echo "Running valgrind to check for memory leaks"
