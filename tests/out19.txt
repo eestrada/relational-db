@@ -1,0 +1,3 @@
+(STRING,"String with value",5)
+(STRING,"",7)
+Total Tokens = 2

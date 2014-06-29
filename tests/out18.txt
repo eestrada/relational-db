@@ -1,0 +1,5 @@
+(SCHEMES,"Schemes",5)
+(ID,"SchemesAtStartOfID",7)
+(ID,"AtEndOfIDSchemes",9)
+(ID,"inMiddleSchemesOfID",11)
+Total Tokens = 4
