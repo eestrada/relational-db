@@ -2,7 +2,6 @@ BIN = ./test.bin
 INPUT = ./tests/in10.txt
 OUTPUT = /tmp/actual10.txt
 OUTTEST = ./tests/out10.txt
-#ARGS = < $(INPUT) > $(OUTPUT)
 ARGS = $(INPUT) $(OUTPUT)
 
 SRCDIR = ./src
@@ -19,11 +18,6 @@ CXXFLAGS = -std=c++11 -O0 -g -Wall -pedantic $(INCLUDES)
 
 .PHONY : run bin test clean memcheck
 
-run : $(BIN)
-	@ echo "Testing executable" 1>&2
-	@ $(BIN) $(ARGS)
-	@ diff $(OUTPUT) $(OUTTEST)
-
 bin : $(BIN)
 
 test : clean memcheck
@@ -39,7 +33,7 @@ clean :
 
 memcheck : $(BIN) 
 	@ echo "Running valgrind to check for memory leaks"
-	valgrind --tool=memcheck --leak-check=yes --max-stackframe=5000000 \
+	valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 

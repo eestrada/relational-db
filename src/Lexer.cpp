@@ -55,7 +55,6 @@ Token::operator string() const
     }
     catch (const std::out_of_range &e)
     {
-        //cerr << "Caught out of range error.\n";
         val = this->value;
     }
 
@@ -87,27 +86,22 @@ Token Lexer::lex_next()
 
         if (std::isspace(ch))
         {
-            //cerr << "about to skip ws\n";
             this->skip_ws();
         }
         else if (ch == '#')
         {
-            //cerr << "about to skip comment\n";
             this->skip_comment();
         }
         else if (ch == '\'')
         {
-            //cerr << "about to lex string\n";
             return this->lex_str();
         }
         else if (std::isalpha(ch))
         {
-            //cerr << "about to lex ID\n";
             return this->lex_id();
         }
         else if (std::ispunct(ch))
         {
-            //cerr << "about to lex punctuation\n";
             return this->lex_punct();
         }
         else throw input_error("Unrecognized character.", this->current_line);
@@ -157,8 +151,6 @@ Token Lexer::lex_str()
     in.get(); // discard trailing single quote
     retval.lnum = this->current_line;
 
-    //cerr << "String value is: " << retval.value << endl;
-
     return retval;
 }
 
@@ -184,8 +176,6 @@ Token Lexer::lex_id()
     retval.kind = Kind::ID;
 
     retval.value = "";
-
-    //if(not std::isalpha(c)) throw input_error("ID must start with with alphabetical character.", this->current_line);
 
     for(int c = in.peek(); std::isalnum(c); c = in.peek())
     {
