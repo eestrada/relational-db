@@ -104,6 +104,10 @@ Token Lexer::lex_next()
         {
             return this->lex_punct();
         }
+        else if (ch == EOF)
+        {
+            return this->lex_eof();
+        }
         else throw input_error("Unrecognized character.", this->current_line);
     }
 
