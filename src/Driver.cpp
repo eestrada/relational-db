@@ -52,7 +52,8 @@ int Driver::lex(int argc, char **argv)
 
 int Driver::parse(int argc, char **argv)
 {
-    std::cerr << "Calling Driver::parse instead of Driver::lex." << std::endl;
+    using namespace std;
+    //std::cerr << "Calling Driver::parse instead of Driver::lex." << std::endl;
     return Driver::lex(argc, argv);
 }
 
