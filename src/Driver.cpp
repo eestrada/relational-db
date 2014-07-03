@@ -1,6 +1,7 @@
 #include "Driver.h"
 #include "Lexer.h"
 #include "Parser.h"
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -49,6 +50,10 @@ int Driver::lex(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-int Driver::parse(int argc, char **argv) {return 0;}
+int Driver::parse(int argc, char **argv)
+{
+    std::cerr << "Calling Driver::parse instead of Driver::lex." << std::endl;
+    return Driver::lex(argc, argv);
+}
 
 int Driver::interpret(int argc, char **argv) {return 0;}
