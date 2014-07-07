@@ -1,7 +1,7 @@
 BIN = ./test.bin
-INPUT = ./tests/in10.txt
-OUTPUT = /tmp/actual10.txt
-OUTTEST = ./tests/out10.txt
+INPUT = ./tests/in21.txt
+OUTPUT = /tmp/actual21.txt
+OUTTEST = ./tests/out21.txt
 ARGS = $(INPUT) $(OUTPUT)
 
 SRCDIR = ./src
