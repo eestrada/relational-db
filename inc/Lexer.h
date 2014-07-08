@@ -71,6 +71,8 @@ class Lexer
 {
 public: //functions
     Lexer(std::istream &input_stream);
+    Lexer(std::unique_ptr<std::istream> input_stream);
+    ~Lexer();
     Token next();
     Token current() const;
 
@@ -89,6 +91,7 @@ private: //functions
 private: //data
     std::istream &in;
     intmax_t current_line;
+    bool own_stream;
     std::unique_ptr<Token> cur_tok;
 };
 
