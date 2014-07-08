@@ -1,0 +1,14 @@
+
+
+Schemes:
+  bob(A,B)
+
+Facts:
+  bob('4','2').
+
+# facts can't be repeated
+
+Facts:
+  bob('4','4').
+
+

@@ -52,8 +52,9 @@ int Driver::parse(int argc, char **argv)
 
     ifstream fin(args.at(1));
     ofstream fout(args.at(2));
-    shared_ptr<Lex::Lexer> l(new Lex::Lexer(fin));
-    Parse::Parser p(l);
+    
+    unique_ptr<Lex::Lexer> l(new Lex::Lexer(fin));
+    Parse::Parser p(move(l));
 
     try
     {

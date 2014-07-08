@@ -82,7 +82,7 @@ struct DatalogProgram
 class Parser
 {
 public:
-    explicit Parser(shared_ptr<Lex::Lexer> l);
+    explicit Parser(unique_ptr<Lex::Lexer> &&l);
     void parse();
     shared_ptr<const DatalogProgram> get_DatalogProgram() const;
 private: // functions
@@ -98,7 +98,7 @@ private: // functions
     Parameter parse_Parameter();
     void check_kind(Lex::Kind k);
 private: // variables
-    shared_ptr<Lex::Lexer> lexer;
+    unique_ptr<Lex::Lexer> lexer;
     shared_ptr<DatalogProgram> dlprog;
 };
 

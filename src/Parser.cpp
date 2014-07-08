@@ -94,25 +94,22 @@ DatalogProgram::operator string() const
     return out.str();
 }
 
+void build_from_vec(vector<Predicate> &v, set<string> &s)
+{
+    for(auto pred : v)
+    {
+        for(auto parm : pred.parm_vec)
+        {
+            try { s.insert(parm.get_literal()); }
+            catch(const parsing_error &e) { continue; }
+        }
+    }
+}
 void DatalogProgram::build_domain()
 {
-    for(auto pred : Schemes)
-    {
-        for(auto parm : pred.parm_vec)
-        {
-            try { Domain.insert(parm.get_literal()); }
-            catch(const parsing_error &e) { continue; }
-        }
-    }
-
-    for(auto pred : Facts)
-    {
-        for(auto parm : pred.parm_vec)
-        {
-            try { Domain.insert(parm.get_literal()); }
-            catch(const parsing_error &e) { continue; }
-        }
-    }
+    build_from_vec(Schemes, Domain);
+    build_from_vec(Facts, Domain);
+    build_from_vec(Queries, Domain);
 
     for(auto rule : Rules)
     {
@@ -125,65 +122,48 @@ void DatalogProgram::build_domain()
             }
         }
     }
-
-    for(auto pred : Queries)
-    {
-        for(auto parm : pred.parm_vec)
-        {
-            try { Domain.insert(parm.get_literal()); }
-            catch(const parsing_error &e) { continue; }
-        }
-    }
-    return;
 }
 
 void Parser::parse_DatalogProgram()
 {
     string err = "Unexpected token.";
     //if (lexer->current().kind == Lex::Kind::START_OF_STRM)
+
+    // Parse Schemes
     lexer->next();
+    check_kind(Lex::Kind::SCHEMES);
+    lexer->next();
+    check_kind(Lex::Kind::COLON);
+    lexer->next();
+    check_kind(Lex::Kind::ID);
+    parse_Scheme_list();
 
-    if (lexer->current().kind != Lex::Kind::SCHEMES || 
-        lexer->next().kind != Lex::Kind::COLON)
-            throw syntax_error(err, lexer->current());
-    else
-    {
-        lexer->next();
-        check_kind(Lex::Kind::ID);
-        parse_Scheme_list();
-    }
+    // Parse Facts
+    check_kind(Lex::Kind::FACTS);
+    lexer->next();
+    check_kind(Lex::Kind::COLON);
+    lexer->next();
+    parse_Facts_list();
 
-    if (lexer->current().kind != Lex::Kind::FACTS || 
-        lexer->next().kind != Lex::Kind::COLON)
-            throw syntax_error(err, lexer->current());
-    else
-    {
-        lexer->next();
-        parse_Facts_list();
-    }
+    // Parse Rules
+    check_kind(Lex::Kind::RULES);
+    lexer->next();
+    check_kind(Lex::Kind::COLON);
+    lexer->next();
+    parse_Rules_list();
 
-    if (lexer->current().kind != Lex::Kind::RULES || 
-        lexer->next().kind != Lex::Kind::COLON)
-            throw syntax_error(err, lexer->current());
-    else
-    {
-        lexer->next();
-        parse_Rules_list();
-    }
+    // Parse Queries
+    check_kind(Lex::Kind::QUERIES);
+    lexer->next();
+    check_kind(Lex::Kind::COLON);
+    lexer->next();
+    check_kind(Lex::Kind::ID);
+    parse_Queries_list();
 
-    if (lexer->current().kind != Lex::Kind::QUERIES || 
-        lexer->next().kind != Lex::Kind::COLON)
-            throw syntax_error(err, lexer->current());
-    else
-    {
-        lexer->next();
-        check_kind(Lex::Kind::ID);
-        parse_Queries_list();
-    }
+    // Check for end of file
+    check_kind(Lex::Kind::END_OF_STRM);
 
-    if (lexer->current().kind != Lex::Kind::END_OF_STRM) 
-        throw syntax_error(err, lexer->current());
-
+    // Build domain
     dlprog->build_domain();
 }
 
@@ -218,6 +198,7 @@ Rule Parser::parse_Rule()
     auto pred = parse_Predicate();
     check_kind(Lex::Kind::COLON_DASH);
     lexer->next();
+    check_kind(Lex::Kind::ID);
     auto pred_list = parse_Predicate_list();
     check_kind(Lex::Kind::PERIOD);
     lexer->next();
@@ -250,7 +231,11 @@ vector<Predicate> Parser::parse_Predicate_list()
             }
             catch(const syntax_error &e)
             {
-                if(e.token().kind == Lex::Kind::COMMA) lexer->next();
+                if(e.token().kind == Lex::Kind::COMMA)
+                {
+                    lexer->next();
+                    if (lexer->current().kind != Lex::Kind::ID) break; 
+                }
                 else throw;
             }
         }
@@ -261,6 +246,9 @@ vector<Predicate> Parser::parse_Predicate_list()
         else throw;
     }
 
+    check_kind(Lex::Kind::ID);
+
+    return pred_list;
 }
 
 Predicate Parser::parse_Predicate()
@@ -283,17 +271,14 @@ Predicate Parser::parse_Predicate()
 
 vector<Parameter> Parser::parse_Parameter_list()
 {
-    using Parameter::Type::IDENT;
-    using Parameter::Type::STRING;
-
     vector<Parameter> retval;
 
     auto t = lexer->current();
     if (t.kind != Lex::Kind::ID &&
         t.kind != Lex::Kind::STRING) 
-        throw syntax_error("Unexpected token.", lexer->current());
+        throw syntax_error(lexer->current());
 
-    auto parm_type = (t.kind == Lex::Kind::ID) ? IDENT : STRING; 
+    auto parm_type = (t.kind == Lex::Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
     auto val = t.value;
 
     retval.push_back({parm_type, val});
@@ -303,9 +288,9 @@ vector<Parameter> Parser::parse_Parameter_list()
         auto t = lexer->next();
         if (t.kind != Lex::Kind::ID &&
             t.kind != Lex::Kind::STRING) 
-            throw syntax_error("Unexpected token.", lexer->current());
+            throw syntax_error(lexer->current());
 
-        auto parm_type = (t.kind == Lex::Kind::ID) ? IDENT : STRING; 
+        auto parm_type = (t.kind == Lex::Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
         auto val = t.value;
 
         retval.push_back({parm_type, val});
@@ -316,7 +301,7 @@ vector<Parameter> Parser::parse_Parameter_list()
 
 Parameter Parser::parse_Parameter()
 {
-
+    return Parameter{}; // placeholder return statement
 }
 
 void Parser::check_kind(Lex::Kind k)
@@ -325,7 +310,7 @@ void Parser::check_kind(Lex::Kind k)
         throw syntax_error(lexer->current());
 }
 
-Parser::Parser(shared_ptr<Lex::Lexer> l) : lexer(l) {}
+Parser::Parser(unique_ptr<Lex::Lexer> &&l) : lexer{move(l)} {}
 
 void Parser::parse()
 {
