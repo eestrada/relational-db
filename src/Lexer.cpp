@@ -63,7 +63,12 @@ Token::operator string() const
     return out.str();
 }
 
-Lexer::Lexer(istream &i) : in(i), current_line(1) {}
+Lexer::Lexer(istream &i) : in(i), current_line(1), own_stream(false) {}
+Lexer::Lexer(unique_ptr<istream> i) : in(*(i.release())), current_line(1), own_stream(true) {}
+Lexer::~Lexer()
+{
+    if(own_stream) delete &in;
+}
 
 Token Lexer::next()
 {

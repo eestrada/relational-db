@@ -126,7 +126,6 @@ void DatalogProgram::build_domain()
 
 void Parser::parse_DatalogProgram()
 {
-    string err = "Unexpected token.";
     //if (lexer->current().kind == Lex::Kind::START_OF_STRM)
 
     // Parse Schemes
@@ -273,6 +272,19 @@ vector<Parameter> Parser::parse_Parameter_list()
 {
     vector<Parameter> retval;
 
+    retval.push_back(parse_Parameter());
+
+    while(lexer->next().kind == Lex::Kind::COMMA)
+    {
+        lexer->next();
+        retval.push_back(parse_Parameter());
+    }
+
+    return retval;
+}
+
+Parameter Parser::parse_Parameter()
+{
     auto t = lexer->current();
     if (t.kind != Lex::Kind::ID &&
         t.kind != Lex::Kind::STRING) 
@@ -281,27 +293,7 @@ vector<Parameter> Parser::parse_Parameter_list()
     auto parm_type = (t.kind == Lex::Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
     auto val = t.value;
 
-    retval.push_back({parm_type, val});
-
-    while(lexer->next().kind == Lex::Kind::COMMA)
-    {
-        auto t = lexer->next();
-        if (t.kind != Lex::Kind::ID &&
-            t.kind != Lex::Kind::STRING) 
-            throw syntax_error(lexer->current());
-
-        auto parm_type = (t.kind == Lex::Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
-        auto val = t.value;
-
-        retval.push_back({parm_type, val});
-    }
-
-    return retval;
-}
-
-Parameter Parser::parse_Parameter()
-{
-    return Parameter{}; // placeholder return statement
+    return Parameter{parm_type, val};
 }
 
 void Parser::check_kind(Lex::Kind k)
