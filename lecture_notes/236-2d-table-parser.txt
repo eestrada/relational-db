@@ -1,0 +1,190 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Table-Driven Parsing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Show the steps of a stack-based parser.
+
+
+	E -> T A
+	A -> + T A | - T A | epsilon
+	T -> ( E ) | 2
+
+
+	2 + 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Show the steps of a stack-based parser.
+
+
+	S -> if E then S
+	S -> E = E
+	E -> number | ident
+
+
+	if x then y = 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Parse Tables
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Build a parse table for the grammar.
+
+
+	E -> T A
+	A -> + T A | - T A | epsilon
+	T -> ( E ) | 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Build a parse table for the grammar.
+
+
+	S -> if E then S
+	S -> E = E
+	E -> number | ident
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's the algorithm for table-driven parsing?
+
+	push the start-symbol on the stack
+
+	while (top-of-stack != # || input != #)
+
+	  if (top-of-stack is a terminal)
+	     if (top-of-stack == input)
+	        pop the stack
+	        advance the input
+	     else
+	        error
+	  else if (top-of-stack is a nonterminal)
+	     if (table[top-of-stack, input] = A -> X1 X2 ... Xn)
+		pop the stack
+		push Xn, Xn-1, ..., X2, X1 on the stack
+	     else
+	        error
+
+	end while
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

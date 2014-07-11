@@ -1,0 +1,197 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Grammars
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How does the parser process the tokens from the following code?
+
+
+    void quote() {
+
+	print(
+
+	    "Controlling complexity is the essence of computer programming." +
+	    " - Brian Kernigan"
+
+	);
+
+    }
+
+
+
+Does the parser look for a specific sequence of tokens such as this?
+
+	VOID IDENT LEFT_PAREN RIGHT_PAREN ...
+
+
+
+How does the parser know if the input is valid code?
+What notation is commonly used to specify syntax?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Here's a Grammar for simple expressions.
+
+	E -> (E + E)
+	E -> (E * E)
+	E -> 1
+	E -> x
+	E -> y
+
+
+Show the steps that generate the expression.
+
+	(x * (1 + y))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Use the Grammar to show the steps that generate the sentence.
+
+	sentence -> noun-phrase verb-phrase
+	noun-phrase -> article noun
+	verb-phrase -> verb adverb
+	article -> a
+	article -> the
+	noun -> tree
+	noun -> monkey
+	verb -> eats
+	verb -> talks
+	adverb -> wildly
+	adverb -> loudly
+
+	the tree eats loudly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Grammar Terminology
+
+
+What's a Production (Rule)?
+
+What's a Metasymbol?
+
+What's a Nonterminal (Variable, Syntactic Category)?
+
+What's a Terminal?
+
+What's the Start Symbol?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's the form of a valid production or rewriting rule?
+
+
+	Head or Left-Hand-Side
+		Always a Nonterminal
+
+	Metasymbol ->
+
+	Body or Right-Hand-Side
+		0 or more Terminals and Nonterminals
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

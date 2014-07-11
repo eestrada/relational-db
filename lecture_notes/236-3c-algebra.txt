@@ -1,0 +1,267 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tautologies and Contradictions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Tautology?
+
+
+	A logical expression that is always true
+	(no matter what values are assigned to the variables)
+
+
+
+What's a Contradiction?
+
+
+	A logical expression that is always false
+	(no matter what values are assigned to the variables)
+
+
+
+Show that (P or not P) is a tautology.
+
+
+Show that (P and not P) is a contradiction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Logical Equivalences (Tautologies)
+
+	P and True	<=>  P			Identity
+	P or False	<=>  P			Identity
+	P or True	<=>  True		Domination
+	P and False	<=>  False		Domination
+	P or P		<=>  P			Idempotent
+	P and P		<=>  P			Idempotent
+	not (not P)	<=>  P			Double Negation
+	P or Q	 	<=>  Q or P		Commutative
+	P and Q		<=>  Q and P		Commutative
+	(P or Q) or R	<=>  P or (Q or R)	Associative
+	(P and Q) and R	<=>  P and (Q and R)	Associative
+	P or (Q and R)	<=>  (PvQ) and (PvR)	Distributive
+	P and (Q or R)	<=>  (P^Q) or (P^R)	Distributive
+	not (P and Q)	<=>  not P or not Q	DeMorgan's
+	not (P or Q) 	<=>  not P and not Q	DeMorgan's
+	P or (P and Q)	<=>  P			Absorption
+	P and (P or Q)	<=>  P			Absorption
+	P or not P	<=>  True		Negation
+	P and not P	<=>  False		Negation
+
+	P -> Q  	<=>  not P or Q
+	P <-> Q 	<=>  (P -> Q) and (Q -> P)
+	P <-> Q 	<=>  (P and Q) or (not P and not Q)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Using the Laws
+
+
+
+Suppose you replace P with (A -> B) in a law such as (P or P) <=> P.
+What do you know about the resulting expression?
+
+	((A -> B) or (A -> B)) <=> (A -> B)
+
+
+
+Suppose you have the following law and expression.
+How do you apply the law to the expression?
+
+	law: not (P and Q) <=> not P or not Q
+	exp: not (P and Q) or P
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Use algebra to simplify the code.
+
+
+	if (outflow > inflow && !(outflow > inflow && pressure < 10))
+	    do something;
+	else
+	    do something else;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Use algebra to simplify the code.
+
+
+	if ( !(v1 < v2 || odd(n)) || !(v1 < v2) && odd(n) )
+	   statement1;
+	else
+	   statement2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Another Look at Distributive Laws
+
+
+
+Does multiply distribute over add?
+
+
+	a * (b + c) = a*b + a*c
+
+
+Does AND distribute over OR?
+
+
+	P and (Q or R) <=> (P and Q) or (P and R)
+
+
+Does add distribute over multiply?
+
+
+	a + (b * c) = (a+b) * (a+c)
+
+
+Does OR distribute over AND?
+
+
+	P or (Q and R) <=> (P or Q) and (P or R)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

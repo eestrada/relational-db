@@ -1,0 +1,203 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Resolution in Datalog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you make an algorithm from resolution on facts and rules?
+
+
+
+What do you do with a query?
+
+	1. instantiate free variables with all combinations of values
+	2. think of the query as a goal
+	3. don't negate the query
+	   unify the query with a rule head (or match a fact)
+
+
+
+What do you do with a rule?
+
+	1. instantiate free variables with all combinations of values
+	2. think of each predicate in the rule body as a subgoal
+	3. don't convert the rule to a clause (don't negate body predicates)
+	   evaluate each predicate from the rule body like a new query
+
+
+
+What do you do with a fact?
+
+	1. don't resolve query and fact to give False
+	2. just match the query with a fact
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Draw a tree diagram that shows the steps used to evaluate the query.
+
+
+	facts:	 married(jim, bea)
+		 child(ned, bea)
+
+	rules:	 married(y,x) :- married(x,y)
+		 child(x,z) :- child(x,y), married(y,z)
+
+	queries: child(ned, jim)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Draw a tree diagram that shows the steps used to evaluate the query.
+
+
+	facts:	   sister(ann, bob)
+		   parent(bob, jay)
+
+	rules:	   aunt(x,z) :- sister(x,y), parent(y,z)
+
+	queries:   aunt(ann, jay)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What do you do with a query that contains a variable?
+
+
+	facts:	   sister(ann, bob)
+		   parent(bob, jay)
+		   parent(bob, bob)
+
+	rules:	   aunt(x,z) :- sister(x,y), parent(y,z)
+
+	queries:   aunt(ann, x)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What do you do with recursive rules?
+
+
+	facts:	f(1,1)
+		f(1,2)
+		f(2,3)
+
+	rules:	b(x,y) :- f(x,y)
+		b(x,y) :- f(x,z), b(z,y)
+
+	queries: b(1,3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

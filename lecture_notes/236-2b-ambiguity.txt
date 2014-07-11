@@ -1,0 +1,254 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ambiguous Grammars
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's an Ambiguous Grammar?
+
+
+
+How can you show that a grammar is ambiguous?
+
+
+
+Use the string 2*3+6 to show the grammar is ambiguous.
+
+
+	E -> E + E
+	E -> E - E
+	E -> E * E
+	E -> E / E
+	E -> ( E )
+	E -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+
+
+
+Does this ambiguity cause any problems?
+
+
+
+Which is correct based on Operator Precedence?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Use the string 3-4+5 to show the grammar is ambiguous.
+
+
+	E -> E + E
+	E -> E - E
+	E -> E * E
+	E -> E / E
+	E -> ( E )
+	E -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+
+
+
+Does this ambiguity cause any problems?
+
+
+
+Which is correct based on Operator Associativity?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Why is Grammar Ambiguity a problem?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Precedence Grammars
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rewrite the grammar to give correct precedence.
+
+	E -> E + E
+	E -> E - E
+	E -> E * E
+	E -> E / E
+	E -> ( E )
+	E -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+
+Draw parse trees for 2*3+6 and 3-4+5 using the new grammar.
+
+
+
+Is the grammar still ambiguous?
+
+Does the grammar give correct precedence?
+
+Does the grammar give correct associativity?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rewrite the grammar to give correct associativity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How would you write the grammar for an operator that associates from
+right to left?
+
+
+	E -> E + T   gives left to right associativity
+	E -> T + E   gives right to left associativity
+
+
+
+What kind of associativity is provided by this grammar?
+
+
+	E -> T + T
+	E -> T - T
+	E -> T
+	T -> F * F
+	T -> F / F
+	T -> F
+	F -> ( E )
+	F -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+The following grammar for boolean expressions is ambiguous.
+Rewrite the grammar so that it is unambiguous.
+Use the following rules for precedence and associativity.
+Order of precedence is 'not' (highest), 'and' (middle), 'or' (lowest).
+The binary operators 'and' and 'or' associate left-to-right.
+The unary operator 'not' associates right-to-left.
+
+
+	B -> B and B
+	B -> B or B
+	B -> not B
+	B -> ( B )
+	B -> true | false
+
+
+
+
+
+
+
+
+
+
+
+
+
+

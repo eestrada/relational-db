@@ -1,0 +1,425 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Predicates
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Is the argument valid?
+Can you prove it using propositional logic?
+
+
+	All students love pizza.
+	Bob is a student.
+	Therefore, Bob loves pizza.
+
+
+You need predicates and quantifiers.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Write the statements using predicates.
+
+
+	Bob is a student.
+
+	Mary and Paul are siblings.
+
+
+
+
+
+What do you need to know to be able to evaluate the expression?
+
+
+	son(Jim, Bob)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The following facts define when the son(X,Y) predicate is true.
+The predicate is false for all other cases.
+
+
+	son(Bob, Jim)
+	son(Jim, Joe)
+
+
+What's the truth value for each expression?
+
+
+	son(Jim, Bob)
+	son(Bob, Jim)
+	son(Bob, Joe) and son(Jim, Joe)
+	son(Bob, Joe) or son(Jim, Joe)
+
+
+What do you need to know to be able to evaluate the expression?
+What's the truth value?
+
+
+	son(Jim, X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Universal Quantifier (for all)
+
+
+What do the expressions mean?
+
+
+	(all x) student(x)
+
+	(all y) (student(y) -> smart(y))
+
+
+What does the upside down A symbol mean?
+
+
+	(all x) P(x)
+
+	1. P(x) is true for every x in the Domain
+
+	2. P(Bob) and P(Jim) and P(Joe)
+	   (if the domain is {Bob, Jim, Joe})
+
+
+What do you need to know to be able to evaluate the expression?
+
+
+	(all X) son(Jim, X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The following facts define when the son(X,Y) predicate is true.
+The predicate is false for all other cases.
+
+The domain is {Bob, Jim, Joe}.
+
+
+	son(Bob, Jim)
+	son(Jim, Joe)
+
+
+What's the truth value for each expression?
+
+
+	(all X) son(Jim, X)
+	(all X) not son(Jim, X)
+	(all X) not son(X, Bob)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Existential Quantifier (there exists)
+
+
+What do the expressions mean?
+
+
+	(exists x) student(x)
+
+	(exists y) (student(y) and smart(y))
+
+
+What does the backwards E symbol mean?
+
+
+	(exists x) P(x)
+
+	1. P(x) is true for at least one value in the Domain
+
+	2. P(Bob) or P(Jim) or P(Joe)
+	   (if the domain is {Bob, Jim, Joe})
+
+
+What do you need to know to be able to evaluate the expression?
+
+
+	(exists X) son(Jim, X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The following facts define when the son(X,Y) predicate is true.
+The predicate is false for all other cases.
+
+The domain is {Bob, Jim, Joe}.
+
+
+	son(Bob, Jim)
+	son(Jim, Joe)
+
+
+What's the truth value for each expression?
+
+
+	(exists X) son(Jim, X)
+	(exists X) not son(Jim, X)
+	(exists X) son(X, Bob)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Nested Quantifiers
+
+
+
+Does order matter for Quantifiers?
+
+Is (all x)(exists y) different from (exists y)(all x)?
+
+
+
+Rewrite each expression without quantifiers.
+
+Use the domain {Bob, Jim}.
+
+
+	(exists x)(all y) son(x,y)
+
+	(all y)(exists x) son(x,y)
+
+
+	(son(Bob,Bob) and son(Bob,Jim)) or (son(Jim,Bob) and son(Jim,Jim))
+
+	(son(Bob,Bob) or son(Jim,Bob)) and (son(Bob,Jim) or son(Jim,Jim))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What do the expressions mean?
+
+
+	(all x)(exists y) loves(x,y)
+
+	(all y)(exists x) loves(x,y)
+
+	(exists x)(all y) loves(x,y)
+
+	(exists y)(all x) loves(x,y)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's the truth value for each expression?
+
+The domain is people in the real world.
+The predicate mother(X,Y) is X is the mother of Y.
+The predicate male(X) is X is male.
+The predicate female(X) is X is female.
+
+
+	(all x)(exists y) mother(x,y)
+
+	(exists x)(all y) mother(x,y)
+
+	(exists x)(exists y) (mother(x,y) and male(y))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+What's the truth value for each expression?
+
+
+	(all y)(exists x) mother(x,y)
+
+	(exists x)(all y) (mother(x,y) -> female(y))
+
+	(all x)(all y) (mother(x,y) -> male(y))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

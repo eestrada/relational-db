@@ -1,0 +1,167 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bound & Free Variables
+
+
+
+Describe the variable bindings in the expression.
+
+
+	(all x) P(x) and (exists x) Q(x)
+
+
+
+Compare bound variables to local variables in a program.
+
+
+
+Describe the variable bindings in the expression.
+
+
+	(exists x) Q(x,y)
+
+
+
+Describe the variable bindings in the expression.
+
+
+	(all y)(exists x)(P(x,y) or (Q(x) and (exists x)R(x,y,z)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Translating English into Predicate Logic
+
+
+
+How do you translate statements of the form all P's have property Q?
+
+
+	(all x)(P(x) -> Q(x))
+
+
+	All students are smart.
+
+	(all y) (student(y) -> smart(y))
+
+	(all y) (student(y) and smart(y))  (wrong)
+
+
+
+How do you translate statements of the form some P's have property Q?
+
+
+	(exists x)(P(x) and Q(x))
+
+
+	Some students are smart.
+
+	(exists y) (student(y) and smart(y))
+
+	(exists y) (student(y) -> smart(y))   (wrong)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Translate the statements into predicate logic.
+
+
+	Some days are not rainy.
+
+	Every fruit is sweeter than all vegetables.
+
+	Every fruit is sweeter than some vegetable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Translate the statements into predicate logic.
+
+
+	All days are sunny.
+
+	Every day that is sunny is not rainy.
+
+	Some vegetable is sweeter than all fruits.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

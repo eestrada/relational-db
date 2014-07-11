@@ -1,0 +1,674 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CS 236 Midterm Example Problems
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Show the grammar to be ambiguous using the string aaaaaa.
+The nonterminals are {S,A}. The terminals are {a}.
+The start symbol is S.
+
+
+	S -> S A
+	S -> A
+	A -> aa
+	A -> aaa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Show each step in the derivation of the string using the grammar.
+The nonterminals are {E}. The terminals are {(,),+,-,*,/,x,y,2}.
+The start symbol is E.
+
+
+	((2 * x) + (y / 2)) 
+
+
+	E -> (E + E) | (E - E) | (E * E) | (E / E)
+	E -> x | y | 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. The following grammar is an ambiguous grammar for expressions.
+The terminals in the grammar are enclosed in single quotes.
+Write a new grammar for the same language that is not ambiguous.
+Construct the grammar so that it enforces correct operator precedence
+and associativity. All binary operators are left-associative except
+for assignment ('=') which is right-associative.
+The precedence of the operators is given by the table.
+(Each row in the table is a different level of precedence.)
+
+
+	E -> E '=' E
+        E -> E '--'
+	E -> E '++'
+	E -> E '<' E
+	E -> E '>' E
+        E -> '(' E ')'
+        E -> '4'
+
+
+highest	++ --
+	< >
+lowest	=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Give the grammar for the language recognized by the following
+recursive-descent parser pseudocode.
+
+
+main() {
+	token = getToken();
+	E();
+	if (token != Endmarker)
+		error();
+}
+E() {
+	if (token == '0' || token == '1' || token == Endmarker) {
+		N();
+	} else if (token == '+' || token == '-') {
+		O();
+		E();
+		E();
+	} else {
+		error();
+	}
+}
+O() {
+	if (token == '+' ) {
+		match('+');
+	} else if (token == '-' ) {
+		match('-');
+	} else {
+		error();
+	}
+}
+N() {
+	if (token == '0' ) {
+		match('0');
+	} else if (token == '1' ) {
+		match('1');
+	}
+}
+match(t) {
+	if (token == t)
+		token = getToken();
+	else
+		error();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5. Give the parsing table for a table-driven parser for the following grammar.
+The terminals in the grammar are enclosed in single quotes.
+
+
+E -> A X
+X -> '=' E 
+X -> epsilon
+A -> B Y
+Y -> '<' B Y
+Y -> '>' B Y
+Y -> epsilon
+B -> C Z
+Z -> '++' Z
+Z -> epsilon
+C -> '(' E ')'
+C -> '4'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Using the algebraic laws given in the table,
+transform the expression into False.
+Do not use a truth table.
+Show each step of the transformation.
+Justify each step with a law from the table.
+Do not use any laws not provided in the table.
+
+
+	Q and ( not(not P or Q) or not (Q or not P))
+
+
+Table of Algebraic Laws
+
+	P or not P	<=>  True		Excluded Middle
+	P and not P	<=>  False		Contradiction
+	P or False	<=>  P			Identity
+	P and True	<=>  P			Identity
+	P or True	<=>  True		Domination
+	P and False	<=>  False		Domination
+	P or P		<=>  P			Idempotent
+	P and P		<=>  P			Idempotent
+	not (not P)	<=>  P			Double Negation
+	P or Q	 	<=>  Q or P		Commutative
+	P and Q		<=>  Q and P		Commutative
+	(P or Q) or R	<=>  P or (Q or R)	Associative
+	(P and Q) and R	<=>  P and (Q and R)	Associative
+	(PvQ) and (PvR)	<=>  P or (Q and R)	Distributive
+	(P^Q) or (P^R)	<=>  P and (Q or R)	Distributive
+	not (P and Q)	<=>  not P or not Q	DeMorgan's
+	not (P or Q) 	<=>  not P and not Q	DeMorgan's
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. State whether the proposed inference rule is valid or invalid. 
+If the rule is valid prove it is valid using a truth table. 
+If the rule is not valid prove it is not valid by giving a counter example.
+
+
+	Dan's Rule
+
+
+	A -> B, A -> C => B or C
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. Let the following propositional variables represent the associated propositions.
+
+P - John brings his lunch
+R - John eats lunch with Sue 
+S - Sue has a cold
+T - John gets a cold
+
+The premises:
+
+If John brings his lunch he eats lunch with Sue.
+If John eats lunch with Sue and she has a cold then John gets a cold.
+John brings his lunch.
+Sue has a cold.
+
+The conclusion:
+
+John gets a cold.
+
+Write the premises and the conclusion as logical expressions.
+
+
+
+
+
+4. Prove the conclusion using proof by deduction.
+Use a direct proof from the premises to the conclusion.
+Each line in your proof must be justified as either a premise
+or the result of applying a rule of inference from the table.
+Do not use any inference rules not listed in the table.
+(You may also use laws from the table of equivalences.)
+You are not allowed to use the resolution rule in this proof.
+Do not use proof by contradiction.
+
+
+
+Table of Inference Rules
+
+	A, A -> B	=>  B		Modus Ponens
+	not B, A -> B	=>  not A	Modus Tollens
+	A -> B, B -> C	=>  A -> C	Hypothetical Syllogism
+	A or B, not A	=>  B		Disjunctive Syllogism
+	A or B, not B	=>  A		Disjunctive Syllogism
+	A, B		=>  A and B	Combination
+	A and B		=>  A		Simplification
+	A and B		=>  B		Simplification
+	A		=>  A or B	Addition
+	B		=>  A or B	Addition
+
+
+
+
+
+5. Prove the conclusion using proof by contradiction. 
+Each line in your proof must be justified as either a premise
+or the result of applying a rule of inference from the table.
+Do not use any inference rules not listed in the table.
+(You may also use laws from the table of equivalences.)
+You are not allowed to use the resolution rule in this proof.
+
+
+
+
+
+6. Prove the conclusion using resolution and proof by contradiction. 
+Each line in your proof must be justified as either a premise
+or the result of applying the resolution rule.
+Do not use any other inference rules in the proof.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. The domain of possible values for variables X and Y is
+{Jim, Ann, Sal, Pat, Tom}.
+The following facts define the values for which 
+the child predicate is true.
+The child predicate is false for all other cases.
+
+
+Evaluate each expression using the domain values and predicates as
+defined and indicate if the expression is true or false.
+
+
+child (Ann,Jim)
+child (Sal,Jim)
+child (Pat,Ann)
+child (Tom,Sal)
+
+
+a. (all X) child(X,Jim)
+
+b. (exists X) not child(X,Jim)
+
+c. (all X)(exists Y)(child(X,Jim) -> child(Y,X))
+
+d. (exists Y)(all X)(child(X,Jim) -> child(Y,X))
+
+e. (exists X)(all Y)(child(X,Jim) -> child(Y,X))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Consider the following facts, rules, and queries.
+
+
+Facts:
+   childOf('Tim','Bea').
+   childOf('Jill','Ned').
+   childOf('Ned','Bea').
+   childOf('Ann','Jill').
+
+Rules:
+   siblingOf(C1,C2) :- childOf(C1,P), childOf(C2,P).
+   parentOf(P,C) :- childOf(C,P).
+
+Queries:
+   siblingOf('Tim','Ned')?
+
+
+Write a proof of the query using instantiation and modus ponens.
+Give a justification for each line in your proof.
+Each step must be a premise or the result of
+instantiation (unification) or modus ponens.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. Write the rules as clauses (disjunctions of literals). 
+
+
+Facts:
+   childOf('Tim','Bea').
+   childOf('Jill','Ned').
+   childOf('Ned','Bea').
+   childOf('Ann','Jill').
+
+Rules:
+   siblingOf(C1,C2) :- childOf(C1,P), childOf(C2,P).
+   parentOf(P,C) :- childOf(C,P).
+
+Queries:
+   siblingOf('Tim','Ned')?
+
+
+Write a proof of the query using resolution and contradiction. 
+Give a justification for each line in your proof.
+Each step must be a premise or the result of
+substitution (unification) or resolution. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Use mathematical induction to prove (for all integers n >= 1):
+
+
+P(n): 1/2^1 + 1/2^2 + ... + 1/2^n = (2^n - 1)/2^n
+
+
+a. Prove the base case.
+
+
+b. State the inductive hypothesis.
+
+
+c. State what is to be proved in the inductive step.
+
+
+d. Write the inductive part of the proof.
+(Be sure to identify your use of the inductive hypothesis.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

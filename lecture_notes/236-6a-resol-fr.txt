@@ -1,0 +1,125 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Resolution using Facts and Rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's the process for proof using resolution and contradiction?
+
+
+	1. negate the conclusion and add it to the premises
+	2. convert the premises to clauses
+	3. apply resolution to obtain false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Use Resolution to prove the query using the facts and rules.
+
+
+	facts:	 married(jim, bea)
+		 child(ned, bea)
+
+	rules:	 married(y,x) :- married(x,y)
+		 child(x,z) :- child(x,y), married(y,z)
+
+	queries: child(ned, jim)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+Use Resolution to prove the query using the facts and rules.
+
+
+	facts:	   sister(ann, bob)
+		   parent(bob, jay)
+
+	rules:	   aunt(x,z) :- sister(x,y), parent(y,z)
+
+	queries:   aunt(ann, jay)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

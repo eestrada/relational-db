@@ -1,0 +1,185 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Valid Expressions
+
+
+
+What's a Valid Expression?
+
+
+	1. always true regardless of predicate or domain definitions
+
+	2. also called a tautology
+
+
+
+Which of the expressions are valid?
+
+
+	(all x)cat(x) -> (exists x)cat(x)
+
+	(all x)cat(x) -> cat(Tom)
+
+	(all x)(cat(x) and blue(x)) -> (all x)cat(x) and (all x)blue(x)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+Which of the expressions are valid?
+
+
+	cat(Tom) -> (exists x)cat(x)
+
+	(exists x)cat(x) -> (all x)cat(x)
+
+	(all x)(cat(x) or blue(x)) -> (all x)cat(x) or (all x)blue(x)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Predicate Logic Equivalences
+
+
+Distributive (x can't be a free variable in B)
+
+(all x)A or B		<=>  (all x)(A or B)
+(exists x)A and B	<=>  (exists x)(A and B)
+
+
+Commutative and Associative
+
+(all x)(A and B)	<=>  (all x)A and (all x)B
+(exists x)(A or B)	<=>  (exists x)A or (exists x)B
+
+(all x)(all y)A	   	<=>  (all y)(all x)A
+(exists x)(exists y)A  	<=>  (exists y)(exists x)A
+
+
+DeMorgan's
+
+not ((all x)A)		<=>  (exists x)(not A)
+not ((exists x)A)	<=>  (all x)(not A)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Use algebra to show the equivalence is valid.
+
+
+	(exists x)P(x) -> Q <=> (all x)(P(x) -> Q)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+Use algebra to show the equivalence is valid.
+
+
+	not (exists x) (A(x) and (B(x) or C(x))) <=>
+	(all x) (A(x) -> (not B(x) and not C(x)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

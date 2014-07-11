@@ -1,0 +1,280 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Logical Expressions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What are the Logical Connectives?
+
+
+	Negation	not ! ~
+	Conjunction	and * ^
+	Disjunction	or + v
+	Implication	->	(conditional)
+	Equivalence	<->	(biconditional)
+
+
+	P Q  ~P  P^Q  PvQ  P->Q  P<->Q
+	T T   F	  T    T    T	   T
+	T F   F	  F    T    F	   F
+	F T   T	  F    T    T	   F
+	F F   T	  F    F    T	   T
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The Conditional (P -> Q)
+
+
+P is called the hypothesis or antecedent.
+
+Q is called the conclusion or consequent.
+
+
+Why is the conditional true when the hypothesis is false?
+
+	If you win, I'll give you a cookie.
+
+
+Why is the contrapositive equivalent to the original statement?
+
+	If I won't give you a cookie, you didn't win.
+
+
+Why is the inverse not equivalent to the original statement?
+
+	If you don't win, I won't give you a cookie.
+
+
+Why is the converse not equivalent to the original statement?
+
+	If I'll give you a cookie, you won.
+
+
+What other English statements say the same thing as if P then Q?
+
+	P implies Q
+	P only if Q
+	P is sufficient for Q
+
+	Q if P
+	Q is necessary for P
+
+	Your winning implies I'll give you a cookie.
+	You won only if I'll give you a cookie.
+	Your winning is sufficient for me to give you a cookie.
+
+	I'll give you a cookie if you win.
+	Giving you a cookie is necessary for your winning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The Biconditional (P <-> Q)
+
+
+Why is Equivalence also called the Biconditional?
+
+	(P <-> Q) is the same as (P->Q) and (Q->P)
+
+
+How do you pronounce <-> or iff?
+
+	if and only if
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Translate the sentence into a logical expression. (use R,H,G)
+
+
+	If berries are ripe along the trail, hiking is safe if and
+	only if grizzly bears have not been seen in the area.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Translate the sentence into a logical expression. (use H,G,R)
+
+
+	Hiking is not safe on the trail whenever grizzly bears have
+	been seen in the area and berries are ripe along the trail.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solve the logic puzzle
+
+
+	Knights always tell the truth
+	Knaves always lie
+	Decide which type of person A is and which type B is
+
+	A says "At least one of us is a Knave"
+	B says nothing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Solve the logic puzzle
+
+
+	Knights always tell the truth
+	Knaves always lie
+	Decide which type of person A is and which type B is
+
+	A says "We are both Knaves"
+	B says nothing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

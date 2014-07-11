@@ -1,0 +1,197 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Proof by Deduction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Valid Argument?
+
+	the conclusion follows from the premises
+
+	if the premises are true, the conclusion is true
+
+	'(conjunction of premises) -> (conclusion)' is a tautology
+
+	(P -> Q, P) -> Q
+
+
+
+What's a Fallacy?
+
+	an invalid argument
+
+	(P -> Q, not P) -> not Q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you show that an argument is valid?
+
+
+	1. write each premise on a line
+	2. use inference rules to write new lines
+	3. eventually write the conclusion on a line
+
+
+
+What Inference Rules can you use?
+
+	A, A -> B	=>  B		Modus Ponens
+	not B, A -> B	=>  not A	Modus Tollens
+	A -> B, B -> C	=>  A -> C	Hypothetical Syllogism
+	A or B, not A	=>  B		Disjunctive Syllogism
+	A		=>  A or B	Addition
+	A and B		=>  A		Simplification
+	A, B		=>  A and B	Conjunction
+
+
+
+How are Inference Rules different from Logical Equivalences?
+
+
+
+How do you use Logical Equivalences as Inference Rules?
+
+	For an equivalence P <=> Q
+	you have two inference rules: P => Q, Q => P
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Give a deductive proof for the argument.
+
+
+	There is an undeclared variable or
+	there is a syntax error.
+	If there is a syntax error,
+	there is a missing semicolon or
+	a variable name is misspelled.
+	There is not a missing semicolon.
+	There is not a misspelled variable name.
+	Therefore there is an undeclared variable.
+
+
+	U  undeclared variable
+	E  syntax error
+	S  missing semicolon
+	V  misspelled variable name
+
+
+
+Does this mean you have proven that there is an undeclared variable?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Give a deductive proof for the argument.
+
+
+	If the house is next to a lake,
+	the treasure is not in the kitchen.
+	If the tree in the yard is an elm,
+	the treasure is in the kitchen.
+	The house is next to a lake.
+	The tree in the yard is an elm or
+	the treasure is buried under the flagpole.
+	Therefore the treasure is under the flagpole.
+
+
+	L  house is next to lake
+	K  treasure is in kitchen
+	E  tree is an elm
+	P  treasure is under flagpole
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
