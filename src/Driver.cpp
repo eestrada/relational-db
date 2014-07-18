@@ -1,6 +1,7 @@
 #include "Driver.h"
 #include "Lexer.h"
 #include "Parser.h"
+#include "Interpreter.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,19 +10,9 @@
 
 using namespace std;
 
-vector<string> create_args(int argc, char **argv)
-{
-    vector<string> v;
-    for(int i = 0; i < argc; ++i)
-    {
-        v.push_back(string(argv[i]));
-    }
-    return v;
-}
-
 int Driver::lex(int argc, char **argv)
 {
-    vector<string> args = create_args(argc, argv);
+    vector<string> args(argv, argv+argc);
 
     ifstream fin(args.at(1));
     ofstream fout(args.at(2));
@@ -48,8 +39,8 @@ int Driver::lex(int argc, char **argv)
 
 int Driver::parse(int argc, char **argv)
 {
-    vector<string> args = create_args(argc, argv);
-
+    vector<string> args(argv, argv+argc);
+    
     ifstream fin(args.at(1));
     ofstream fout(args.at(2));
     
@@ -74,4 +65,9 @@ int Driver::parse(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-int Driver::interpret(int argc, char **argv) {return 0;}
+int Driver::interpret(int argc, char **argv)
+{
+    vector<string> args(argv, argv+argc);
+
+    return EXIT_SUCCESS;
+}
