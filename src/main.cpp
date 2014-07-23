@@ -2,6 +2,6 @@
 
 int main(int argc, char **argv)
 {
-    return Driver::parse(argc, argv);
+    return Driver::interpret(argc, argv);
 }
 

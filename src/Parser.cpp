@@ -4,6 +4,7 @@
 namespace Parse
 {
 using namespace std;
+using namespace Lex;
 
 string Parameter::get_ident() const
 {
@@ -126,41 +127,41 @@ void DatalogProgram::build_domain()
 
 void Parser::parse_DatalogProgram()
 {
-    //if (lexer->current().kind == Lex::Kind::START_OF_STRM)
+    //if (lexer->current().kind == Kind::START_OF_STRM)
 
     // Parse Schemes
     lexer->next();
-    check_kind(Lex::Kind::SCHEMES);
+    check_kind(Kind::SCHEMES);
     lexer->next();
-    check_kind(Lex::Kind::COLON);
+    check_kind(Kind::COLON);
     lexer->next();
-    check_kind(Lex::Kind::ID);
+    check_kind(Kind::ID);
     parse_Scheme_list();
 
     // Parse Facts
-    check_kind(Lex::Kind::FACTS);
+    check_kind(Kind::FACTS);
     lexer->next();
-    check_kind(Lex::Kind::COLON);
+    check_kind(Kind::COLON);
     lexer->next();
     parse_Facts_list();
 
     // Parse Rules
-    check_kind(Lex::Kind::RULES);
+    check_kind(Kind::RULES);
     lexer->next();
-    check_kind(Lex::Kind::COLON);
+    check_kind(Kind::COLON);
     lexer->next();
     parse_Rules_list();
 
     // Parse Queries
-    check_kind(Lex::Kind::QUERIES);
+    check_kind(Kind::QUERIES);
     lexer->next();
-    check_kind(Lex::Kind::COLON);
+    check_kind(Kind::COLON);
     lexer->next();
-    check_kind(Lex::Kind::ID);
+    check_kind(Kind::ID);
     parse_Queries_list();
 
     // Check for end of file
-    check_kind(Lex::Kind::END_OF_STRM);
+    check_kind(Kind::END_OF_STRM);
 
     // Build domain
     dlprog->build_domain();
@@ -168,7 +169,7 @@ void Parser::parse_DatalogProgram()
 
 void Parser::parse_Scheme_list()
 {
-    if (lexer->current().kind != Lex::Kind::ID) return; 
+    if (lexer->current().kind != Kind::ID) return; 
     auto scheme = parse_Predicate();
     dlprog->Schemes.push_back(scheme);
     parse_Scheme_list();
@@ -176,9 +177,9 @@ void Parser::parse_Scheme_list()
 
 void Parser::parse_Facts_list()
 {
-    if (lexer->current().kind != Lex::Kind::ID) return; 
+    if (lexer->current().kind != Kind::ID) return; 
     auto fact = parse_Predicate();
-    check_kind(Lex::Kind::PERIOD);
+    check_kind(Kind::PERIOD);
     dlprog->Facts.push_back(fact);
     lexer->next();
     parse_Facts_list();
@@ -186,7 +187,7 @@ void Parser::parse_Facts_list()
 
 void Parser::parse_Rules_list()
 {
-    if (lexer->current().kind != Lex::Kind::ID) return; 
+    if (lexer->current().kind != Kind::ID) return; 
     auto rule = parse_Rule();
     dlprog->Rules.push_back(rule);
     parse_Rules_list();
@@ -195,11 +196,11 @@ void Parser::parse_Rules_list()
 Rule Parser::parse_Rule()
 {
     auto pred = parse_Predicate();
-    check_kind(Lex::Kind::COLON_DASH);
+    check_kind(Kind::COLON_DASH);
     lexer->next();
-    check_kind(Lex::Kind::ID);
+    check_kind(Kind::ID);
     auto pred_list = parse_Predicate_list();
-    check_kind(Lex::Kind::PERIOD);
+    check_kind(Kind::PERIOD);
     lexer->next();
 
     return Rule{pred, pred_list};
@@ -208,9 +209,9 @@ Rule Parser::parse_Rule()
 
 void Parser::parse_Queries_list()
 {
-    if (lexer->current().kind != Lex::Kind::ID) return; 
+    if (lexer->current().kind != Kind::ID) return; 
     auto query = parse_Predicate();
-    check_kind(Lex::Kind::Q_MARK);
+    check_kind(Kind::Q_MARK);
     dlprog->Queries.push_back(query);
     lexer->next();
     parse_Queries_list();
@@ -230,10 +231,10 @@ vector<Predicate> Parser::parse_Predicate_list()
             }
             catch(const syntax_error &e)
             {
-                if(e.token().kind == Lex::Kind::COMMA)
+                if(e.token().kind == Kind::COMMA)
                 {
                     lexer->next();
-                    if (lexer->current().kind != Lex::Kind::ID) break; 
+                    if (lexer->current().kind != Kind::ID) break; 
                 }
                 else throw;
             }
@@ -241,28 +242,28 @@ vector<Predicate> Parser::parse_Predicate_list()
     }
     catch(const syntax_error &e)
     {
-        if(e.token().kind == Lex::Kind::PERIOD) return pred_list;
+        if(e.token().kind == Kind::PERIOD) return pred_list;
         else throw;
     }
 
-    check_kind(Lex::Kind::ID);
+    check_kind(Kind::ID);
 
     return pred_list;
 }
 
 Predicate Parser::parse_Predicate()
 {
-    check_kind(Lex::Kind::ID);
+    check_kind(Kind::ID);
 
     string id = lexer->current().value;
 
     lexer->next();
-    check_kind(Lex::Kind::LEFT_PAREN);
+    check_kind(Kind::LEFT_PAREN);
 
     lexer->next();
     auto parm_vec = parse_Parameter_list();
 
-    check_kind(Lex::Kind::RIGHT_PAREN);
+    check_kind(Kind::RIGHT_PAREN);
     lexer->next();
 
     return Predicate{id, parm_vec};
@@ -274,7 +275,7 @@ vector<Parameter> Parser::parse_Parameter_list()
 
     retval.push_back(parse_Parameter());
 
-    while(lexer->next().kind == Lex::Kind::COMMA)
+    while(lexer->next().kind == Kind::COMMA)
     {
         lexer->next();
         retval.push_back(parse_Parameter());
@@ -286,23 +287,29 @@ vector<Parameter> Parser::parse_Parameter_list()
 Parameter Parser::parse_Parameter()
 {
     auto t = lexer->current();
-    if (t.kind != Lex::Kind::ID &&
-        t.kind != Lex::Kind::STRING) 
+    if (t.kind != Kind::ID &&
+        t.kind != Kind::STRING) 
         throw syntax_error(lexer->current());
 
-    auto parm_type = (t.kind == Lex::Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
+    auto parm_type = (t.kind == Kind::ID) ? Parameter::Type::IDENT : Parameter::Type::STRING; 
     auto val = t.value;
 
     return Parameter{parm_type, val};
 }
 
-void Parser::check_kind(Lex::Kind k)
+void Parser::check_kind(Kind k)
 {
     if(lexer->current().kind != k)
         throw syntax_error(lexer->current());
 }
 
-Parser::Parser(unique_ptr<Lex::Lexer> &&l) : lexer{move(l)} {}
+Parser::Parser(const string &file) : lexer(new Lexer(file)) {}
+
+Parser::Parser(istream &input_stream) : lexer(new Lexer(input_stream)) {}
+
+Parser::Parser(unique_ptr<istream> input_stream) : lexer(new Lexer(move(input_stream))) {}
+
+Parser::Parser(unique_ptr<Lexer> &&l) : lexer(move(l)) {}
 
 void Parser::parse()
 {

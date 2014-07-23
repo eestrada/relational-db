@@ -5,19 +5,23 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <ostream>
 
 namespace DB
 {
 
 using namespace std;
 
-class Tuple : public vector<string> {};
-
-class Scheme : public vector<string> {};
-
 typedef map<string, string> StrDict;
 typedef long int Index;
 typedef vector<Index> IndexList;
+
+struct Scheme : public vector<string>
+{
+	string name;
+};
+
+struct Tuple : public vector<string> {};
 typedef set<Tuple> TupleSet;
 
 class Relation
@@ -25,7 +29,8 @@ class Relation
 public:
 
 public:
-	Relation(const string &n, const Scheme &s);
+	Relation(const Scheme &s);
+	Relation() = default;
 	Relation(const Relation &other) = default;
 	Relation(Relation &&other) = default;
 	Relation& operator=(const Relation &other) = default;
@@ -47,7 +52,6 @@ public:
 	Relation operator|(const Relation &other) { return unioned(other); }
 	Relation operator+(const Relation &other) { return join(other); }
 private:
-	string name;
 	Scheme scheme;
 	TupleSet tuples;
 };
@@ -57,10 +61,15 @@ class DataBase
 public:
 	Relation& operator[](string name);
 	void insert(Relation r);
+	explicit operator string() const;
 private:
 	map<string, Relation> relations;
 };
 
-}
+} // end namespace DB
+
+std::ostream & operator<<(std::ostream &out, const DB::Tuple &t);
+std::ostream & operator<<(std::ostream &out, const DB::Scheme &s);
+std::ostream & operator<<(std::ostream &out, const DB::Relation &r);
 
 #endif // End include guard

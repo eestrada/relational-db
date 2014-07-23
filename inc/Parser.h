@@ -16,10 +16,10 @@ namespace Parse
 
 using namespace std;
 
-class parsing_error : public std::runtime_error
+class parsing_error : public runtime_error
 {
 public:
-    parsing_error(const string &msg) : std::runtime_error(msg){}
+    parsing_error(const string &msg) : runtime_error(msg){}
 };
 
 class syntax_error : public parsing_error
@@ -82,6 +82,9 @@ struct DatalogProgram
 class Parser
 {
 public:
+    explicit Parser(const string &file);
+    explicit Parser(istream &input_stream);
+    explicit Parser(unique_ptr<istream> input_stream);
     explicit Parser(unique_ptr<Lex::Lexer> &&l);
     void parse();
     shared_ptr<const DatalogProgram> get_DatalogProgram() const;

@@ -11,20 +11,22 @@
 namespace Lex
 {
 
-class end_of_stream : public std::exception 
+using namespace std;
+
+class end_of_stream : public exception 
 {
 };
 
-class lexing_error : public std::runtime_error
+class lexing_error : public runtime_error
 {
 public:
-    lexing_error(const std::string &msg) : std::runtime_error(msg){}
+    lexing_error(const string &msg) : runtime_error(msg){}
 };
 
 class input_error : public lexing_error
 {
 public:
-    input_error(const std::string &msg, intmax_t lnum)
+    input_error(const string &msg, intmax_t lnum)
         : lexing_error(msg), ln(lnum){}
 
     intmax_t line_number() const {return ln;}
@@ -61,17 +63,18 @@ struct Token
     Token& operator=(Token &&other) = default;
 
     Kind kind;
-    std::string value;
+    string value;
     intmax_t lnum;
 
-    explicit operator std::string() const;
+    explicit operator string() const;
 };
 
 class Lexer
 {
 public: //functions
-    Lexer(std::istream &input_stream);
-    Lexer(std::unique_ptr<std::istream> input_stream);
+    Lexer(const string &file);
+    Lexer(istream &input_stream);
+    Lexer(unique_ptr<istream> input_stream);
     ~Lexer();
     Token next();
     Token current() const;
@@ -89,10 +92,10 @@ private: //functions
 
 
 private: //data
-    std::istream &in;
+    istream &in;
     intmax_t current_line;
     bool own_stream;
-    std::unique_ptr<Token> cur_tok;
+    unique_ptr<Token> cur_tok;
 };
 
 }
