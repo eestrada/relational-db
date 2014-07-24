@@ -4,7 +4,7 @@ import os, sys, zipfile, glob
 def main(args):
     paths = glob.glob('./src/*.cpp')
     paths += glob.glob('./inc/*.h')
-    with zipfile.ZipFile(args[1], mode='w') as zf:
+    with zipfile.ZipFile(args[1], mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
         for p in paths:
             name = p.split('/')[-1]
             zf.write(p, name)
