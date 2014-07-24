@@ -1,0 +1,7 @@
+SK(A,'c')? Yes(2)
+  A='a'
+  A='b'
+SK('b','c')? Yes(1)
+SK('c','c')? No
+SK(A,A)? Yes(1)
+  A='b', A='b'
