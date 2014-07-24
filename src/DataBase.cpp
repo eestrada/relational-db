@@ -1,6 +1,7 @@
 #include "DataBase.h"
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 using namespace DB;
 using namespace std;
@@ -47,16 +48,39 @@ Relation Relation::select(Index index1, Index index2) const
 
 Relation Relation::project(const IndexList &indices) const
 {
-	return *this;
+	Scheme tmp_sch;
+	tmp_sch.name = this->scheme.name;
+
+	for(auto i : indices)
+	{
+		tmp_sch.push_back(this->scheme.at(i));
+	}
+
+	Relation retval;
+	retval.scheme = tmp_sch;
+	for(auto t : this->tuples)
+	{
+		Tuple nt;
+		for(auto i : indices)
+		{
+			nt.push_back(t.at(i));
+		}
+
+		retval.insert(nt);
+	}
+
+	return retval;
 }
 
 Relation Relation::unioned(const Relation &other) const
 {
+	throw logic_error("unioned member function not implemented");
 	return *this;
 }
 
 Relation Relation::join(const Relation &other) const
 {
+	throw logic_error("join member function not implemented");
 	return *this;
 }
 
@@ -69,6 +93,8 @@ void Relation::insert(Tuple t)
 
 Relation Relation::rename(StrDict mapping) const
 {
+	if(mapping.size() == 0) return *this;
+
 	Relation retval = *this;
 	Scheme new_scheme = this->scheme;
 
@@ -88,6 +114,30 @@ Relation Relation::rename(StrDict mapping) const
 string Relation::get_name() const { return scheme.name; }
 Scheme Relation::get_scheme() const { return scheme; }
 TupleSet Relation::get_tuples() const {	return tuples; }
+
+Relation::operator string() const
+{
+	auto sch = this->get_scheme();
+
+	// cout << sch.size() << endl;
+	if(not sch.size()) return string();
+
+	ostringstream out;
+	for(auto t : this->get_tuples())
+	{
+		out << "  ";
+		for(unsigned i = 0; i < sch.size(); ++i)
+		{
+			out << sch.at(i) <<"="<< t.at(i);
+
+			if(i != sch.size()-1) out << ", ";
+			else out << "\n";
+		}
+	}
+
+	return out.str();
+
+}
 
 Relation& DataBase::operator[](string name)
 {
@@ -151,13 +201,5 @@ ostream & operator<<(ostream &out, const Tuple &t)
 
 ostream & operator<<(ostream &out, const Relation &r)
 {
-	out << r.get_scheme() << "\n";
-
-	for(auto t : r.get_tuples())
-	{
-		out << "  " << t << "\n";
-	}
-	out << "\n";
-
-	return out;
+	return out << string(r);
 }

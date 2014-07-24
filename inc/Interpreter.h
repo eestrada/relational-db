@@ -26,10 +26,10 @@ public:
 	Interpreter(Interpreter &&other) = delete;
 	Interpreter& operator=(const Interpreter &other) = delete;
 	Interpreter& operator=(Interpreter &&other) = delete;
-	void interpret();
 	DataBase get_database() const;
-	string get_output() const;
+	string get_query_output() const;
 private:
+	void interpret();
 	void terp_schemes();
 	void terp_facts();
 	void terp_rules();

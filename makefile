@@ -20,7 +20,8 @@ CXXFLAGS = -std=c++11 -O0 -g -Wall -pedantic $(INCLUDES)
 
 bin : $(BIN)
 
-test : clean memcheck
+# test : clean memcheck
+test : clean bin
 	@ ./run_tests.sh
 
 clean :

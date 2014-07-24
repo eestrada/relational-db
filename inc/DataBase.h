@@ -7,13 +7,20 @@
 #include <string>
 #include <ostream>
 
+
+// TODO: make an ordered_set class that keeps track of the order  
+// items were entered into the set. This is unlike the built in set
+// since that is more along the lines of a sorted set. This class
+// ought to simplify the process of doing joins and making sure that
+// schemes do not have duplicate column entries.
+
 namespace DB
 {
 
 using namespace std;
 
 typedef map<string, string> StrDict;
-typedef long int Index;
+typedef unsigned long int Index;
 typedef vector<Index> IndexList;
 
 struct Scheme : public vector<string>
@@ -51,6 +58,7 @@ public:
 	// Convenience functions
 	Relation operator|(const Relation &other) { return unioned(other); }
 	Relation operator+(const Relation &other) { return join(other); }
+	operator string() const;
 private:
 	Scheme scheme;
 	TupleSet tuples;

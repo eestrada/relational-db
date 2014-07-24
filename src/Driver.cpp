@@ -71,21 +71,9 @@ int Driver::interpret(int argc, char **argv)
     vector<string> args(argv, argv+argc);
 
     Interpret::Interpreter terp(args.at(1));
+
     ofstream fout(args.at(2));
-
-    terp.interpret();
-    auto db = terp.get_database();
-
-    fout << terp.get_output();
-    cout << terp.get_output();
-
-    // cout << string(db) << endl;
-    
-    // DB::Relation test;
-    
-    // typedef DB::StrDict::value_type t;
-    // DB::StrDict tmp({t{"test", "new_test"},t{"blue", "green"},t{"one", "two"}});
-    // test.rename(tmp);
+    fout << terp.get_query_output();
 
     return EXIT_SUCCESS;
 }
