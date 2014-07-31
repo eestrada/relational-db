@@ -7,6 +7,8 @@
 #include <istream>
 #include <sstream>
 #include <string>
+#include <vector>
+#include <map>
 
 namespace Interpret
 {
@@ -14,6 +16,12 @@ namespace Interpret
 using namespace std;
 using namespace Parse;
 using namespace DB;
+
+struct RuleQuery 
+{
+	Scheme rule;
+	vector<Scheme> schemes;
+};
 
 class Interpreter
 {
@@ -38,6 +46,7 @@ private:
 	unique_ptr<Parser> parser;
 	DataBase db;
 	ostringstream out;
+	std::map<string, RuleQuery> rulev;
 };
 
 }

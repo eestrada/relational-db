@@ -106,6 +106,23 @@ void Interpreter::terp_facts()
 
 void Interpreter::terp_rules()
 {
+	// auto dlprog = parser->get_DatalogProgram();
+	// for(auto pred : dlprog->Rules)
+	// {
+	// 	Scheme s;
+	// 	s.name = pred.ident;
+	// 	for(auto parm : pred.parm_vec)
+	// 	{
+	// 		s.push_back(parm.get_ident());
+	// 	}
+
+	// 	Relation r(s);
+
+	// 	db.insert(r);
+	// }
+
+
+	
 	// cout << "Terpin' rules!" << endl;
 	// auto dlprog = parser->get_DatalogProgram();
 }

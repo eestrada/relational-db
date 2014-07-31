@@ -13,6 +13,17 @@ ostream & operator<<(ostream &out, const pair<T,U> &p)
 	return out;
 }
 
+Scheme Scheme::join(const Scheme &a, const Scheme &b)
+{
+	Scheme retval;
+
+	for (auto c : a)
+	{
+		cerr << c << endl;
+	}
+	return retval;
+}
+
 Relation::Relation(const Scheme &s) : scheme(s), tuples() {}
 
 /*
@@ -80,6 +91,26 @@ Relation Relation::unioned(const Relation &other) const
 
 Relation Relation::join(const Relation &other) const
 {
+
+	// make the scheme s for the result relation
+	Scheme jscheme = Scheme::join(this->scheme, other.scheme);
+	//     (combine r1's scheme with r2's scheme)
+
+	// make a new empty relation r using scheme s
+
+	// for each tuple t1 in r1
+	//     for each tuple t2 in r2
+
+	// 	if t1 and t2 can join
+	// 	    join t1 and t2 to make tuple t
+	// 	    add tuple t to relation r
+	// 	end if
+
+	//     end for
+	// end for
+
+
+	Relation retval;
 	throw logic_error("join member function not implemented");
 	return *this;
 }

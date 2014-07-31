@@ -25,6 +25,7 @@ typedef vector<Index> IndexList;
 
 struct Scheme : public vector<string>
 {
+	static Scheme join(const Scheme &a, const Scheme &b);
 	string name;
 };
 
