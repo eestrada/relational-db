@@ -1,7 +1,7 @@
 BIN = ./test.bin
-INPUT = ./tests/in52.txt
-OUTPUT = /tmp/actual52.txt
-OUTTEST = ./tests/out52.txt
+INPUT = ./tests/in62.txt
+OUTPUT = /tmp/actual62.txt
+OUTTEST = ./tests/out62.txt
 ARGS = $(INPUT) $(OUTPUT)
 
 SRCDIR = ./src
@@ -20,9 +20,10 @@ CXXFLAGS = -std=c++11 -O0 -g -Wall -pedantic $(INCLUDES)
 
 bin : $(BIN)
 
-# test : clean memcheck
-test : clean bin
+test : memcheck
 	@ ./run_tests.sh
+
+cleantest : clean test
 
 clean :
 	@ echo "Removing generated files"

@@ -25,8 +25,11 @@ typedef vector<Index> IndexList;
 
 struct Scheme : public vector<string>
 {
-	static Scheme join(const Scheme &a, const Scheme &b);
 	string name;
+
+	void join(const Scheme &other);
+	Scheme operator+(const Scheme &other) const;
+	Scheme& operator+=(const Scheme &other);
 };
 
 struct Tuple : public vector<string> {};
@@ -65,15 +68,15 @@ private:
 	TupleSet tuples;
 };
 
-class DataBase
+class DataBase : public map<string, Relation>
 {
 public:
 	Relation& operator[](string name);
 	void insert(Relation r);
+	bool has(string name) const;
 	explicit operator string() const;
-private:
-	map<string, Relation> relations;
 };
+
 
 } // end namespace DB
 

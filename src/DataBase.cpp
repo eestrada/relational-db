@@ -1,10 +1,19 @@
 #include "DataBase.h"
+#include "OrderedSet.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <algorithm>
 
 using namespace DB;
 using namespace std;
+
+
+class UnjoinableError : public runtime_error
+{
+public:
+	UnjoinableError(const string &s) : runtime_error(s){}
+};
 
 template <typename T, typename U>
 ostream & operator<<(ostream &out, const pair<T,U> &p)
@@ -13,15 +22,31 @@ ostream & operator<<(ostream &out, const pair<T,U> &p)
 	return out;
 }
 
-Scheme Scheme::join(const Scheme &a, const Scheme &b)
+void Scheme::join(const Scheme &other)
 {
-	Scheme retval;
+	OrderedSet<string> selfset(*this);
 
-	for (auto c : a)
-	{
-		cerr << c << endl;
-	}
+	selfset += OrderedSet<string>(other);
+
+	this->resize(selfset.size());
+
+	copy(selfset.cbegin(), selfset.cend(), this->begin());
+}
+
+Scheme Scheme::operator+(const Scheme &other) const
+{
+	Scheme retval = *this;
+
+	retval.join(other);
+
 	return retval;
+}
+
+Scheme& Scheme::operator+=(const Scheme &other)
+{
+	this->join(other);
+
+	return *this;
 }
 
 Relation::Relation(const Scheme &s) : scheme(s), tuples() {}
@@ -89,30 +114,72 @@ Relation Relation::unioned(const Relation &other) const
 	return *this;
 }
 
+Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+{
+	Tuple retval;
+
+	// Check for joinability. Then append values from t1 that are either unique
+	// based on the Scheme or match t2 based on the Scheme. If the Schemes
+	// match columns, but the tuples do not match values, throw an exception.
+	for(auto i1 = 0; i1 < s1.size(); ++i1)
+	{
+		retval.push_back(t1.at(i1)); // Assume tuples will be joinable.
+
+		for(auto i2 = 0; i2 < s2.size(); ++i2)
+		{
+			if(s1.at(i1) == s2.at(i2))
+			{
+				if (t1.at(i1) == t2.at(i2)) break;
+				else throw UnjoinableError("Tuples cannot be joined.");
+			}
+		}
+	}
+
+	// Add remaining values from t2 based on uniqueness of Scheme columns.
+	for(auto i2 = 0; i2 < s2.size(); ++i2)
+	{
+		bool unique = true;
+
+		for(auto i1 = 0; i1 < s1.size(); ++i1)
+		{
+			if(s2.at(i2) == s1.at(i1))
+			{
+				unique = false;
+				break;
+			}
+		}
+		if(unique) retval.push_back(t2.at(i2));
+	}
+
+	return retval;
+}
+
 Relation Relation::join(const Relation &other) const
 {
 
 	// make the scheme s for the result relation
-	Scheme jscheme = Scheme::join(this->scheme, other.scheme);
 	//     (combine r1's scheme with r2's scheme)
+	Scheme jscheme = this->scheme + other.scheme;
 
 	// make a new empty relation r using scheme s
+	Relation retval(jscheme);
 
 	// for each tuple t1 in r1
-	//     for each tuple t2 in r2
+	for(auto t1 : this->get_tuples())
+	{
+		// for each tuple t2 in r2
+		for(auto t2 : other.get_tuples())
+		{
+			try
+			{
+				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
+				retval.insert(t);
+			}
+			catch(const UnjoinableError &e) {} //pass
+		}
+	}
 
-	// 	if t1 and t2 can join
-	// 	    join t1 and t2 to make tuple t
-	// 	    add tuple t to relation r
-	// 	end if
-
-	//     end for
-	// end for
-
-
-	Relation retval;
-	throw logic_error("join member function not implemented");
-	return *this;
+	return retval;
 }
 
 void Relation::insert(Tuple t)
@@ -170,15 +237,49 @@ Relation::operator string() const
 
 }
 
+// Relation& DataBase::operator[](string name)
+// {
+//     return relations.at(name);
+// }
+
+// void DataBase::insert(Relation r)
+// {
+//     relations.insert({r.get_name(), r});
+// }
+
+// DataBase::operator string() const
+// {
+// 	ostringstream out;
+
+// 	out << "Tables:\n";
+
+// 	for(auto p : relations)
+// 	{
+// 		out << "\t" << p.second.get_scheme() << "\n";
+
+// 		auto ts = p.second.get_tuples();
+
+// 		for(auto t : ts)
+// 		{
+// 			out << "\t\t" << t << "\n";
+// 		}
+// 	}
+
+// 	return out.str();
+// }
+
+
 Relation& DataBase::operator[](string name)
 {
-    return relations.at(name);
+    return this->at(name);
 }
 
 void DataBase::insert(Relation r)
 {
-    relations.insert({r.get_name(), r});
+    map<string, Relation>::insert({r.get_name(), r});
 }
+
+bool DataBase::has(string name) const {	return this->count(name); }
 
 DataBase::operator string() const
 {
@@ -186,7 +287,7 @@ DataBase::operator string() const
 
 	out << "Tables:\n";
 
-	for(auto p : relations)
+	for(auto p : *this)
 	{
 		out << "\t" << p.second.get_scheme() << "\n";
 

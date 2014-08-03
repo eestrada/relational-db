@@ -11,25 +11,25 @@ using namespace Interpret;
 using namespace Parse;
 
 Interpreter::Interpreter(const string &file)
-	: parser(new Parse::Parser(file)), db(), out()
+	: parser(new Parse::Parser(file)), db(), out(), passes()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(istream &input_stream)
-	: parser(new Parse::Parser(input_stream)), db(), out()
+	: parser(new Parse::Parser(input_stream)), db(), out(), passes()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(unique_ptr<istream> input_stream)
-	: parser(new Parse::Parser(move(input_stream))), db(), out()
+	: parser(new Parse::Parser(move(input_stream))), db(), out(), passes()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(unique_ptr<Parser> &&p)
-	: parser(move(p)), db(), out()
+	: parser(move(p)), db(), out(), passes()
 {
 	this->interpret();
 }
@@ -104,29 +104,6 @@ void Interpreter::terp_facts()
 	}
 }
 
-void Interpreter::terp_rules()
-{
-	// auto dlprog = parser->get_DatalogProgram();
-	// for(auto pred : dlprog->Rules)
-	// {
-	// 	Scheme s;
-	// 	s.name = pred.ident;
-	// 	for(auto parm : pred.parm_vec)
-	// 	{
-	// 		s.push_back(parm.get_ident());
-	// 	}
-
-	// 	Relation r(s);
-
-	// 	db.insert(r);
-	// }
-
-
-	
-	// cout << "Terpin' rules!" << endl;
-	// auto dlprog = parser->get_DatalogProgram();
-}
-
 Scheme query_to_scheme(Predicate p)
 {
 	Scheme ret;
@@ -139,6 +116,22 @@ Scheme query_to_scheme(Predicate p)
 	}
 
 	return ret;
+}
+
+void Interpreter::terp_rules()
+{
+	auto dlprog = parser->get_DatalogProgram();
+
+	for(auto rule : dlprog->Rules)
+	{
+		// cout << "Processing Rule: " << string(rule) << endl;
+
+		Relation r(query_to_scheme(rule.pred));
+
+		cout << r.get_scheme() << endl;
+	}
+
+	out << "Converged after " << passes << " passes through the Rules.\n";
 }
 
 void Interpreter::terp_queries()

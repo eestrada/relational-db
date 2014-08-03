@@ -47,6 +47,7 @@ private:
 	DataBase db;
 	ostringstream out;
 	std::map<string, RuleQuery> rulev;
+	unsigned passes;
 };
 
 }
