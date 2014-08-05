@@ -23,6 +23,35 @@ struct RuleQuery
 	vector<Scheme> schemes;
 };
 
+
+template <typename T>
+class counter_template
+{
+public:
+	void increment(const T &key) { countmap[key] += 1; }
+
+	size_t get_val(const T &key) const { return countmap.at(key); }
+
+	size_t get_max() const
+	{
+		size_t retval = 0;
+		for(auto p : countmap) if(p.second > retval) retval = p.second;
+		return retval;
+	}
+
+	size_t get_sum() const
+	{
+		size_t retval = 0;
+		for(auto p : countmap) retval += p.second;
+		return retval;
+	}
+
+private:
+	::std::map<T, size_t> countmap;
+};
+
+typedef counter_template<string> Counter;
+
 class Interpreter
 {
 public:

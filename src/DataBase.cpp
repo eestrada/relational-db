@@ -26,6 +26,8 @@ void Scheme::join(const Scheme &other)
 {
 	OrderedSet<string> selfset(*this);
 
+	// cout << selfset << endl;
+
 	selfset += OrderedSet<string>(other);
 
 	this->resize(selfset.size());
@@ -110,8 +112,27 @@ Relation Relation::project(const IndexList &indices) const
 
 Relation Relation::unioned(const Relation &other) const
 {
-	throw logic_error("unioned member function not implemented");
-	return *this;
+	if(other.tuples.size() == 0) return *this;
+
+	Relation retval = *this;
+	IndexList pil;
+
+	Index i1 = 0;
+	for(auto s1 : retval.scheme)
+	{
+		Index i2 = 0;
+		for(auto s2 : other.scheme)
+		{
+			if (s1 == s2) pil.push_back(i2);
+			++i2;
+		}
+		++i1;
+	}
+
+	Relation fixed = other.project(pil);
+
+	retval.tuples.insert(fixed.tuples.begin(), fixed.tuples.end());
+	return retval;
 }
 
 Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
@@ -121,6 +142,7 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 	// Check for joinability. Then append values from t1 that are either unique
 	// based on the Scheme or match t2 based on the Scheme. If the Schemes
 	// match columns, but the tuples do not match values, throw an exception.
+	// cout << "Do we even START joining tuples?" << endl;
 	for(auto i1 = 0; i1 < s1.size(); ++i1)
 	{
 		retval.push_back(t1.at(i1)); // Assume tuples will be joinable.
@@ -129,8 +151,10 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 		{
 			if(s1.at(i1) == s2.at(i2))
 			{
+				// cout << "Are we trying to join?" << endl;
 				if (t1.at(i1) == t2.at(i2)) break;
-				else throw UnjoinableError("Tuples cannot be joined.");
+				// else throw UnjoinableError(string("Tuples cannot be joined:") + string(t1) + string(t2));
+				else throw UnjoinableError(string("Tuples cannot be joined:"));
 			}
 		}
 	}
@@ -156,26 +180,23 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 
 Relation Relation::join(const Relation &other) const
 {
-
 	// make the scheme s for the result relation
-	//     (combine r1's scheme with r2's scheme)
 	Scheme jscheme = this->scheme + other.scheme;
 
-	// make a new empty relation r using scheme s
 	Relation retval(jscheme);
 
-	// for each tuple t1 in r1
-	for(auto t1 : this->get_tuples())
+	for(auto t1 : this->tuples)
 	{
-		// for each tuple t2 in r2
-		for(auto t2 : other.get_tuples())
+		for(auto t2 : other.tuples)
 		{
 			try
 			{
 				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
 				retval.insert(t);
 			}
-			catch(const UnjoinableError &e) {} //pass
+			catch(const UnjoinableError &e)
+			{
+			} //pass
 		}
 	}
 
@@ -208,6 +229,19 @@ Relation Relation::rename(StrDict mapping) const
 
 	return retval;
 }
+
+Relation Relation::rename(Scheme new_names) const
+{
+	if(new_names.size() != this->scheme.size())
+		throw runtime_error("Scheme lengths do not match");
+
+	Relation retval = *this;
+
+	retval.scheme = new_names;
+
+	return retval;
+}
+
 
 string Relation::get_name() const { return scheme.name; }
 Scheme Relation::get_scheme() const { return scheme; }

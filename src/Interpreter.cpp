@@ -118,20 +118,99 @@ Scheme query_to_scheme(Predicate p)
 	return ret;
 }
 
+Relation interpret_query(const Relation &rel_in, const Predicate &pred)
+{
+	Relation r = rel_in;
+
+	StrDict nmap;
+	IndexList pil;
+	map<string, Index> imap;
+	// Relation r = db[pred.ident];
+	auto scheme = r.get_scheme();
+	Index i = 0;
+	for(auto parm : pred.parm_vec)
+	{
+		try
+		{
+			auto pstr = parm.get_ident();
+			pil.push_back(i);
+			if(pstr != scheme.at(i))
+			{
+				auto iit = imap.find(pstr);
+				if(iit != imap.end()) r = r.select(iit->second, i);
+				nmap[scheme.at(i)] = pstr;
+			}
+			imap.emplace(pstr, i);
+		}
+		catch(const exception &e)
+		{
+			r = r.select(i, parm.get_literal());
+		}
+		++i;
+	}
+	r = r.project(pil);
+	r = r.rename(nmap);
+
+	// out << query_to_scheme(pred) << "? ";
+
+	// auto size = r.get_tuples().size();
+	// if(size == 0) out << "No\n";
+	// else if(size > 0) out << "Yes(" << size << ")\n";
+	// out << r;
+
+	return r;
+}
+
 void Interpreter::terp_rules()
 {
 	auto dlprog = parser->get_DatalogProgram();
 
+	Counter count;
+
 	for(auto rule : dlprog->Rules)
 	{
-		// cout << "Processing Rule: " << string(rule) << endl;
+		std::vector<Relation> rels;
 
-		Relation r(query_to_scheme(rule.pred));
+		for(auto pred : rule.pred_list)
+		{
+			Relation r = interpret_query(db.at(pred.ident), pred);
 
-		cout << r.get_scheme() << endl;
+			rels.push_back(r);
+		}
+
+		Relation result = rels.front();
+
+		if (rels.size() > 1)
+		{
+			for(auto r : rels)
+			{	
+				result = result.join(r);
+			}
+		}
+		else if(rels.size() < 1)
+		{
+			throw runtime_error("A rule must have at least one predicate.");
+		}
+
+		Relation final;
+
+		if(db.has(rule.pred.ident))
+		{
+			final = db.at(rule.pred.ident);
+		}
+		else
+		{
+			final = Relation(query_to_scheme(rule.pred));
+		}
+
+		final = final.unioned(result);
+
+		db[final.get_name()] = final;
+
+		count.increment(final.get_name());
 	}
 
-	out << "Converged after " << passes << " passes through the Rules.\n";
+	out << "Converged after " << count.get_sum() << " passes through the Rules.\n";
 }
 
 void Interpreter::terp_queries()
@@ -141,34 +220,7 @@ void Interpreter::terp_queries()
 	
 	for(auto pred : dlprog->Queries)
 	{
-		StrDict nmap;
-		IndexList pil;
-		map<string, Index> imap;
-		Relation r = db[pred.ident];
-		auto scheme = r.get_scheme();
-		Index i = 0;
-		for(auto parm : pred.parm_vec)
-		{
-			try
-			{
-				auto pstr = parm.get_ident();
-				pil.push_back(i);
-				if(pstr != scheme.at(i))
-				{
-					auto iit = imap.find(pstr);
-					if(iit != imap.end()) r = r.select(iit->second, i);
-					nmap[scheme.at(i)] = pstr;
-				}
-				imap.emplace(pstr, i);
-			}
-			catch(const exception &e)
-			{
-				r = r.select(i, parm.get_literal());
-			}
-			++i;
-		}
-		r = r.project(pil);
-		r = r.rename(nmap);
+		Relation r = interpret_query(db[pred.ident], pred);
 
 		out << query_to_scheme(pred) << "? ";
 

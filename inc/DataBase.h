@@ -52,6 +52,7 @@ public:
 	Relation select(Index index1, Index index2) const;
 	Relation project(const IndexList &indices) const;
 	Relation rename(StrDict mapping) const; // Renames the internal scheme
+	Relation rename(Scheme new_names) const; // Renames the internal scheme
 	Relation unioned(const Relation &other) const;
 	Relation join(const Relation &other) const;
 	void insert(Tuple t);

@@ -16,14 +16,12 @@ INCLUDES= -I$(INCDIR)/
 CXX ?= c++
 CXXFLAGS = -std=c++11 -O0 -g -Wall -pedantic $(INCLUDES)
 
-.PHONY : run bin test clean memcheck
+.PHONY : bin run clean test cleantest memcheck
 
 bin : $(BIN)
 
-test : memcheck
-	@ ./run_tests.sh
-
-cleantest : clean test
+run : bin
+	$(BIN) $(ARGS)
 
 clean :
 	@ echo "Removing generated files"
@@ -33,7 +31,13 @@ clean :
 	rm -rf ./output
 	rm -rf ./diffs
 
-memcheck : $(BIN) 
+test : memcheck
+	@ ./run_tests.sh
+
+cleantest : clean test
+
+
+memcheck : bin
 	@ echo "Running valgrind to check for memory leaks"
 	valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
 	--show-reachable=yes $(BIN) $(ARGS)
