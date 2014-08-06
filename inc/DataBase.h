@@ -47,7 +47,6 @@ public:
 	Relation& operator=(const Relation &other) = default;
 	Relation& operator=(Relation &&other) = default;
 
-	//Relation select(StrDict query) const; // Select by multiple criteria at once
 	Relation select(Index index, string value) const;
 	Relation select(Index index1, Index index2) const;
 	Relation project(const IndexList &indices) const;
@@ -75,6 +74,7 @@ public:
 	Relation& operator[](string name);
 	void insert(Relation r);
 	bool has(string name) const;
+	size_t db_size() const;
 	explicit operator string() const;
 };
 

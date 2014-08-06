@@ -11,66 +11,31 @@ using namespace Interpret;
 using namespace Parse;
 
 Interpreter::Interpreter(const string &file)
-	: parser(new Parse::Parser(file)), db(), out(), passes()
+	: parser(new Parse::Parser(file)), db(), out()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(istream &input_stream)
-	: parser(new Parse::Parser(input_stream)), db(), out(), passes()
+	: parser(new Parse::Parser(input_stream)), db(), out()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(unique_ptr<istream> input_stream)
-	: parser(new Parse::Parser(move(input_stream))), db(), out(), passes()
+	: parser(new Parse::Parser(move(input_stream))), db(), out()
 {
 	this->interpret();
 }
 
 Interpreter::Interpreter(unique_ptr<Parser> &&p)
-	: parser(move(p)), db(), out(), passes()
+	: parser(move(p)), db(), out()
 {
 	this->interpret();
 }
 
-bool query_is_exact(const Predicate &pred)
-{
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type != Parameter::Type::STRING) return false;
-	}
-
-	return true;
-}
-
-bool query_is_scheme(const Predicate &pred)
-{
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type != Parameter::Type::IDENT) return false;
-	}
-
-	return true;
-}
-
-bool query_is_mixed(const Predicate &pred)
-{
-	bool str = false, ident = false;
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type == Parameter::Type::STRING) str = true;
-		else if (parm.type == Parameter::Type::IDENT) ident = true;
-		else throw runtime_error("Somehow, you have a non-existent type value.");
-	}
-
-	return str and ident;
-}
-
 void Interpreter::terp_schemes()
 {
-	// cout << "Terpin' schemes!" << endl;
-
 	auto dlprog = parser->get_DatalogProgram();
 	for(auto pred : dlprog->Schemes)
 	{
@@ -89,7 +54,6 @@ void Interpreter::terp_schemes()
 
 void Interpreter::terp_facts()
 {
-	// cout << "Terpin' facts!" << endl;
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Facts)
@@ -99,7 +63,6 @@ void Interpreter::terp_facts()
 		{
 			t.push_back(parm.get_literal());
 		}
-
 		db[pred.ident].insert(t);
 	}
 }
@@ -125,7 +88,6 @@ Relation interpret_query(const Relation &rel_in, const Predicate &pred)
 	StrDict nmap;
 	IndexList pil;
 	map<string, Index> imap;
-	// Relation r = db[pred.ident];
 	auto scheme = r.get_scheme();
 	Index i = 0;
 	for(auto parm : pred.parm_vec)
@@ -148,24 +110,20 @@ Relation interpret_query(const Relation &rel_in, const Predicate &pred)
 		}
 		++i;
 	}
+
 	r = r.project(pil);
 	r = r.rename(nmap);
-
-	// out << query_to_scheme(pred) << "? ";
-
-	// auto size = r.get_tuples().size();
-	// if(size == 0) out << "No\n";
-	// else if(size > 0) out << "Yes(" << size << ")\n";
-	// out << r;
 
 	return r;
 }
 
-void Interpreter::terp_rules()
+size_t Interpreter::terp_rules(bool caller_count)
 {
+	if(caller_count == false) return false;
+
 	auto dlprog = parser->get_DatalogProgram();
 
-	Counter count;
+	size_t orig_size = db.db_size();
 
 	for(auto rule : dlprog->Rules)
 	{
@@ -179,43 +137,26 @@ void Interpreter::terp_rules()
 		}
 
 		Relation result = rels.front();
-
-		if (rels.size() > 1)
+		for(auto r : rels)
 		{
-			for(auto r : rels)
-			{	
-				result = result.join(r);
-			}
-		}
-		else if(rels.size() < 1)
-		{
-			throw runtime_error("A rule must have at least one predicate.");
+			result = result.join(r);
+			// result = result + r;
 		}
 
-		Relation final;
+		Relation final = db.at(rule.pred.ident);
 
-		if(db.has(rule.pred.ident))
-		{
-			final = db.at(rule.pred.ident);
-		}
-		else
-		{
-			final = Relation(query_to_scheme(rule.pred));
-		}
-
+		final = final.rename(query_to_scheme(rule.pred));
 		final = final.unioned(result);
+		// final = final | result;
 
 		db[final.get_name()] = final;
-
-		count.increment(final.get_name());
 	}
 
-	out << "Converged after " << count.get_sum() << " passes through the Rules.\n";
+	return caller_count + this->terp_rules(orig_size < db.db_size());
 }
 
 void Interpreter::terp_queries()
 {
-	// cout << "Terpin' queries!" << endl;
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Queries)
@@ -226,7 +167,7 @@ void Interpreter::terp_queries()
 
 		auto size = r.get_tuples().size();
 		if(size == 0) out << "No\n";
-		else if(size > 0) out << "Yes(" << size << ")\n";
+		else out << "Yes(" << size << ")\n";
 		out << r;
 	}
 }
@@ -241,6 +182,6 @@ void Interpreter::interpret()
 
 	terp_schemes();
 	terp_facts();
-	terp_rules();
+	out << "Converged after " << terp_rules() << " passes through the Rules.\n";
 	terp_queries();
 }

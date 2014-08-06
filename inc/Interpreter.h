@@ -69,14 +69,13 @@ private:
 	void interpret();
 	void terp_schemes();
 	void terp_facts();
-	void terp_rules();
+	size_t terp_rules(bool caller_count=1);
 	void terp_queries();
 private:
 	unique_ptr<Parser> parser;
 	DataBase db;
 	ostringstream out;
 	std::map<string, RuleQuery> rulev;
-	unsigned passes;
 };
 
 }

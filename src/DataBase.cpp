@@ -26,8 +26,6 @@ void Scheme::join(const Scheme &other)
 {
 	OrderedSet<string> selfset(*this);
 
-	// cout << selfset << endl;
-
 	selfset += OrderedSet<string>(other);
 
 	this->resize(selfset.size());
@@ -53,20 +51,20 @@ Scheme& Scheme::operator+=(const Scheme &other)
 
 Relation::Relation(const Scheme &s) : scheme(s), tuples() {}
 
-/*
-Relation Relation::select(StrDict query) const
-{
-
-}
-*/
-
 Relation Relation::select(Index index, string value) const
 {
 	Relation r(this->scheme);
 
 	for(auto t : this->tuples)
 	{
-		if(t.at(index) == value) r.insert(t);
+		try
+		{
+			if(t.at(index) == value) r.insert(t);
+		}
+		catch(const exception &e)
+		{
+			throw;
+		}
 	}
 
 	return r;
@@ -84,6 +82,17 @@ Relation Relation::select(Index index1, Index index2) const
 	return r;
 }
 
+ostream & operator<<(ostream &out, const IndexList &indices)
+{
+	out << "[ ";
+	for(auto i : indices)
+	{
+		out << i << ", ";
+	}
+	out << "]";
+	return out;
+}
+
 Relation Relation::project(const IndexList &indices) const
 {
 	Scheme tmp_sch;
@@ -96,6 +105,13 @@ Relation Relation::project(const IndexList &indices) const
 
 	Relation retval;
 	retval.scheme = tmp_sch;
+
+	if(indices.size() == 0)
+	{
+		retval.tuples = this->tuples;
+		return retval;
+	}
+
 	for(auto t : this->tuples)
 	{
 		Tuple nt;
@@ -104,7 +120,7 @@ Relation Relation::project(const IndexList &indices) const
 			nt.push_back(t.at(i));
 		}
 
-		retval.insert(nt);
+		if(nt.size() > 0) retval.insert(nt);
 	}
 
 	return retval;
@@ -112,8 +128,6 @@ Relation Relation::project(const IndexList &indices) const
 
 Relation Relation::unioned(const Relation &other) const
 {
-	if(other.tuples.size() == 0) return *this;
-
 	Relation retval = *this;
 	IndexList pil;
 
@@ -131,7 +145,8 @@ Relation Relation::unioned(const Relation &other) const
 
 	Relation fixed = other.project(pil);
 
-	retval.tuples.insert(fixed.tuples.begin(), fixed.tuples.end());
+	for (auto t : fixed.tuples)	{ retval.insert(t);	}
+
 	return retval;
 }
 
@@ -142,7 +157,6 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 	// Check for joinability. Then append values from t1 that are either unique
 	// based on the Scheme or match t2 based on the Scheme. If the Schemes
 	// match columns, but the tuples do not match values, throw an exception.
-	// cout << "Do we even START joining tuples?" << endl;
 	for(auto i1 = 0; i1 < s1.size(); ++i1)
 	{
 		retval.push_back(t1.at(i1)); // Assume tuples will be joinable.
@@ -151,9 +165,7 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 		{
 			if(s1.at(i1) == s2.at(i2))
 			{
-				// cout << "Are we trying to join?" << endl;
 				if (t1.at(i1) == t2.at(i2)) break;
-				// else throw UnjoinableError(string("Tuples cannot be joined:") + string(t1) + string(t2));
 				else throw UnjoinableError(string("Tuples cannot be joined:"));
 			}
 		}
@@ -180,7 +192,6 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 
 Relation Relation::join(const Relation &other) const
 {
-	// make the scheme s for the result relation
 	Scheme jscheme = this->scheme + other.scheme;
 
 	Relation retval(jscheme);
@@ -194,9 +205,7 @@ Relation Relation::join(const Relation &other) const
 				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
 				retval.insert(t);
 			}
-			catch(const UnjoinableError &e)
-			{
-			} //pass
+			catch(const UnjoinableError &e){} //pass
 		}
 	}
 
@@ -205,9 +214,9 @@ Relation Relation::join(const Relation &other) const
 
 void Relation::insert(Tuple t)
 {
+	// if(t.size() != scheme.size()) throw runtime_error("Tuple length does not match Scheme length.");
 	auto ret = tuples.insert(t);
-
-	if(ret.second == false) {} // Possibly throw exception if insert fails
+	// if(ret.second == false) {} // Possibly throw exception if insert fails
 }
 
 Relation Relation::rename(StrDict mapping) const
@@ -242,7 +251,6 @@ Relation Relation::rename(Scheme new_names) const
 	return retval;
 }
 
-
 string Relation::get_name() const { return scheme.name; }
 Scheme Relation::get_scheme() const { return scheme; }
 TupleSet Relation::get_tuples() const {	return tuples; }
@@ -251,7 +259,6 @@ Relation::operator string() const
 {
 	auto sch = this->get_scheme();
 
-	// cout << sch.size() << endl;
 	if(not sch.size()) return string();
 
 	ostringstream out;
@@ -271,38 +278,6 @@ Relation::operator string() const
 
 }
 
-// Relation& DataBase::operator[](string name)
-// {
-//     return relations.at(name);
-// }
-
-// void DataBase::insert(Relation r)
-// {
-//     relations.insert({r.get_name(), r});
-// }
-
-// DataBase::operator string() const
-// {
-// 	ostringstream out;
-
-// 	out << "Tables:\n";
-
-// 	for(auto p : relations)
-// 	{
-// 		out << "\t" << p.second.get_scheme() << "\n";
-
-// 		auto ts = p.second.get_tuples();
-
-// 		for(auto t : ts)
-// 		{
-// 			out << "\t\t" << t << "\n";
-// 		}
-// 	}
-
-// 	return out.str();
-// }
-
-
 Relation& DataBase::operator[](string name)
 {
     return this->at(name);
@@ -314,6 +289,17 @@ void DataBase::insert(Relation r)
 }
 
 bool DataBase::has(string name) const {	return this->count(name); }
+
+size_t DataBase::db_size() const
+{
+	size_t retval = 0;
+	for(auto p : *this)
+	{
+		retval += p.second.get_tuples().size();
+	}
+	return retval;
+}
+
 
 DataBase::operator string() const
 {
@@ -356,12 +342,11 @@ ostream & operator<<(ostream &out, const Tuple &t)
 
 	for(auto str = t.begin(); str != t.end(); ++str)
 	{
-		// out << "'" << *str << "'";
 		out << *str;
 
 		if(str+1 != t.end()) out << ",";
-		else out << ")";
 	}
+	out << ")";
 	return out;
 }
 
