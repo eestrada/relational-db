@@ -150,6 +150,28 @@ Relation Relation::unioned(const Relation &other) const
 	return retval;
 }
 
+Tuple join_remaining(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+{
+	Tuple retval = t1;
+	// Add remaining values from t2 based on uniqueness of Scheme columns.
+	for(auto i2 = 0; i2 < s2.size(); ++i2)
+	{
+		bool unique = true;
+
+		for(auto i1 = 0; i1 < s1.size(); ++i1)
+		{
+			if(s2.at(i2) == s1.at(i1))
+			{
+				unique = false;
+				break;
+			}
+		}
+		if(unique) retval.push_back(t2.at(i2));
+	}
+
+	return retval;
+}
+
 Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
 {
 	Tuple retval;
@@ -171,23 +193,7 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 		}
 	}
 
-	// Add remaining values from t2 based on uniqueness of Scheme columns.
-	for(auto i2 = 0; i2 < s2.size(); ++i2)
-	{
-		bool unique = true;
-
-		for(auto i1 = 0; i1 < s1.size(); ++i1)
-		{
-			if(s2.at(i2) == s1.at(i1))
-			{
-				unique = false;
-				break;
-			}
-		}
-		if(unique) retval.push_back(t2.at(i2));
-	}
-
-	return retval;
+	return join_remaining(retval, t2, s1, s2);
 }
 
 Relation Relation::join(const Relation &other) const
