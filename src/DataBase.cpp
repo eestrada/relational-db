@@ -55,7 +55,7 @@ Relation Relation::select(Index index, string value) const
 {
 	Relation r(this->scheme);
 
-	for(auto t : this->tuples)
+	for(auto &t : this->tuples)
 	{
 		try
 		{
@@ -74,7 +74,7 @@ Relation Relation::select(Index index1, Index index2) const
 {
 	Relation r(this->scheme);
 
-	for(auto t : this->tuples)
+	for(auto &t : this->tuples)
 	{
 		if(t.at(index1) == t.at(index2)) r.insert(t);
 	}
@@ -85,7 +85,7 @@ Relation Relation::select(Index index1, Index index2) const
 ostream & operator<<(ostream &out, const IndexList &indices)
 {
 	out << "[ ";
-	for(auto i : indices)
+	for(auto &i : indices)
 	{
 		out << i << ", ";
 	}
@@ -98,13 +98,13 @@ Relation Relation::project(const IndexList &indices) const
 	Scheme tmp_sch;
 	tmp_sch.name = this->scheme.name;
 
-	for(auto i : indices)
+	for(auto &i : indices)
 	{
 		tmp_sch.push_back(this->scheme.at(i));
 	}
 
 	Relation retval;
-	retval.scheme = tmp_sch;
+	retval.scheme = move(tmp_sch);
 
 	if(indices.size() == 0)
 	{
@@ -112,15 +112,15 @@ Relation Relation::project(const IndexList &indices) const
 		return retval;
 	}
 
-	for(auto t : this->tuples)
+	for(auto &t : this->tuples)
 	{
 		Tuple nt;
-		for(auto i : indices)
+		for(auto &i : indices)
 		{
 			nt.push_back(t.at(i));
 		}
 
-		if(nt.size() > 0) retval.insert(nt);
+		if(nt.size() > 0) retval.insert(move(nt));
 	}
 
 	return retval;
@@ -132,10 +132,10 @@ Relation Relation::unioned(const Relation &other) const
 	IndexList pil;
 
 	Index i1 = 0;
-	for(auto s1 : retval.scheme)
+	for(auto &s1 : retval.scheme)
 	{
 		Index i2 = 0;
-		for(auto s2 : other.scheme)
+		for(auto &s2 : other.scheme)
 		{
 			if (s1 == s2) pil.push_back(i2);
 			++i2;
@@ -145,7 +145,7 @@ Relation Relation::unioned(const Relation &other) const
 
 	Relation fixed = other.project(pil);
 
-	for (auto t : fixed.tuples)	{ retval.insert(t);	}
+	for (auto &t : fixed.tuples)	{ retval.insert(t);	}
 
 	return retval;
 }
@@ -202,14 +202,14 @@ Relation Relation::join(const Relation &other) const
 
 	Relation retval(jscheme);
 
-	for(auto t1 : this->tuples)
+	for(auto &t1 : this->tuples)
 	{
-		for(auto t2 : other.tuples)
+		for(auto &t2 : other.tuples)
 		{
 			try
 			{
 				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
-				retval.insert(t);
+				retval.insert(move(t));
 			}
 			catch(const UnjoinableError &e){} //pass
 		}
@@ -221,7 +221,8 @@ Relation Relation::join(const Relation &other) const
 void Relation::insert(Tuple t)
 {
 	// if(t.size() != scheme.size()) throw runtime_error("Tuple length does not match Scheme length.");
-	auto ret = tuples.insert(t);
+	tuples.insert(move(t));
+	// auto ret = tuples.insert(move(t));
 	// if(ret.second == false) {} // Possibly throw exception if insert fails
 }
 
@@ -240,7 +241,7 @@ Relation Relation::rename(StrDict mapping) const
 		*i = mapping.at(*i);
 	}
 
-	retval.scheme = new_scheme;
+	retval.scheme = move(new_scheme);
 
 	return retval;
 }
@@ -252,7 +253,7 @@ Relation Relation::rename(Scheme new_names) const
 
 	Relation retval = *this;
 
-	retval.scheme = new_names;
+	retval.scheme = move(new_names);
 
 	return retval;
 }
@@ -268,7 +269,7 @@ Relation::operator string() const
 	if(not sch.size()) return string();
 
 	ostringstream out;
-	for(auto t : this->get_tuples())
+	for(auto &t : this->get_tuples())
 	{
 		out << "  ";
 		for(unsigned i = 0; i < sch.size(); ++i)
@@ -281,7 +282,6 @@ Relation::operator string() const
 	}
 
 	return out.str();
-
 }
 
 Relation& DataBase::operator[](string name)
@@ -291,7 +291,7 @@ Relation& DataBase::operator[](string name)
 
 void DataBase::insert(Relation r)
 {
-    map<string, Relation>::insert({r.get_name(), r});
+    map<string, Relation>::insert({r.get_name(), move(r)});
 }
 
 bool DataBase::has(string name) const {	return this->count(name); }
@@ -299,7 +299,7 @@ bool DataBase::has(string name) const {	return this->count(name); }
 size_t DataBase::db_size() const
 {
 	size_t retval = 0;
-	for(auto p : *this)
+	for(auto &p : *this)
 	{
 		retval += p.second.get_tuples().size();
 	}
@@ -313,13 +313,13 @@ DataBase::operator string() const
 
 	out << "Tables:\n";
 
-	for(auto p : *this)
+	for(auto &p : *this)
 	{
 		out << "\t" << p.second.get_scheme() << "\n";
 
 		auto ts = p.second.get_tuples();
 
-		for(auto t : ts)
+		for(auto &t : ts)
 		{
 			out << "\t\t" << t << "\n";
 		}
