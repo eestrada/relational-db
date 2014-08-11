@@ -1,46 +1,24 @@
 #ifndef __GRAPH_H__
 #define __GRAPH_H__
 
-#include <set>
-#include <map>
-#include <memory>
+#include <unordered_map>
 #include <string>
-#include <algorithm>
+#include "OrderedSet.h"
 
 namespace DG
 {
 
 using namespace std;
 
-struct Graph;
-struct Node;
-
-  struct Graph : map< string,  shared_ptr<Node> >
-{
-	bool add(const Node &n);
-	bool add(Node &&n);
-};
-
-struct Node
+struct Node : DB::OrderedSet< string >
 {
 	string id;
 	bool visited;
 	int postorder;
-	set< weak_ptr<Node> > deps;
-
-	bool add(const Node &n);
-	bool add(Node &&n);
-	virtual const string& ntype() const = 0;
 };
 
-struct Query : Node
+struct Graph : unordered_map< string, Node >
 {
-	virtual const string& ntype() const;
-};
-
-struct Rule : Node
-{
-	virtual const string& ntype() const;
 };
 
 }

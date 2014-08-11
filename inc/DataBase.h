@@ -3,6 +3,7 @@
 
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <ostream>
@@ -19,7 +20,7 @@ namespace DB
 
 using namespace std;
 
-typedef map<string, string> StrDict;
+typedef unordered_map<string, string> StrDict;
 typedef unsigned long int Index;
 typedef vector<Index> IndexList;
 
@@ -54,10 +55,11 @@ public:
 	Relation rename(Scheme new_names) const; // Renames the internal scheme
 	Relation unioned(const Relation &other) const;
 	Relation join(const Relation &other) const;
-	void insert(Tuple t);
-	string get_name() const;
-	Scheme get_scheme() const;
-	TupleSet get_tuples() const;
+	void insert(const Tuple& t);
+	void insert(Tuple &&t);
+	const string& get_name() const;
+	const Scheme& get_scheme() const;
+	const TupleSet& get_tuples() const;
 
 	// Convenience functions
 	Relation operator|(const Relation &other) { return unioned(other); }
@@ -68,7 +70,7 @@ private:
 	TupleSet tuples;
 };
 
-class DataBase : public map<string, Relation>
+class DataBase : public unordered_map<string, Relation>
 {
 public:
 	Relation& operator[](string name);
