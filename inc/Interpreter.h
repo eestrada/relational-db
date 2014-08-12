@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 #include "DataBase.h"
+#include "Graph.h"
 #include <memory>
 #include <istream>
 #include <sstream>
@@ -71,11 +72,18 @@ private:
 	void terp_facts();
 	size_t terp_rules(bool caller_count=1);
 	void terp_queries();
+	void build_graph();
+	void build_graph_output();
+	void build_query_output(const Predicate &pred);
+	void build_Postorder(const string &qid);
 private:
 	unique_ptr<Parser> parser;
 	DataBase db;
 	ostringstream out;
-	std::map<string, RuleQuery> rulev;
+	ostringstream dgout;
+	DG::Graph graph;
+	unordered_map<string, string> qidmap;
+	unordered_map<string, string> ridmap;
 };
 
 }

@@ -5,6 +5,7 @@ mkdir -p ./diffs
 
 lab="4"
 
+rm -f ./diffs/diff${lab}.diff
 # for i in 1 2 3 4 5 6 7 8 9 A B C D E F
 # for i in 1 2 3 4 5 6 7 8 9 A B C
 # for i in 30 33 35 36 37 38 52
