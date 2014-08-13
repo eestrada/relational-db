@@ -1,3 +1,4 @@
+// -*- C++ -*-
 #ifndef __INTERPRETER_H__
 #define __INTERPRETER_H__
 
@@ -74,7 +75,7 @@ private:
 	void terp_queries();
 	void build_graph();
 	void build_graph_output();
-	void build_query_output(const Predicate &pred);
+	void build_query_output(const string &qid, const Predicate &pred);
 	void build_Postorder(const string &qid);
 private:
 	unique_ptr<Parser> parser;

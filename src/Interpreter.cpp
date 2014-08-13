@@ -163,20 +163,11 @@ void Interpreter::terp_queries()
 {
 	auto dlprog = parser->get_DatalogProgram();
 
-		
+	auto qcnt = 1;		
 	for(auto pred : dlprog->Queries)
 	{
-		build_query_output(pred);
-		/*
-		Relation r = interpret_query(db[pred.ident], pred);
-
-		out << query_to_scheme(pred) << "? ";
-
-		auto size = r.get_tuples().size();
-		if(size == 0) out << "No\n";
-		else out << "Yes(" << size << ")\n";
-		out << r;
-		*/
+		build_query_output("Q" + to_string(qcnt), pred);
+		++qcnt;
 	}
 }
 
@@ -187,23 +178,27 @@ void Interpreter::build_Postorder(const string &qid)
 	// Topo sort
 }
 
-void Interpreter::build_query_output(const Predicate &pred)
+void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 {
 	auto qs =  query_to_scheme(pred);
 
 	// Graph output
 	out << qs << "?\n\n";
 
+	// Depth-First Search
+	// Postorder
 	out << "  Postorder Numbers\n";
 	graph.reset();
-   	auto deplist = graph.depth_search(qidmap.at(qs.name));
+   	auto deplist = graph.depth_search(qid);
+	sort(deplist.begin(), deplist.end());
 	for(const auto &id : deplist)
 	{
 		out << "    " << id << ": " << graph.at(id).postorder <<"\n";
 	}
-//	build_Postorder(qidmap.at(pred.ident));
 	out << "\n";
 
+	// Topological Sort
+	// Rule Evaluation Order
 	out << "  Rule Evaluation Order\n";
 	auto sortedlist = deplist;
 	sortedlist = graph.sorted(sortedlist);
@@ -213,20 +208,40 @@ void Interpreter::build_query_output(const Predicate &pred)
 	}
 	out << "\n";
 
+	// Cycle Finding
+	// Backward Edges
 	out << "  Backward Edges\n";
-	sort(deplist.begin(), deplist.end());
 	for(const auto &s : deplist)
 	{
 		priority_queue< string, deque<string>, greater<string> > pq;
-		for(const auto &d : graph.at(s))
-			if(graph[d].postorder < graph[s].postorder)pq.push(d);
+		bool has_cycles = false;
 
-//		if(pq.size() > 0)
-//			out << "    " << s <<
+		if(s.front() != 'Q')
+		{
+			for(const auto &d : graph.at(s))
+			{
+				if(graph[d].postorder >= graph[s].postorder)
+				{
+					pq.push(d);
+					has_cycles = true;
+				}
+			}
+		}
+
+		if(has_cycles)
+		{
+			out << "    " << s << ":";
+			while(not pq.empty())
+			{
+				out << " " << pq.top();
+				pq.pop();
+			}
+			out << "\n";
+		}
 	}
-	// do backward edges work here
 	out << "\n";
 
+	// Rule Evaluation
 	out << "  Rule Evaluation\n";
 	// do rule eval work here
 	out << "\n";
@@ -246,18 +261,18 @@ void Interpreter::build_query_output(const Predicate &pred)
 
 void Interpreter::build_graph_output()
 {
-	dgout << "Dependency Graph\n";
+	out << "Dependency Graph\n";
 
 	for(const auto &p : graph)
 	{
-		dgout << "  " << p.first << ":";
+		out << "  " << p.first << ":";
 		for(const auto &v : p.second)
 		{
-			dgout << " " << v;
+			out << " " << v;
 		}
-		dgout << "\n";
+		out << "\n";
 	}
-	dgout << "\n";
+	out << "\n";
 
 	/*
 	auto dlprog = parser->get_DatalogProgram();

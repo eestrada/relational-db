@@ -35,11 +35,16 @@ StrList Graph::depth_search(const string &id)
 	else at(id).visited = true;
 	retval.push_back(id);
 
-	for(auto depid : this->at(id))
+	auto node = at(id);
+	for(auto depid = node.cbegin(); depid != node.cend(); ++depid)
 	{
-		if(at(depid).visited) continue;
-		auto other = depth_search(depid);
-		retval = extend(retval, other);
+		if(at(*depid).visited) continue;
+		else
+		{
+			auto other = depth_search(*depid);
+			retval = extend(retval, other);
+		}
+
     }
 	at(id).postorder = cpo += 1;
 	
