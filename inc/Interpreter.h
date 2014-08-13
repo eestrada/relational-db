@@ -72,6 +72,7 @@ private:
 	void terp_schemes();
 	void terp_facts();
 	size_t terp_rules(bool caller_count=1);
+	bool terp_rule(const string &rid);
 	void terp_queries();
 	void build_graph();
 	void build_graph_output();
@@ -84,7 +85,7 @@ private:
 	ostringstream dgout;
 	DG::Graph graph;
 	unordered_map<string, string> qidmap;
-	unordered_map<string, string> ridmap;
+	unordered_map<string, int> ridmap;
 };
 
 }

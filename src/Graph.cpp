@@ -44,7 +44,6 @@ StrList Graph::depth_search(const string &id)
 			auto other = depth_search(*depid);
 			retval = extend(retval, other);
 		}
-
     }
 	at(id).postorder = cpo += 1;
 	

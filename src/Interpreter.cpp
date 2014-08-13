@@ -202,9 +202,14 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	out << "  Rule Evaluation Order\n";
 	auto sortedlist = deplist;
 	sortedlist = graph.sorted(sortedlist);
+	decltype(sortedlist) topo_sorted;
 	for(const auto &id : sortedlist)
 	{
-		if(id.front() != 'Q') out << "    " << id <<"\n";
+		if(id.front() != 'Q')
+		{
+			out << "    " << id <<"\n";
+			topo_sorted.push_back(id);
+		}
 	}
 	out << "\n";
 
@@ -214,21 +219,16 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	for(const auto &s : deplist)
 	{
 		priority_queue< string, deque<string>, greater<string> > pq;
-		bool has_cycles = false;
 
 		if(s.front() != 'Q')
 		{
 			for(const auto &d : graph.at(s))
 			{
-				if(graph[d].postorder >= graph[s].postorder)
-				{
-					pq.push(d);
-					has_cycles = true;
-				}
+				if(graph[d].postorder >= graph[s].postorder) pq.push(d);
 			}
 		}
 
-		if(has_cycles)
+		if(not pq.empty())
 		{
 			out << "    " << s << ":";
 			while(not pq.empty())
@@ -243,6 +243,12 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 	// Rule Evaluation
 	out << "  Rule Evaluation\n";
+	bool eval_again = true;
+	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
+	{
+		eval_again = terp_rule(*iter);
+		if(++iter == topo_sorted.cend() and not eval_again) iter = topo_sorted.cbegin();
+	}
 	// do rule eval work here
 	out << "\n";
 
@@ -258,6 +264,53 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	out << "\n";
 }
 
+bool Interpreter::terp_rule(const string &rid)
+{
+	auto dlprog = parser->get_DatalogProgram();
+
+	auto i = ridmap.at(rid);
+	auto rule = dlprog->Rules.at(i);
+	auto r = db[rule.pred.ident];
+
+	out << "    " << string(rule) << "\n";
+
+//	if(caller_count == false) return false;
+
+//	auto dlprog = parser->get_DatalogProgram();
+
+	size_t orig_size = db.db_size();
+
+//	for(auto rule : dlprog->Rules)
+	{
+		std::vector<Relation> rels;
+
+		for(auto pred : rule.pred_list)
+		{
+			Relation r = interpret_query(db.at(pred.ident), pred);
+
+			rels.push_back(r);
+		}
+
+		Relation result = rels.front();
+		for(auto r : rels)
+		{
+			result = result.join(r);
+			// result = result + r;
+		}
+
+		Relation final = db.at(rule.pred.ident);
+
+		final = final.rename(query_to_scheme(rule.pred));
+		final = final.unioned(result);
+		// final = final | result;
+
+		db[final.get_name()] = final;
+	}
+
+//	return orig_size != db.db_size();
+	return orig_size < db.db_size();
+//	return caller_count + this->terp_rules(orig_size < db.db_size());
+}
 
 void Interpreter::build_graph_output()
 {
@@ -273,18 +326,6 @@ void Interpreter::build_graph_output()
 		out << "\n";
 	}
 	out << "\n";
-
-	/*
-	auto dlprog = parser->get_DatalogProgram();
-
-	auto qcnt = 1;
-	for(const auto &query : dlprog->Queries)
-	{
-		dgout << query_to_scheme(query) << "?\n\n";
-		++qcnt;
-	}
-	return;
-	*/
 }
 
 void Interpreter::build_graph()
@@ -308,8 +349,7 @@ void Interpreter::build_graph()
             ++rcnt;
 		}
 		graph[qnode.id] = qnode;
-		qidmap[query.ident] = qnode.id;
-		ridmap[qnode.id] = query.ident;
+		qidmap[qnode.id] = query.ident;
         ++qcnt;
 	}
 
@@ -334,6 +374,8 @@ void Interpreter::build_graph()
 			}
         }
 		graph[rnode.id] = rnode;
+//		ridmap[rnode.id] = rule1.pred.ident;
+		ridmap[rnode.id] = r1cnt - 1;
         ++r1cnt;
 	}
 
@@ -351,7 +393,7 @@ void Interpreter::interpret()
 	terp_schemes();
 	terp_facts();
 	// out << "Converged after " << terp_rules() << " passes through the Rules.\n";
-	terp_rules();
+//	terp_rules();
 	build_graph();
 	terp_queries();
 }
