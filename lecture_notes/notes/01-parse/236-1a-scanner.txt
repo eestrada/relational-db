@@ -1,0 +1,574 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Lexical Analysis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you read and process the following code?
+
+
+    void quote() {
+
+	print(
+
+	    "First, solve the problem. Then, write the code." +
+	    " - John Johnson"
+
+	);
+
+    }
+
+
+
+What are the natural parts in which to break the input?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you read and process the following code?
+(Datalog is a language used in this class.)
+
+
+Schemes:
+   childOf(X,Y)
+   marriedTo(X,Y)
+Facts:
+   marriedTo('Zed','Bea').
+   marriedTo('Jack','Jill').
+   marriedTo('Ned','Jan').
+   childOf('Jill','Zed').
+   childOf('Ned','Bea').
+   childOf('Tim','Jack').
+   childOf('Sue','Jack').
+Rules:
+   childOf(X,Y) :- childOf(X,Z), marriedTo(Y,Z).
+   marriedTo(X,Y) :- marriedTo(Y,X).
+Queries:
+   marriedTo('Bea','Zed')?
+   childOf('Jill','Bea')?
+
+
+
+What are the natural parts in which to break the input?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Scanner (Lexical Analyzer)?
+
+What's a Parser?
+
+What's an Interpreter?
+
+
+
+What's the input to a Scanner?
+
+What's the output from a Scanner?
+
+
+
+What's the input to a Parser?
+
+What's the output from a Parser?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's Project 1?
+
+	a Scanner for Datalog
+
+What's Project 2?
+
+	a Parser for Datalog
+
+What are Projects 3 and 4?
+
+	an Interpreter for Datalog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scanner
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+
+You may work with a partner.
+
+
+What does the Scanner output when given the input?
+
+
+	Facts:
+	   childOf('Ned','Bea').
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Token?
+
+
+What are the parts of a Token?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Regular Expressions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What notation is commonly used to specify Tokens?
+
+
+
+DEMO:	load datalog.txt as test data at regexpal.com or rubular.com
+	or egrep -o on datalog.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How does the Scanner recognize a Comma?
+
+
+
+What's a Regular Expression for a Comma token?
+
+
+
+DEMO:	, in regex box
+	egrep -o ',' datalog.txt
+	:-|:|,|\.|\?
+	Facts|Rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How does the Scanner recognize an Identifier?
+
+
+
+What's an English description for an Identifier token?
+
+	a letter followed by zero or more letters and digits
+
+
+
+What's a Regular Expression for an Identifier token?
+
+
+
+DEMO:	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How does the Scanner recognize a String?
+
+
+
+Classwork
+You may work with a partner.
+
+What's an English description for a String Literal token?
+
+What's a Regular Expression for a String Literal token?
+
+
+
+DEMO:	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+State Machines
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you implement the recognition of a token?
+
+
+
+Give a State Machine for an Identifier token.
+
+	letter (letter | digit)*
+
+
+
+How do you indicate that the non-letter-or-digit is not consumed?
+
+	surround non-letter-or-digit with square brackets
+
+
+
+What does the Machine do when reaching an accept state?
+
+	return the token recognized
+	continue at the start state
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+Give a State Machine for a String Literal token.
+
+	quote other* quote
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How does the Scanner recognize a Keyword?
+
+
+
+Do you write an Expression and build a Machine for each keyword?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Coding a State Machine
+
+
+
+How do you implement a State Machine in code?
+
+	1. store the state in a variable
+	2. encode the state in the position in the code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Give the (state-in-a-variable) code for the String Literal machine.
+
+	state = START;
+	input = readChar();
+	while (state != ACCEPT) {
+	   if (state == START) {
+	      if (input == QUOTE) {
+	         input = readChar();
+		 state = STRING;
+	      } else if (input == ...) {
+	         ... other kinds of tokens ...
+	      }
+	   } else if (state == STRING) {
+	      if (input == QUOTE) {
+	         input = readChar();
+		 state = ACCEPT;
+	      } else {
+	         input = readChar();
+		 state = STRING;
+	      }
+	   }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Give the (state-by-position) code for the String Literal machine.
+
+	input = readChar();
+	// begin in START state
+
+	if (input == QUOTE) {
+
+	   input = readChar();
+	   // now in STRING state
+
+	   while (input != QUOTE) {
+	      input = readChar(); 
+	      // stay in STRING state
+	   }
+
+	   input = readChar();
+	   // now in ACCEPT state
+
+	} else if (input == ...) {
+	   ... other kinds of tokens ...
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,135 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Derivations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Show the derivation of aaabbb using the following grammar.
+
+
+	S -> ab | a S b
+
+
+
+
+
+Show all derivations of at most 3 steps using the following grammar.
+
+
+	S -> ab | a S b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Derive aabaa using the following grammar.
+Derive bbabbbb using the following grammar.
+
+
+	S -> X | Y
+	X -> b | a X a
+	Y -> a | b Y bb
+
+
+
+
+
+Show all derivations of at most 3 steps using the following grammar.
+
+
+	S -> X | Y
+	X -> b | a X a
+	Y -> a | b Y bb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+
+Work with a partner.
+Solve the following problems.
+
+Derive ab using the following grammar.
+Derive aabbb using the following grammar.
+
+	S -> a A
+	A -> a A | b B
+	B -> b B | b
+
+
+
+Show all derivations of at most 3 steps using the following grammar.
+
+	S -> a A
+	A -> a A | b B
+	B -> b B | b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

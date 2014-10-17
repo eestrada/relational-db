@@ -1,0 +1,170 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Parse Trees
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Construct a parse tree for the string using the grammar.
+
+	(x * (1 + y))
+
+	E -> (E + E)
+	E -> (E * E)
+	E -> 1
+	E -> x
+	E -> y
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+
+You may work with a partner.
+
+Construct a parse tree for the string using the grammar.
+
+	a monkey talks wildly
+
+	sentence -> noun-phrase verb-phrase
+	noun-phrase -> article noun
+	verb-phrase -> verb adverb
+	article -> a
+	article -> the
+	noun -> tree
+	noun -> monkey
+	verb -> eats
+	verb -> talks
+	adverb -> wildly
+	adverb -> loudly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Parse Tree?
+
+
+
+What's the label of the Root of a parse tree?
+
+
+
+What are the labels of the Leaves of a parse tree?
+
+
+
+What are the labels of the Interior Nodes of a parse tree?
+
+
+
+How are production applications shown in the parse tree?
+
+
+
+Is any node in the tree labelled with more than one grammar symbol?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What's a Top-down Parse?
+
+
+	begin with the start nonterminal
+	at each step, choose a production to rewrite a nonterminal
+	stop when no nonterminals remain
+
+
+
+
+
+What's a Bottom-up Parse?
+
+
+	begin with the input string
+	at each step, reduce a substring to a nonterminal
+	stop when only the start nonterminal remains
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

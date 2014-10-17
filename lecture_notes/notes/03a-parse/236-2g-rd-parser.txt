@@ -1,0 +1,166 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Recursive-Descent Parsing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Write a recursive-descent parser for the grammar.
+
+
+	E -> T A
+	A -> + T A | - T A | epsilon
+	T -> ( E ) | number
+
+	E() {
+
+	}
+
+	A() {
+
+	}
+
+	T() {
+
+	}
+
+	match(t) {
+		if (token == t)
+			token = getToken();
+		else
+			error();
+	}
+	main () {
+		token = getToken();
+		E();
+		if (token != Endmarker) 
+			error();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+Write a recursive-descent parser for the grammar.
+
+
+	S -> if E then S
+	S -> E = E
+	E -> number | ident
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do you write a Recursive-Descent Parser?
+
+	write a method for each nonterminal in the grammar
+
+What does the method for a nonterminal do?
+
+	the method simulates selecting and applying productions
+
+How does the method select the correct production?
+
+	select the production whose right side starts with token
+
+How does the method apply a production?
+
+	the method simulates each symbol on the right side
+
+How do you simulate a terminal symbol?
+
+	if the current token matches the terminal
+	then read the next input token
+	otherwise report an error
+
+How do you simulate a nonterminal symbol?
+
+	call the method for the nonterminal
+
+How do you initialize the system and start parsing?
+
+	read the first token into the current token
+	call the function for the Start Nonterminal
+
+How does the parser complete parsing?
+
+	check that the current token is the endmarker
+
+
+What must be true about the grammar for the method to work?
+
+	the grammar must be LL(1)
+	must be able to decide which production to use
+	with only one symbol of look-ahead
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

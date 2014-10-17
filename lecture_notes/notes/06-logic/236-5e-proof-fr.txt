@@ -1,0 +1,228 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Proofs using Facts and Rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How do Facts, Rules, and Queries relate to predicate logic?
+
+
+	1. facts and rules are premises
+	2. queries are conclusions
+
+
+
+Translate the argument into predicate logic.
+
+
+	All students love pizza.
+	Bob is a student.
+	Therefore, Bob loves pizza.
+
+
+
+Translate the argument into facts, rules, and queries.
+
+
+	All students love pizza.
+	Bob is a student.
+	Therefore, Bob loves pizza.
+
+
+
+What type of quantifier applies to the variables in a rule?
+
+
+	variables in a rule are implicitly universally quantified
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Prove the query using the facts and rules.
+
+
+	facts:	  S(Bob)
+	rules:	  P(x) :- S(x)
+	queries:  P(Bob)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Prove the query using the facts and rules.
+
+
+	facts:	   sister(ann, bob)
+		   parent(bob, jay)
+	rules:	   aunt(x,z) :- sister(x,y), parent(y,z)
+	queries:   aunt(ann, jay)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Classwork
+You may work with a partner.
+
+
+Prove the query using the facts and rules.
+
+
+	facts:	 married(jim, bea)
+		 child(ned, bea)
+	rules:	 married(y,x) :- married(x,y)
+		 child(x,z) :- child(x,y), married(y,z)
+	queries: child(ned, jim)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Unification
+
+
+
+How do you use rules in a proof?
+
+
+	1. match each predicate in the body with a fact
+	2. assert the head as a new true statement
+
+
+
+How do you get facts and rules to match?
+
+
+	unification
+
+
+
+What's Unification?
+
+
+	find instantiations that make expressions match
+
+
+
+What's the unifier for each pair of expressions?
+
+
+	mother(Jane, Brent) and sister(Liza, Jane)
+	mother(x,y) and sister(z,x) -> aunt(z,y)
+
+
+	plus(X, 0, X)
+	plus(4, Z, Y)
+
+
+	plus(X, 0, X)
+	plus(3, Z, 4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

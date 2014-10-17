@@ -1,0 +1,65 @@
+
+
+
+Grammars
+--------
+
+give a derivation of a string from a grammar
+
+construct a parse tree, given a grammar and an input
+
+show that a grammar is ambiguous
+
+create an unambiguous grammar from an ambiguous grammar
+
+write a grammar from a recursive descent parser
+
+write a recursive descent parser for a grammar
+
+construct a parse table for a grammar
+
+show the steps of execution in a table driven parser
+
+
+
+Propositional Logic
+-------------------
+
+translate English statements into logic expressions
+
+determine if an expression is a tautology
+
+transform expressions using algebraic laws for logical expressions
+
+prove laws and inference rules using truth tables
+
+disprove laws and rules by finding a counter example
+
+write direct proofs from premises to conclusion
+
+write indirect proofs (proof by contradiction)
+
+write proofs using resolution and proof by contradiction
+
+
+
+Predicate Logic
+---------------
+
+evaluate predicate logic expressions
+
+translate English statements into predicate logic
+
+determine if a predicate logic expression is a tautology
+
+use algebra to transform predicate logic expressions
+
+write proofs using facts and rules
+
+write proofs using resolution with facts and rules
+
+show how datalog evaluates queries using facts and rules
+
+write proofs by induction
+
+
