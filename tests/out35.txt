@@ -1,2 +1,17 @@
-bob(A)? Yes(1)
+Scheme Evaluation
+
+Fact Evaluation
+
+bob
   A='a'
+
+Query Evaluation
+
+bob(A)? Yes(1)
+select
+  A='a'
+project
+  A='a'
+rename
+  A='a'
+
