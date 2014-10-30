@@ -70,7 +70,7 @@ public:
 	Relation& operator[](string name);
 	void insert(Relation r);
 	explicit operator string() const;
-private:
+// private:
 	map<string, Relation> relations;
 };
 

@@ -70,6 +70,7 @@ bool query_is_mixed(const Predicate &pred)
 void Interpreter::terp_schemes()
 {
 	// cout << "Terpin' schemes!" << endl;
+	out << "Scheme Evaluation\n\n";
 
 	auto dlprog = parser->get_DatalogProgram();
 	for(auto pred : dlprog->Schemes)
@@ -90,6 +91,8 @@ void Interpreter::terp_schemes()
 void Interpreter::terp_facts()
 {
 	// cout << "Terpin' facts!" << endl;
+	out << "Fact Evaluation\n\n";
+
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Facts)
@@ -101,6 +104,24 @@ void Interpreter::terp_facts()
 		}
 
 		db[pred.ident].insert(t);
+	}
+
+	for(auto rit : db.relations)
+	{
+		out << rit.first << "\n";
+		for(auto t : rit.second.get_tuples())
+		{
+			out << " ";
+			for (int i = 0; i < t.size(); ++i)
+			{
+				out << " ";
+				out << rit.second.get_scheme()[i];
+				out << "=";
+				out << t[i];
+			}
+			out << "\n";
+		}
+		out << "\n";
 	}
 }
 
@@ -127,16 +148,22 @@ Scheme query_to_scheme(Predicate p)
 void Interpreter::terp_queries()
 {
 	// cout << "Terpin' queries!" << endl;
+	out << "Query Evaluation\n\n";
+
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Queries)
 	{
+		ostringstream local_out;
+
+
 		StrDict nmap;
 		IndexList pil;
 		map<string, Index> imap;
 		Relation r = db[pred.ident];
 		auto scheme = r.get_scheme();
 		Index i = 0;
+		out << "select\n";
 		for(auto parm : pred.parm_vec)
 		{
 			try
@@ -157,7 +184,9 @@ void Interpreter::terp_queries()
 			}
 			++i;
 		}
+		out << "project\n";
 		r = r.project(pil);
+		out << "rename\n";
 		r = r.rename(nmap);
 
 		out << query_to_scheme(pred) << "? ";
