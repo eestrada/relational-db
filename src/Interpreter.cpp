@@ -154,16 +154,13 @@ void Interpreter::terp_queries()
 	
 	for(auto pred : dlprog->Queries)
 	{
-		ostringstream local_out;
-
-
 		StrDict nmap;
 		IndexList pil;
 		map<string, Index> imap;
-		Relation r = db[pred.ident];
-		auto scheme = r.get_scheme();
+		Relation selection_rel = db[pred.ident];
+		auto scheme = selection_rel.get_scheme();
 		Index i = 0;
-		out << "select\n";
+
 		for(auto parm : pred.parm_vec)
 		{
 			try
@@ -173,28 +170,34 @@ void Interpreter::terp_queries()
 				if(pstr != scheme.at(i))
 				{
 					auto iit = imap.find(pstr);
-					if(iit != imap.end()) r = r.select(iit->second, i);
+					if(iit != imap.end()) selection_rel = selection_rel.select(iit->second, i);
 					nmap[scheme.at(i)] = pstr;
 				}
 				imap.emplace(pstr, i);
 			}
 			catch(const exception &e)
 			{
-				r = r.select(i, parm.get_literal());
+				selection_rel = selection_rel.select(i, parm.get_literal());
 			}
 			++i;
 		}
-		out << "project\n";
-		r = r.project(pil);
-		out << "rename\n";
-		r = r.rename(nmap);
+		Relation projection_rel = selection_rel.project(pil);
+		Relation rename_rel = projection_rel.rename(nmap);
 
 		out << query_to_scheme(pred) << "? ";
-
-		auto size = r.get_tuples().size();
+		auto size = rename_rel.get_tuples().size();
 		if(size == 0) out << "No\n";
-		else if(size > 0) out << "Yes(" << size << ")\n";
-		out << r;
+		else if(size > 0)
+		{
+			out << "Yes(" << size << ")\n";
+			out << "select\n";
+			out << selection_rel;
+			out << "project\n";
+			out << projection_rel;
+			out << "rename\n";
+			out << rename_rel;
+		}
+		out << "\n";
 	}
 }
 
