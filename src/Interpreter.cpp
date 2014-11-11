@@ -170,7 +170,11 @@ void Interpreter::terp_queries()
 				if(pstr != scheme.at(i))
 				{
 					auto iit = imap.find(pstr);
-					if(iit != imap.end()) selection_rel = selection_rel.select(iit->second, i);
+					if(iit != imap.end())
+					{
+						selection_rel = selection_rel.select(iit->second, i);
+						pil.pop_back(); // don't project repeated identifiers
+					}
 					nmap[scheme.at(i)] = pstr;
 				}
 				imap.emplace(pstr, i);
