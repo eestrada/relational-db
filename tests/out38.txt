@@ -1,7 +1,38 @@
+Scheme Evaluation
+
+Fact Evaluation
+
+SK
+  A='a' B='c'
+  A='b' B='b'
+  A='b' B='c'
+
+Query Evaluation
+
 SK(A,'c')? Yes(2)
+select
+  A='a' B='c'
+  A='b' B='c'
+project
   A='a'
   A='b'
+rename
+  A='a'
+  A='b'
+
 SK('b','c')? Yes(1)
+select
+  A='b' B='c'
+project
+rename
+
 SK('c','c')? No
+
 SK(A,A)? Yes(1)
-  A='b', A='b'
+select
+  A='b' B='b'
+project
+  A='b'
+rename
+  A='b'
+
