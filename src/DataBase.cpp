@@ -130,7 +130,7 @@ Relation::operator string() const
 		{
 			out << sch.at(i) <<"="<< t.at(i);
 
-			if(i != sch.size()-1) out << ", ";
+			if(i != sch.size()-1) out << " ";
 			else out << "\n";
 		}
 	}
