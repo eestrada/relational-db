@@ -69,7 +69,6 @@ bool query_is_mixed(const Predicate &pred)
 
 void Interpreter::terp_schemes()
 {
-	// cout << "Terpin' schemes!" << endl;
 	out << "Scheme Evaluation\n\n";
 
 	auto dlprog = parser->get_DatalogProgram();
@@ -90,7 +89,6 @@ void Interpreter::terp_schemes()
 
 void Interpreter::terp_facts()
 {
-	// cout << "Terpin' facts!" << endl;
 	out << "Fact Evaluation\n\n";
 
 	auto dlprog = parser->get_DatalogProgram();
@@ -127,7 +125,6 @@ void Interpreter::terp_facts()
 
 void Interpreter::terp_rules()
 {
-	// cout << "Terpin' rules!" << endl;
 	// auto dlprog = parser->get_DatalogProgram();
 }
 
@@ -147,7 +144,6 @@ Scheme query_to_scheme(Predicate p)
 
 void Interpreter::terp_queries()
 {
-	// cout << "Terpin' queries!" << endl;
 	out << "Query Evaluation\n\n";
 
 	auto dlprog = parser->get_DatalogProgram();
@@ -167,16 +163,13 @@ void Interpreter::terp_queries()
 			{
 				auto pstr = parm.get_ident();
 				pil.push_back(i);
-				if(pstr != scheme.at(i))
+				auto iit = imap.find(pstr);
+				if(iit != imap.end())
 				{
-					auto iit = imap.find(pstr);
-					if(iit != imap.end())
-					{
-						selection_rel = selection_rel.select(iit->second, i);
-						pil.pop_back(); // don't project repeated identifiers
-					}
-					nmap[scheme.at(i)] = pstr;
+					selection_rel = selection_rel.select(iit->second, i);
+					pil.pop_back(); // don't project repeated identifiers
 				}
+				nmap[scheme.at(i)] = pstr;
 				imap.emplace(pstr, i);
 			}
 			catch(const exception &e)

@@ -1,0 +1,25 @@
+# Test schemes with repeats for project and rename
+
+Schemes:
+  SK(A,B)
+  ES(A,B,C,D)
+  rs(Y,Y,X)
+Facts:
+  SK('a','c').
+  SK('b','c').
+  SK('b','b').
+  ES('a','b','c','d').
+  ES('c','d','d','c').
+  ES('d','c','d','c').
+  ES('duck','goose','duck','goose').
+  rs('monkey','monkey','cow').
+Rules:
+
+Queries:
+  SK(A,'c')?
+  SK('b','c')?
+  SK('c','c')?
+  SK(A,A)?
+  ES(A,B,B,A)?
+  ES(X,Y,X,Y)?
+  rs(Y,Y,'cow')?
