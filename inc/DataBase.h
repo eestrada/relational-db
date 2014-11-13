@@ -78,7 +78,6 @@ public:
 	explicit operator string() const;
 };
 
-
 } // end namespace DB
 
 std::ostream & operator<<(std::ostream &out, const DB::Tuple &t);

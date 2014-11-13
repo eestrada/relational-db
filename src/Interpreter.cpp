@@ -34,8 +34,43 @@ Interpreter::Interpreter(unique_ptr<Parser> &&p)
 	this->interpret();
 }
 
+bool query_is_exact(const Predicate &pred)
+{
+	for(auto parm : pred.parm_vec)
+	{
+		if(parm.type != Parameter::Type::STRING) return false;
+	}
+
+	return true;
+}
+
+bool query_is_scheme(const Predicate &pred)
+{
+	for(auto parm : pred.parm_vec)
+	{
+		if(parm.type != Parameter::Type::IDENT) return false;
+	}
+
+	return true;
+}
+
+bool query_is_mixed(const Predicate &pred)
+{
+	bool str = false, ident = false;
+	for(auto parm : pred.parm_vec)
+	{
+		if(parm.type == Parameter::Type::STRING) str = true;
+		else if (parm.type == Parameter::Type::IDENT) ident = true;
+		else throw runtime_error("Somehow, you have a non-existent type value.");
+	}
+
+	return str and ident;
+}
+
 void Interpreter::terp_schemes()
 {
+	out << "Scheme Evaluation\n\n";
+
 	auto dlprog = parser->get_DatalogProgram();
 	for(auto pred : dlprog->Schemes)
 	{
@@ -54,6 +89,8 @@ void Interpreter::terp_schemes()
 
 void Interpreter::terp_facts()
 {
+	out << "Fact Evaluation\n\n";
+
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Facts)
@@ -64,6 +101,24 @@ void Interpreter::terp_facts()
 			t.push_back(parm.get_literal());
 		}
 		db[pred.ident].insert(t);
+	}
+
+	for(auto rit : db)
+	{
+		out << rit.first << "\n";
+		for(auto t : rit.second.get_tuples())
+		{
+			out << " ";
+			for (int i = 0; i < t.size(); ++i)
+			{
+				out << " ";
+				out << rit.second.get_scheme()[i];
+				out << "=";
+				out << t[i];
+			}
+			out << "\n";
+		}
+		out << "\n";
 	}
 }
 
@@ -81,14 +136,14 @@ Scheme query_to_scheme(Predicate p)
 	return ret;
 }
 
-Relation interpret_query(const Relation &rel_in, const Predicate &pred)
+Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relation &projection_rel, Relation &rename_rel)
 {
-	Relation r = rel_in;
+	// Relation selection_rel = rel_in;
 
 	StrDict nmap;
 	IndexList pil;
 	map<string, Index> imap;
-	auto scheme = r.get_scheme();
+	auto scheme = selection_rel.get_scheme();
 	Index i = 0;
 	for(auto parm : pred.parm_vec)
 	{
@@ -99,22 +154,23 @@ Relation interpret_query(const Relation &rel_in, const Predicate &pred)
 			if(pstr != scheme.at(i))
 			{
 				auto iit = imap.find(pstr);
-				if(iit != imap.end()) r = r.select(iit->second, i);
+				if(iit != imap.end()) selection_rel = selection_rel.select(iit->second, i);
 				nmap[scheme.at(i)] = pstr;
 			}
 			imap.emplace(pstr, i);
 		}
 		catch(const exception &e)
 		{
-			r = r.select(i, parm.get_literal());
+			selection_rel = selection_rel.select(i, parm.get_literal());
 		}
 		++i;
 	}
 
-	r = r.project(pil);
-	r = r.rename(nmap);
+	projection_rel = selection_rel.project(pil);
+	rename_rel = projection_rel.rename(nmap);
 
-	return r;
+	return rename_rel;
+	// return r;
 }
 
 size_t Interpreter::terp_rules(bool caller_count)
@@ -131,7 +187,8 @@ size_t Interpreter::terp_rules(bool caller_count)
 
 		for(auto pred : rule.pred_list)
 		{
-			Relation r = interpret_query(db.at(pred.ident), pred);
+			Relation r = db.at(pred.ident);
+			r = interpret_query(pred, r, r, r);
 
 			rels.push_back(r);
 		}
@@ -157,18 +214,30 @@ size_t Interpreter::terp_rules(bool caller_count)
 
 void Interpreter::terp_queries()
 {
+	out << "Query Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Queries)
 	{
-		Relation r = interpret_query(db[pred.ident], pred);
+		// Relation rename_rel = interpret_query(db[pred.ident], pred);
+		Relation selection_rel = db[pred.ident];
+		Relation projection_rel, rename_rel;
+		rename_rel = interpret_query(pred, selection_rel, projection_rel, rename_rel);
 
 		out << query_to_scheme(pred) << "? ";
-
-		auto size = r.get_tuples().size();
+		auto size = rename_rel.get_tuples().size();
 		if(size == 0) out << "No\n";
-		else out << "Yes(" << size << ")\n";
-		out << r;
+		else if(size > 0)
+		{
+			out << "Yes(" << size << ")\n";
+			out << "select\n";
+			out << selection_rel;
+			out << "project\n";
+			out << projection_rel;
+			out << "rename\n";
+			out << rename_rel;
+		}
+		out << "\n";
 	}
 }
 
