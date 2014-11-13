@@ -70,7 +70,6 @@ bool query_is_mixed(const Predicate &pred)
 void Interpreter::terp_schemes()
 {
 	out << "Scheme Evaluation\n\n";
-
 	auto dlprog = parser->get_DatalogProgram();
 	for(auto pred : dlprog->Schemes)
 	{
@@ -90,7 +89,6 @@ void Interpreter::terp_schemes()
 void Interpreter::terp_facts()
 {
 	out << "Fact Evaluation\n\n";
-
 	auto dlprog = parser->get_DatalogProgram();
 	
 	for(auto pred : dlprog->Facts)
@@ -245,12 +243,21 @@ DataBase Interpreter::get_database() const { return db; }
 
 string Interpreter::get_query_output() const { return out.str(); }
 
+void Interpreter::terp_rules_wrapper()
+{
+	out << "Rule Evaluation\n\n";
+	out << string(db) << "\n";
+	out << "Converged after " << terp_rules() << " passes through the Rules.\n";
+	out << string(db) << "\n";
+}
+
+
 void Interpreter::interpret()
 {
 	parser->parse();
 
 	terp_schemes();
 	terp_facts();
-	out << "Converged after " << terp_rules() << " passes through the Rules.\n";
+	terp_rules_wrapper();
 	terp_queries();
 }

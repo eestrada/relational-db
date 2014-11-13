@@ -70,6 +70,7 @@ private:
 	void terp_schemes();
 	void terp_facts();
 	size_t terp_rules(bool caller_count=1);
+	void terp_rules_wrapper();
 	void terp_queries();
 private:
 	unique_ptr<Parser> parser;
