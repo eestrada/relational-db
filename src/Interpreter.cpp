@@ -136,8 +136,6 @@ Scheme query_to_scheme(Predicate p)
 
 Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relation &projection_rel, Relation &rename_rel)
 {
-	// Relation selection_rel = rel_in;
-
 	StrDict nmap;
 	IndexList pil;
 	map<string, Index> imap;
@@ -168,7 +166,6 @@ Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relatio
 	rename_rel = projection_rel.rename(nmap);
 
 	return rename_rel;
-	// return r;
 }
 
 size_t Interpreter::terp_rules(bool caller_count)
@@ -179,7 +176,7 @@ size_t Interpreter::terp_rules(bool caller_count)
 
 	size_t orig_size = db.db_size();
 
-	for(auto rule : dlprog->Rules)
+	for(auto &rule : dlprog->Rules)
 	{
 		std::vector<Relation> rels;
 
@@ -192,19 +189,33 @@ size_t Interpreter::terp_rules(bool caller_count)
 		}
 
 		Relation result = rels.front();
+		// Relation result(rels.front().get_scheme());
 		for(auto r : rels)
 		{
 			result = result.join(r);
-			// result = result + r;
 		}
 
-		Relation final = db.at(rule.pred.ident);
+		auto name = rule.pred.ident;
+		Relation final = db.at(name);
 
 		final = final.rename(query_to_scheme(rule.pred));
 		final = final.unioned(result);
 		// final = final | result;
+		auto s = db.at(name).get_scheme();
+		final = final.rename(s);
 
-		db[final.get_name()] = final;
+		out << string(rule) << "\n";
+		// if (not first and final.size() != db.at(name).size() )
+
+		if (final.size() > db.at(name).size() )
+		{
+			// cerr << "Comparing joined relations...\n";
+			// cerr << string(db.at(name)) << "\n";
+			// cerr << string(final) << "\n";
+			out << string(final);
+		}
+
+		db.at(name) = final;
 	}
 
 	return caller_count + this->terp_rules(orig_size < db.db_size());
@@ -246,9 +257,35 @@ string Interpreter::get_query_output() const { return out.str(); }
 void Interpreter::terp_rules_wrapper()
 {
 	out << "Rule Evaluation\n\n";
-	out << string(db) << "\n";
-	out << "Converged after " << terp_rules() << " passes through the Rules.\n";
-	out << string(db) << "\n";
+	auto passes = terp_rules();
+
+	// auto dlprog = parser->get_DatalogProgram();
+	// for(auto &rule : dlprog->Rules)
+	// {
+	// 	auto &rel = db[rule.pred.ident];
+	// 	if (rel.get_tuples().size())
+	// 	{
+	// 		out << string(rule) << "\n";
+
+	// 		out << rel << "";
+	// 	}
+
+	// }
+
+	// for(auto &rule : dlprog->Rules)
+	// {
+	// 	out << string(rule) << "\n";
+	// }
+	out << "\n";
+
+	out << "Converged after " << passes << " passes through the Rules.\n\n";
+
+	for(auto &p : db)
+	{
+		out << p.first << "\n";
+
+		out << string(p.second) << "\n";
+	}
 }
 
 

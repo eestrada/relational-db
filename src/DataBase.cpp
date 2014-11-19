@@ -187,8 +187,7 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 		{
 			if(s1.at(i1) == s2.at(i2))
 			{
-				if (t1.at(i1) == t2.at(i2)) break;
-				else throw UnjoinableError(string("Tuples cannot be joined:"));
+				if (t1.at(i1) != t2.at(i2)) throw UnjoinableError(string("Tuples cannot be joined:"));
 			}
 		}
 	}
@@ -261,6 +260,7 @@ Relation Relation::rename(Scheme new_names) const
 string Relation::get_name() const { return scheme.name; }
 Scheme Relation::get_scheme() const { return scheme; }
 TupleSet Relation::get_tuples() const {	return tuples; }
+size_t Relation::size() const { return tuples.size(); }
 
 Relation::operator string() const
 {

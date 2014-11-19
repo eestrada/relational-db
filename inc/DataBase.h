@@ -58,6 +58,7 @@ public:
 	string get_name() const;
 	Scheme get_scheme() const;
 	TupleSet get_tuples() const;
+	size_t size() const;
 
 	// Convenience functions
 	Relation operator|(const Relation &other) { return unioned(other); }
