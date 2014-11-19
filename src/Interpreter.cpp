@@ -207,18 +207,19 @@ size_t Interpreter::terp_rules(bool caller_count)
 		out << string(rule) << "\n";
 		// if (not first and final.size() != db.at(name).size() )
 
-		if (final.size() > db.at(name).size() )
+		if (final.size() != db.at(name).size() )
 		{
+			auto diff = final.difference(db.at(name));
 			// cerr << "Comparing joined relations...\n";
 			// cerr << string(db.at(name)) << "\n";
 			// cerr << string(final) << "\n";
-			out << string(final);
+			out << string(diff);
 		}
 
 		db.at(name) = final;
 	}
 
-	return caller_count + this->terp_rules(orig_size < db.db_size());
+	return caller_count + this->terp_rules(orig_size != db.db_size());
 }
 
 void Interpreter::terp_queries()

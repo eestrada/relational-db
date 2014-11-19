@@ -217,6 +217,26 @@ Relation Relation::join(const Relation &other) const
 	return retval;
 }
 
+Relation Relation::difference(const Relation &other) const
+{
+	Relation retval = *this;
+
+	return retval.difference_update(other);
+}
+
+/*
+Inplace difference operation.
+*/
+Relation & Relation::difference_update(const Relation &other)
+{
+	for(auto &t : other.tuples)
+	{
+		this->tuples.erase(t);
+	}
+
+	return *this;
+}
+
 void Relation::insert(Tuple t)
 {
 	// if(t.size() != scheme.size()) throw runtime_error("Tuple length does not match Scheme length.");

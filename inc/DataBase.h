@@ -54,6 +54,8 @@ public:
 	Relation rename(Scheme new_names) const; // Renames the internal scheme
 	Relation unioned(const Relation &other) const;
 	Relation join(const Relation &other) const;
+	Relation difference(const Relation &other) const;
+	Relation & difference_update(const Relation &other);
 	void insert(Tuple t);
 	string get_name() const;
 	Scheme get_scheme() const;
