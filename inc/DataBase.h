@@ -57,6 +57,7 @@ public:
 	Relation unioned(const Relation &other) const;
 	Relation & union_update(const Relation &other);
 	Relation join(const Relation &other) const;
+	Relation & join_update(const Relation &other);
 	Relation difference(const Relation &other) const;
 	Relation & difference_update(const Relation &other);
 	void insert(const Tuple &t);
@@ -72,6 +73,7 @@ public:
 	Relation operator|(const Relation &other) const { return unioned(other); }
 	Relation & operator|=(const Relation &other) { return union_update(other); }
 	Relation operator+(const Relation &other) const { return join(other); }
+	Relation & operator+=(const Relation &other) { return join_update(other); }
 	Relation operator-(const Relation &other) const { return difference(other); }
 	Relation & operator-=(const Relation &other) { return difference_update(other); }
 	operator string() const;

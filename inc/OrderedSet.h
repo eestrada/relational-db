@@ -2,6 +2,8 @@
 #define __ORDEREDSET_H__
 
 #include <set>
+#include <map>
+#include <unordered_map>
 #include <list>
 #include <ostream>
 
@@ -18,7 +20,7 @@ namespace DB
  * For instance, std::deque and std::vector.
  */
 template < typename T, typename sequence=::std::list<T>,
-           typename dictionary=::std::map<T, typename sequence::iterator> >
+           typename dictionary=::std::unordered_map<T, typename sequence::iterator> >
 class OrderedSet : public sequence
 {
 public:
