@@ -34,48 +34,15 @@ Interpreter::Interpreter(unique_ptr<Parser> &&p)
 	this->interpret();
 }
 
-bool query_is_exact(const Predicate &pred)
-{
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type != Parameter::Type::STRING) return false;
-	}
-
-	return true;
-}
-
-bool query_is_scheme(const Predicate &pred)
-{
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type != Parameter::Type::IDENT) return false;
-	}
-
-	return true;
-}
-
-bool query_is_mixed(const Predicate &pred)
-{
-	bool str = false, ident = false;
-	for(auto parm : pred.parm_vec)
-	{
-		if(parm.type == Parameter::Type::STRING) str = true;
-		else if (parm.type == Parameter::Type::IDENT) ident = true;
-		else throw runtime_error("Somehow, you have a non-existent type value.");
-	}
-
-	return str and ident;
-}
-
 void Interpreter::terp_schemes()
 {
 	out << "Scheme Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
-	for(auto pred : dlprog->Schemes)
+	for(auto &pred : dlprog->Schemes)
 	{
 		Scheme s;
 		s.name = pred.ident;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			s.push_back(parm.get_ident());
 		}
@@ -91,20 +58,20 @@ void Interpreter::terp_facts()
 	out << "Fact Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
-	for(auto pred : dlprog->Facts)
+	for(auto &pred : dlprog->Facts)
 	{
 		Tuple t;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			t.push_back(parm.get_literal());
 		}
 		db[pred.ident].insert(t);
 	}
 
-	for(auto rit : db)
+	for(auto &rit : db)
 	{
 		out << rit.first << "\n";
-		for(auto t : rit.second.get_tuples())
+		for(auto &t : rit.second.get_tuples())
 		{
 			out << " ";
 			for (int i = 0; i < t.size(); ++i)
@@ -126,7 +93,7 @@ Scheme query_to_scheme(Predicate p)
 
 	ret.name = p.ident;
 
-	for(auto s : p.parm_vec)
+	for(auto &s : p.parm_vec)
 	{
 		ret.push_back(string(s));
 	}
@@ -141,7 +108,7 @@ Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relatio
 	map<string, Index> imap;
 	auto scheme = selection_rel.get_scheme();
 	Index i = 0;
-	for(auto parm : pred.parm_vec)
+	for(auto &parm : pred.parm_vec)
 	{
 		try
 		{
@@ -180,7 +147,7 @@ size_t Interpreter::terp_rules(bool caller_count)
 	{
 		std::vector<Relation> rels;
 
-		for(auto pred : rule.pred_list)
+		for(auto &pred : rule.pred_list)
 		{
 			Relation r = db.at(pred.ident);
 			r = interpret_query(pred, r, r, r);
@@ -218,7 +185,7 @@ void Interpreter::terp_queries()
 	out << "Query Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
-	for(auto pred : dlprog->Queries)
+	for(auto &pred : dlprog->Queries)
 	{
 		Relation selection_rel = db[pred.ident];
 		Relation projection_rel, rename_rel;
