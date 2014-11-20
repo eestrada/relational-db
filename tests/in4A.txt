@@ -1,0 +1,16 @@
+
+
+Schemes:
+  jumble(a,b,c,d,e,f)
+
+Facts:
+  jumble('a','b','c','d','e','f').
+
+Rules:
+  jumble(a,b,c,d,e,f) :- jumble(f,e,d,b,a,c).
+  jumble(e,d,c,f,a,b) :- jumble(a,b,c,d,e,f).
+
+Queries:
+  jumble('e',b,c,d,e,f)?
+
+

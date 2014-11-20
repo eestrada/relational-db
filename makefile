@@ -1,7 +1,7 @@
 BIN = ./test.bin
-INPUT = ./tests/in62.txt
-OUTPUT = /tmp/actual62.txt
-OUTTEST = ./tests/out62.txt
+INPUT = ./tests/in4A.txt
+OUTPUT = /tmp/actual4A.txt
+OUTTEST = ./tests/out4A.txt
 ARGS = $(INPUT) $(OUTPUT)
 
 SRCDIR = ./src
@@ -39,7 +39,7 @@ cleantest : clean test
 
 memcheck : bin
 	@ echo "Running valgrind to check for memory leaks"
-	valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
+	time valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 
