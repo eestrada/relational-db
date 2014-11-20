@@ -189,34 +189,25 @@ size_t Interpreter::terp_rules(bool caller_count)
 		}
 
 		Relation result = rels.front();
-		// Relation result(rels.front().get_scheme());
 		for(auto r : rels)
 		{
-			result = result.join(r);
+			result = result + r; // join
 		}
 
 		auto name = rule.pred.ident;
 		Relation final = db.at(name);
 
-		final = final.rename(query_to_scheme(rule.pred));
-		final = final.unioned(result);
-		// final = final | result;
-		auto s = db.at(name).get_scheme();
-		final = final.rename(s);
+		final.rename_update(query_to_scheme(rule.pred));
+		final |= result; // in place union
+
+		auto &s = db.at(name).get_scheme();
+		final.rename_update(s);
+		final -= db.at(name); // in place difference
 
 		out << string(rule) << "\n";
-		// if (not first and final.size() != db.at(name).size() )
+		out << string(final);
 
-		if (final.size() != db.at(name).size() )
-		{
-			auto diff = final.difference(db.at(name));
-			// cerr << "Comparing joined relations...\n";
-			// cerr << string(db.at(name)) << "\n";
-			// cerr << string(final) << "\n";
-			out << string(diff);
-		}
-
-		db.at(name) = final;
+		db.at(name) |= final; // in place union
 	}
 
 	return caller_count + this->terp_rules(orig_size != db.db_size());
@@ -229,7 +220,6 @@ void Interpreter::terp_queries()
 	
 	for(auto pred : dlprog->Queries)
 	{
-		// Relation rename_rel = interpret_query(db[pred.ident], pred);
 		Relation selection_rel = db[pred.ident];
 		Relation projection_rel, rename_rel;
 		rename_rel = interpret_query(pred, selection_rel, projection_rel, rename_rel);
@@ -260,23 +250,6 @@ void Interpreter::terp_rules_wrapper()
 	out << "Rule Evaluation\n\n";
 	auto passes = terp_rules();
 
-	// auto dlprog = parser->get_DatalogProgram();
-	// for(auto &rule : dlprog->Rules)
-	// {
-	// 	auto &rel = db[rule.pred.ident];
-	// 	if (rel.get_tuples().size())
-	// 	{
-	// 		out << string(rule) << "\n";
-
-	// 		out << rel << "";
-	// 	}
-
-	// }
-
-	// for(auto &rule : dlprog->Rules)
-	// {
-	// 	out << string(rule) << "\n";
-	// }
 	out << "\n";
 
 	out << "Converged after " << passes << " passes through the Rules.\n\n";
@@ -288,7 +261,6 @@ void Interpreter::terp_rules_wrapper()
 		out << string(p.second) << "\n";
 	}
 }
-
 
 void Interpreter::interpret()
 {

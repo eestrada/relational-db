@@ -129,10 +129,17 @@ Relation Relation::project(const IndexList &indices) const
 Relation Relation::unioned(const Relation &other) const
 {
 	Relation retval = *this;
+	return retval.union_update(other);
+}
+
+Relation & Relation::union_update(const Relation &other)
+{
+	if (&other == this) return *this; // unioning with self is a no-op
+
 	IndexList pil;
 
 	Index i1 = 0;
-	for(auto &s1 : retval.scheme)
+	for(auto &s1 : this->scheme)
 	{
 		Index i2 = 0;
 		for(auto &s2 : other.scheme)
@@ -145,9 +152,9 @@ Relation Relation::unioned(const Relation &other) const
 
 	Relation fixed = other.project(pil);
 
-	for (auto &t : fixed.tuples)	{ retval.insert(t);	}
+	for (auto &t : fixed.tuples) { this->insert(t); }
 
-	return retval;
+	return *this;
 }
 
 Tuple join_remaining(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
@@ -197,6 +204,8 @@ Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Sche
 
 Relation Relation::join(const Relation &other) const
 {
+	if (&other == this) return *this; // joining with self is a no-op
+
 	Scheme jscheme = this->scheme + other.scheme;
 
 	Relation retval(jscheme);
@@ -237,22 +246,27 @@ Relation & Relation::difference_update(const Relation &other)
 	return *this;
 }
 
-void Relation::insert(Tuple t)
+void Relation::insert(const Tuple &t)
 {
-	// if(t.size() != scheme.size()) throw runtime_error("Tuple length does not match Scheme length.");
+	tuples.insert(t);
+}
+
+void Relation::insert(Tuple &&t)
+{
 	tuples.insert(move(t));
-	// auto ret = tuples.insert(move(t));
-	// if(ret.second == false) {} // Possibly throw exception if insert fails
 }
 
 Relation Relation::rename(StrDict mapping) const
 {
+	Relation retval = *this;
+	return retval.rename_update(mapping);
+}
+
+Relation & Relation::rename_update(StrDict mapping)
+{
 	if(mapping.size() == 0) return *this;
 
-	Relation retval = *this;
-	Scheme new_scheme = this->scheme;
-
-	for(auto i = new_scheme.begin(); i != new_scheme.end(); ++i)
+	for(auto i = this->scheme.begin(); i != this->scheme.end(); ++i)
 	{
 		try	{ mapping.at(*i); }
 		catch(const out_of_range &e) { continue; }
@@ -260,27 +274,24 @@ Relation Relation::rename(StrDict mapping) const
 		*i = mapping.at(*i);
 	}
 
-	retval.scheme = move(new_scheme);
-
-	return retval;
+	return *this;
 }
 
 Relation Relation::rename(Scheme new_names) const
 {
+	Relation retval = *this;
+	return retval.rename_update(new_names);
+}
+
+Relation & Relation::rename_update(Scheme new_names)
+{
 	if(new_names.size() != this->scheme.size())
 		throw runtime_error("Scheme lengths do not match");
 
-	Relation retval = *this;
+	this->scheme = move(new_names);
 
-	retval.scheme = move(new_names);
-
-	return retval;
+	return *this;
 }
-
-string Relation::get_name() const { return scheme.name; }
-Scheme Relation::get_scheme() const { return scheme; }
-TupleSet Relation::get_tuples() const {	return tuples; }
-size_t Relation::size() const { return tuples.size(); }
 
 Relation::operator string() const
 {

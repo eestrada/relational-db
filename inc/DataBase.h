@@ -51,20 +51,29 @@ public:
 	Relation select(Index index1, Index index2) const;
 	Relation project(const IndexList &indices) const;
 	Relation rename(StrDict mapping) const; // Renames the internal scheme
+	Relation & rename_update(StrDict mapping); // Renames the internal scheme
 	Relation rename(Scheme new_names) const; // Renames the internal scheme
+	Relation & rename_update(Scheme new_names); // Renames the internal scheme
 	Relation unioned(const Relation &other) const;
+	Relation & union_update(const Relation &other);
 	Relation join(const Relation &other) const;
 	Relation difference(const Relation &other) const;
 	Relation & difference_update(const Relation &other);
-	void insert(Tuple t);
-	string get_name() const;
-	Scheme get_scheme() const;
-	TupleSet get_tuples() const;
-	size_t size() const;
+	void insert(const Tuple &t);
+	void insert(Tuple &&t);
 
-	// Convenience functions
-	Relation operator|(const Relation &other) { return unioned(other); }
-	Relation operator+(const Relation &other) { return join(other); }
+	// getter functions
+	const string & get_name() const { return scheme.name; }
+	const Scheme & get_scheme() const { return scheme; }
+	const TupleSet & get_tuples() const { return tuples; }
+	size_t size() const { return tuples.size(); }
+
+	// syntactic sugar
+	Relation operator|(const Relation &other) const { return unioned(other); }
+	Relation & operator|=(const Relation &other) { return union_update(other); }
+	Relation operator+(const Relation &other) const { return join(other); }
+	Relation operator-(const Relation &other) const { return difference(other); }
+	Relation & operator-=(const Relation &other) { return difference_update(other); }
 	operator string() const;
 private:
 	Scheme scheme;
