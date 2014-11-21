@@ -7,14 +7,6 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include <ctime>
-
-
-// TODO: make an ordered_set class that keeps track of the order  
-// items were entered into the set. This is unlike the built in set
-// since that is more along the lines of a sorted set. This class
-// ought to simplify the process of doing joins and making sure that
-// schemes do not have duplicate column entries.
 
 namespace DB
 {
@@ -93,10 +85,6 @@ public:
 	size_t db_size() const;
 	explicit operator string() const;
 };
-
-extern clock_t join_t;
-extern clock_t join_tuples_t;
-extern clock_t join_remaining_t;
 
 } // end namespace DB
 

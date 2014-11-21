@@ -8,20 +8,6 @@
 using namespace DB;
 using namespace std;
 
-namespace DB
-{
-::std::clock_t join_t = 0;
-::std::clock_t join_tuples_t = 0;
-::std::clock_t join_remaining_t = 0;
-}
-
-
-class UnjoinableError : public runtime_error
-{
-public:
-	UnjoinableError(const string &s) : runtime_error(s){}
-};
-
 template <typename T, typename U>
 ostream & operator<<(ostream &out, const pair<T,U> &p)
 {
@@ -211,7 +197,6 @@ bool test_joinability(const Tuple &t1, const Tuple &t2, const Scheme &s1, const 
 Relation Relation::join(const Relation &other) const
 {
 	if (&other == this) return *this; // joining with self is a no-op
-	// clock_t time1 = clock();
 
 	Scheme jscheme = this->scheme + other.scheme;
 
@@ -221,19 +206,15 @@ Relation Relation::join(const Relation &other) const
 	{
 		for(auto &t2 : other.tuples)
 		{
-			// clock_t time2 = clock();
 			auto joinable = test_joinability(t1, t2, this->scheme, other.scheme);
-			// join_tuples_t += clock() - time2;
 			if(joinable)
 			{
-				// clock_t time3 = clock();
 				Tuple t = join_tuple(t1, t2, this->scheme, other.scheme);
-				// join_remaining_t += clock() - time3;
 				retval.insert(move(t));
 			}
 		}
 	}
-	// join_t += clock() - time1;
+
 	return retval;
 }
 
