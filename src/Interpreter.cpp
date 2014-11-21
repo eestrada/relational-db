@@ -42,7 +42,7 @@ void Interpreter::terp_schemes()
 	{
 		Scheme s;
 		s.name = pred.ident;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			s.push_back(parm.get_ident());
 		}
@@ -58,20 +58,20 @@ void Interpreter::terp_facts()
 	out << "Fact Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
-	for(auto pred : dlprog->Facts)
+	for(auto &pred : dlprog->Facts)
 	{
 		Tuple t;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			t.push_back(parm.get_literal());
 		}
 		db[pred.ident].insert(t);
 	}
 
-	for(auto rit : db)
+	for(auto &rit : db)
 	{
 		out << rit.first << "\n";
-		for(auto t : rit.second.get_tuples())
+		for(auto &t : rit.second.get_tuples())
 		{
 			out << " ";
 			for (int i = 0; i < t.size(); ++i)
@@ -93,7 +93,7 @@ Scheme query_to_scheme(Predicate p)
 
 	ret.name = p.ident;
 
-	for(auto s : p.parm_vec)
+	for(auto &s : p.parm_vec)
 	{
 		ret.push_back(string(s));
 	}
@@ -108,7 +108,7 @@ Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relatio
 	map<string, Index> imap;
 	auto scheme = selection_rel.get_scheme();
 	Index i = 0;
-	for(auto parm : pred.parm_vec)
+	for(auto &parm : pred.parm_vec)
 	{
 		try
 		{
@@ -143,11 +143,11 @@ size_t Interpreter::terp_rules(bool caller_count)
 
 	size_t orig_size = db.db_size();
 
-	for(auto rule : dlprog->Rules)
+	for(auto &rule : dlprog->Rules)
 	{
 		std::vector<Relation> rels;
 
-		for(auto pred : rule.pred_list)
+		for(auto &pred : rule.pred_list)
 		{
 			Relation r = db.at(pred.ident);
 			r = interpret_query(pred, r, r, r);
@@ -156,9 +156,9 @@ size_t Interpreter::terp_rules(bool caller_count)
 		}
 
 		Relation result = rels.front();
-		for(auto &r : rels)
+		for(auto r : rels)
 		{
-			result += r; // join
+			result = result + r; // join
 		}
 
 		auto name = rule.pred.ident;
@@ -167,19 +167,14 @@ size_t Interpreter::terp_rules(bool caller_count)
 		final.rename_update(query_to_scheme(rule.pred));
 		final |= result; // in place union
 
-		auto s = db.at(name).get_scheme();
+		auto &s = db.at(name).get_scheme();
 		final.rename_update(s);
+		final -= db.at(name); // in place difference
 
 		out << string(rule) << "\n";
-		if (final.size() != db.at(name).size())
-		{
-			final -= db.at(name); // in place difference
+		out << string(final);
 
-			out << string(final);
-
-			db.at(name) |= final; // in place union
-		}
-
+		db.at(name) |= final; // in place union
 	}
 
 	return caller_count + this->terp_rules(orig_size != db.db_size());
@@ -190,7 +185,7 @@ void Interpreter::terp_queries()
 	out << "Query Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
-	for(auto pred : dlprog->Queries)
+	for(auto &pred : dlprog->Queries)
 	{
 		Relation selection_rel = db[pred.ident];
 		Relation projection_rel, rename_rel;
@@ -226,7 +221,7 @@ void Interpreter::terp_rules_wrapper()
 
 	out << "Converged after " << passes << " passes through the Rules.\n\n";
 
-	for(auto p : db)
+	for(auto &p : db)
 	{
 		out << p.first << "\n";
 
