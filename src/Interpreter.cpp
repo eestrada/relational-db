@@ -155,10 +155,13 @@ size_t Interpreter::terp_rules(bool caller_count)
 			rels.push_back(r);
 		}
 
+		// We do "rels.begin() + 1" to skip the first relation since "result"
+		// already holds it. That way we don't pointlessly join identical
+		// relations, which wastes a lot of compute power/time.
 		Relation result = rels.front();
-		for(auto &r : rels)
+		for(auto iter = rels.begin() + 1; iter != rels.end(); ++iter)
 		{
-			result = result + r; // join
+			result = result + *iter; // join
 		}
 
 		auto name = rule.pred.ident;
