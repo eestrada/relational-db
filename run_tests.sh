@@ -13,7 +13,7 @@ lab="4"
 for i in 40 44 45 46 49 4A 61 62
 do
     ./test.bin "./tests/in${i}.txt" "./output/actual${i}.txt"
-    time diff -s -U 20 ./tests/out${i}.txt ./output/actual${i}.txt >> ./diffs/diff${lab}.diff
+    diff -s -U 20 ./tests/out${i}.txt ./output/actual${i}.txt >> ./diffs/diff${lab}.diff
     if [ $? != '0' ]; then
         echo "diff failed for \"./tests/in${i}.txt\"!!!"
     else

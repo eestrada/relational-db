@@ -1,7 +1,8 @@
 BIN = ./test.bin
-INPUT = ./tests/in4A.txt
-OUTPUT = /tmp/actual4A.txt
-OUTTEST = ./tests/out4A.txt
+tnum=62
+INPUT = ./tests/in$(tnum).txt
+OUTPUT = /tmp/actual$(tnum).txt
+OUTTEST = ./tests/out$(tnum).txt
 ARGS = $(INPUT) $(OUTPUT)
 
 SRCDIR = ./src
