@@ -8,6 +8,13 @@
 using namespace DB;
 using namespace std;
 
+namespace DB
+{
+::std::clock_t join_t = 0;
+::std::clock_t join_tuples_t = 0;
+::std::clock_t join_remaining_t = 0;
+}
+
 
 class UnjoinableError : public runtime_error
 {
@@ -24,7 +31,6 @@ ostream & operator<<(ostream &out, const pair<T,U> &p)
 
 void Scheme::join(const Scheme &other)
 {
-	// cerr << "About to join scheme " << this->name << "\n";
 	OrderedSet<string> selfset(*this);
 
 	selfset += OrderedSet<string>(other);
@@ -32,7 +38,6 @@ void Scheme::join(const Scheme &other)
 	this->resize(selfset.size());
 
 	copy(selfset.cbegin(), selfset.cend(), this->begin());
-	// cerr << "Finished joining scheme " << this->name << "\n";
 }
 
 Scheme Scheme::operator+(const Scheme &other) const
@@ -55,7 +60,6 @@ Relation::Relation(const Scheme &s) : scheme(s), tuples() {}
 
 Relation Relation::select(Index index, string value) const
 {
-	// cerr << "About to select " << this->get_name() << "\n";
 	Relation r(this->scheme);
 
 	for(auto &t : this->tuples)
@@ -98,8 +102,6 @@ ostream & operator<<(ostream &out, const IndexList &indices)
 
 Relation Relation::project(const IndexList &indices) const
 {
-	// cerr << "About to project " << this->get_name() << "\n";
-
 	Scheme tmp_sch;
 	tmp_sch.name = this->scheme.name;
 
@@ -139,9 +141,6 @@ Relation Relation::unioned(const Relation &other) const
 
 Relation & Relation::union_update(const Relation &other)
 {
-	// cerr << "about to union " << this->get_name();
-	// cerr << " with " << other.get_name() << "\n";
-
 	if (&other == this) return *this; // unioning with self is a no-op
 
 	IndexList pil;
@@ -165,56 +164,54 @@ Relation & Relation::union_update(const Relation &other)
 	return *this;
 }
 
-Tuple join_remaining(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+Tuple join_tuple(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
 {
+	// Add all of t1 since we already know that all of it can be joined.
 	Tuple retval = t1;
+
 	// Add remaining values from t2 based on uniqueness of Scheme columns.
-	for(auto i2 = 0; i2 < s2.size(); ++i2)
+	auto size1 = s1.size();
+	auto size2 = s2.size();
+	for(auto i2 = 0; i2 < size2; ++i2)
 	{
 		bool unique = true;
 
-		for(auto i1 = 0; i1 < s1.size(); ++i1)
+		for(auto i1 = 0; i1 < size1; ++i1)
 		{
-			if(s2.at(i2) == s1.at(i1))
+			if(s2[i2] == s1[i1])
 			{
 				unique = false;
 				break;
 			}
 		}
-		if(unique) retval.push_back(t2.at(i2));
+		if(unique) retval.push_back(t2[i2]);
 	}
 
 	return retval;
 }
 
-Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+bool test_joinability(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
 {
-	Tuple retval;
-
 	// Check for joinability. Then append values from t1 that are either unique
 	// based on the Scheme or match t2 based on the Scheme. If the Schemes
-	// match columns, but the tuples do not match values, throw an exception.
-	for(auto i1 = 0; i1 < s1.size(); ++i1)
+	// match columns, but the tuples do not match values, the tuples cannot be joined.
+	auto size1 = s1.size();
+	auto size2 = s2.size();
+	for(auto i1 = 0; i1 < size1; ++i1)
 	{
-		retval.push_back(t1.at(i1)); // Assume tuples will be joinable.
-
-		for(auto i2 = 0; i2 < s2.size(); ++i2)
+		for(auto i2 = 0; i2 < size2; ++i2)
 		{
-			if(s1.at(i1) == s2.at(i2))
-			{
-				if (t1.at(i1) != t2.at(i2)) throw UnjoinableError(string("Tuples cannot be joined:"));
-			}
+			if(s1[i1] == s2[i2] and t1[i1] != t2[i2]) return false;
 		}
 	}
 
-	return join_remaining(retval, t2, s1, s2);
+	return true;
 }
 
 Relation Relation::join(const Relation &other) const
 {
-	// cerr << "About to join " << this->get_name();
-	// cerr << " with " << other.get_name() << "\n";
 	if (&other == this) return *this; // joining with self is a no-op
+	// clock_t time1 = clock();
 
 	Scheme jscheme = this->scheme + other.scheme;
 
@@ -224,18 +221,19 @@ Relation Relation::join(const Relation &other) const
 	{
 		for(auto &t2 : other.tuples)
 		{
-			try
+			// clock_t time2 = clock();
+			auto joinable = test_joinability(t1, t2, this->scheme, other.scheme);
+			// join_tuples_t += clock() - time2;
+			if(joinable)
 			{
-				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
+				// clock_t time3 = clock();
+				Tuple t = join_tuple(t1, t2, this->scheme, other.scheme);
+				// join_remaining_t += clock() - time3;
 				retval.insert(move(t));
 			}
-			catch(const UnjoinableError &e){} //pass
 		}
 	}
-
-	// cerr << "Finished joining " << this->get_name();
-	// cerr << " with " << other.get_name() << "\n";
-
+	// join_t += clock() - time1;
 	return retval;
 }
 
@@ -257,8 +255,6 @@ Inplace difference operation.
 */
 Relation & Relation::difference_update(const Relation &other)
 {
-	// cerr << "about to difference " << this->get_name();
-	// cerr << " with " << other.get_name() << "\n";
 	for(auto &t : other.tuples)
 	{
 		this->tuples.erase(t);
@@ -285,7 +281,6 @@ Relation Relation::rename(StrDict mapping) const
 
 Relation & Relation::rename_update(StrDict mapping)
 {
-	// cerr << "about to rename " << this->get_name() << "\n";
 	if(mapping.size() == 0) return *this;
 
 	for(auto i = this->scheme.begin(); i != this->scheme.end(); ++i)
@@ -328,7 +323,7 @@ Relation::operator string() const
 		out << "  ";
 		for(unsigned i = 0; i < sch.size(); ++i)
 		{
-			out << sch.at(i) <<"="<< t.at(i);
+			out << sch[i] <<"="<< t[i];
 
 			if(i != sch.size()-1) out << " ";
 			else out << "\n";

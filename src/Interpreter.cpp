@@ -156,7 +156,7 @@ size_t Interpreter::terp_rules(bool caller_count)
 		}
 
 		Relation result = rels.front();
-		for(auto r : rels)
+		for(auto &r : rels)
 		{
 			result = result + r; // join
 		}
@@ -233,8 +233,15 @@ void Interpreter::interpret()
 {
 	parser->parse();
 
+	join_tuples_t = 0;
+	join_remaining_t = 0;
+
 	terp_schemes();
 	terp_facts();
 	terp_rules_wrapper();
 	terp_queries();
+    // std::cout << "join took " << join_t << " clicks altogether (around " << float(join_t)/CLOCKS_PER_SEC << " seconds).\n";
+    // std::cout << "join_tuples took " << join_tuples_t << " clicks altogether (around " << float(join_tuples_t)/CLOCKS_PER_SEC << " seconds).\n";
+    // std::cout << "join_remaining took " << join_remaining_t << " clicks altogether (around " << float(join_remaining_t)/CLOCKS_PER_SEC << " seconds).\n";
+    std::cout << "DataBase contains " << db.db_size() << " tuples.\n";
 }

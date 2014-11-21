@@ -1,5 +1,5 @@
 BIN = ./test.bin
-tnum=62
+tnum=4A
 INPUT = ./tests/in$(tnum).txt
 OUTPUT = /tmp/actual$(tnum).txt
 OUTTEST = ./tests/out$(tnum).txt
@@ -40,7 +40,7 @@ cleantest : clean test
 
 memcheck : bin
 	@ echo "Running valgrind to check for memory leaks"
-	time valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
+	valgrind --tool=memcheck --leak-check=full --max-stackframe=5000000 \
 	--show-reachable=yes $(BIN) $(ARGS)
 	@ echo
 

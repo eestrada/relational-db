@@ -2,10 +2,12 @@
 #define __DATABASE_H__
 
 #include <set>
+#include <unordered_map>
 #include <map>
 #include <vector>
 #include <string>
 #include <ostream>
+#include <ctime>
 
 
 // TODO: make an ordered_set class that keeps track of the order  
@@ -19,7 +21,7 @@ namespace DB
 
 using namespace std;
 
-typedef map<string, string> StrDict;
+typedef unordered_map<string, string> StrDict;
 typedef unsigned long int Index;
 typedef vector<Index> IndexList;
 
@@ -91,6 +93,10 @@ public:
 	size_t db_size() const;
 	explicit operator string() const;
 };
+
+extern clock_t join_t;
+extern clock_t join_tuples_t;
+extern clock_t join_remaining_t;
 
 } // end namespace DB
 
