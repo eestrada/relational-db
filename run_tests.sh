@@ -5,9 +5,9 @@ rm -rf ./diffs
 mkdir -p ./output
 mkdir -p ./diffs
 
-lab="4"
+lab="5"
 
-for i in 40 44 45 46 49 4A 61 62
+for i in 50 54 55 56 58 59 61 62
 do
     ./test.bin "./tests/in${i}.txt" "./output/actual${i}.txt"
     diff -s -U 20 ./tests/out${i}.txt ./output/actual${i}.txt >> ./diffs/diff${lab}.diff

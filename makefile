@@ -1,5 +1,5 @@
 BIN = ./test.bin
-tnum=4A
+tnum=62
 INPUT = ./tests/in$(tnum).txt
 OUTPUT = /tmp/actual$(tnum).txt
 OUTTEST = ./tests/out$(tnum).txt

@@ -312,6 +312,7 @@ void Interpreter::interpret()
 
 	terp_schemes();
 	terp_facts();
+	build_graph();
 	terp_rules_wrapper();
 	terp_queries();
 }
