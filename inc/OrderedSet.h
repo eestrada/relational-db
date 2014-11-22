@@ -1,7 +1,8 @@
 #ifndef __ORDEREDSET_H__
 #define __ORDEREDSET_H__
 
-//#include <map>
+#include <set>
+#include <map>
 #include <unordered_map>
 #include <list>
 #include <ostream>

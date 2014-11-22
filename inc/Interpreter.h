@@ -73,6 +73,7 @@ private:
 	void terp_facts();
 	size_t terp_rules(bool caller_count=1);
 	bool terp_rule(const string &rid);
+	void terp_rules_wrapper();
 	void terp_queries();
 	void build_graph();
 	void build_graph_output();

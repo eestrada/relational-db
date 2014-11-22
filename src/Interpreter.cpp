@@ -40,12 +40,13 @@ Interpreter::Interpreter(unique_ptr<Parser> &&p)
 
 void Interpreter::terp_schemes()
 {
+	out << "Scheme Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
-	for(auto pred : dlprog->Schemes)
+	for(auto &pred : dlprog->Schemes)
 	{
 		Scheme s;
 		s.name = pred.ident;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			s.push_back(parm.get_ident());
 		}
@@ -58,16 +59,35 @@ void Interpreter::terp_schemes()
 
 void Interpreter::terp_facts()
 {
+	out << "Fact Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
 	
-	for(auto pred : dlprog->Facts)
+	for(auto &pred : dlprog->Facts)
 	{
 		Tuple t;
-		for(auto parm : pred.parm_vec)
+		for(auto &parm : pred.parm_vec)
 		{
 			t.push_back(parm.get_literal());
 		}
 		db[pred.ident].insert(t);
+	}
+
+	for(auto &rit : db)
+	{
+		out << rit.first << "\n";
+		for(auto &t : rit.second.get_tuples())
+		{
+			out << " ";
+			for (int i = 0; i < t.size(); ++i)
+			{
+				out << " ";
+				out << rit.second.get_scheme()[i];
+				out << "=";
+				out << t[i];
+			}
+			out << "\n";
+		}
+		out << "\n";
 	}
 }
 
@@ -77,7 +97,7 @@ Scheme query_to_scheme(Predicate p)
 
 	ret.name = p.ident;
 
-	for(auto s : p.parm_vec)
+	for(auto &s : p.parm_vec)
 	{
 		ret.push_back(string(s));
 	}
@@ -85,16 +105,14 @@ Scheme query_to_scheme(Predicate p)
 	return ret;
 }
 
-Relation interpret_query(const Relation &rel_in, const Predicate &pred)
+Relation interpret_query(const Predicate &pred, Relation &selection_rel, Relation &projection_rel, Relation &rename_rel)
 {
-	Relation r = rel_in;
-
 	StrDict nmap;
 	IndexList pil;
 	map<string, Index> imap;
-	auto scheme = r.get_scheme();
+	auto scheme = selection_rel.get_scheme();
 	Index i = 0;
-	for(auto parm : pred.parm_vec)
+	for(auto &parm : pred.parm_vec)
 	{
 		try
 		{
@@ -103,22 +121,22 @@ Relation interpret_query(const Relation &rel_in, const Predicate &pred)
 			if(pstr != scheme.at(i))
 			{
 				auto iit = imap.find(pstr);
-				if(iit != imap.end()) r = r.select(iit->second, i);
+				if(iit != imap.end()) selection_rel = selection_rel.select(iit->second, i);
 				nmap[scheme.at(i)] = pstr;
 			}
 			imap.emplace(pstr, i);
 		}
 		catch(const exception &e)
 		{
-			r = r.select(i, parm.get_literal());
+			selection_rel = selection_rel.select(i, parm.get_literal());
 		}
 		++i;
 	}
 
-	r = r.project(pil);
-	r = r.rename(nmap);
+	projection_rel = selection_rel.project(pil);
+	rename_rel = projection_rel.rename(nmap);
 
-	return r;
+	return rename_rel;
 }
 
 size_t Interpreter::terp_rules(bool caller_count)
@@ -129,187 +147,72 @@ size_t Interpreter::terp_rules(bool caller_count)
 
 	size_t orig_size = db.db_size();
 
-	for(auto rule : dlprog->Rules)
+	for(auto &rule : dlprog->Rules)
 	{
 		std::vector<Relation> rels;
 
-		for(auto pred : rule.pred_list)
+		for(auto &pred : rule.pred_list)
 		{
-			Relation r = interpret_query(db.at(pred.ident), pred);
+			Relation r = db.at(pred.ident);
+			r = interpret_query(pred, r, r, r);
 
 			rels.push_back(r);
 		}
 
+		// We do "rels.begin() + 1" to skip the first relation since "result"
+		// already holds it. That way we don't pointlessly join identical
+		// relations, which wastes a lot of compute power/time.
 		Relation result = rels.front();
-		for(auto r : rels)
+		for(auto iter = rels.begin() + 1; iter != rels.end(); ++iter)
 		{
-			result = result.join(r);
-			// result = result + r;
+			result = result + *iter; // join
 		}
 
-		Relation final = db.at(rule.pred.ident);
+		auto name = rule.pred.ident;
+		Relation final = db.at(name);
 
-		final = final.rename(query_to_scheme(rule.pred));
-		final = final.unioned(result);
-		// final = final | result;
+		final.rename_update(query_to_scheme(rule.pred));
+		final |= result; // in place union
 
-		db[final.get_name()] = final;
+		auto &s = db.at(name).get_scheme();
+		final.rename_update(s);
+		final -= db.at(name); // in place difference
+
+		out << string(rule) << "\n";
+		out << string(final);
+
+		db.at(name) |= final; // in place union
 	}
 
-	return caller_count + this->terp_rules(orig_size < db.db_size());
+	return caller_count + this->terp_rules(orig_size != db.db_size());
 }
 
 void Interpreter::terp_queries()
 {
+	out << "Query Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
-
-	auto qcnt = 1;		
-	for(auto pred : dlprog->Queries)
+	
+	for(auto &pred : dlprog->Queries)
 	{
-		build_query_output("Q" + to_string(qcnt), pred);
-		++qcnt;
-	}
-}
+		Relation selection_rel = db[pred.ident];
+		Relation projection_rel, rename_rel;
+		rename_rel = interpret_query(pred, selection_rel, projection_rel, rename_rel);
 
-void Interpreter::build_Postorder(const string &qid)
-{
-	// postorder
-
-	// Topo sort
-}
-
-void Interpreter::build_query_output(const string &qid, const Predicate &pred)
-{
-	auto qs =  query_to_scheme(pred);
-
-	// Graph output
-	out << qs << "?\n\n";
-
-	// Depth-First Search
-	// Postorder
-	out << "  Postorder Numbers\n";
-	graph.reset();
-   	auto deplist = graph.depth_search(qid);
-	sort(deplist.begin(), deplist.end());
-	for(const auto &id : deplist)
-	{
-		out << "    " << id << ": " << graph.at(id).postorder <<"\n";
-	}
-	out << "\n";
-
-	// Topological Sort
-	// Rule Evaluation Order
-	out << "  Rule Evaluation Order\n";
-	auto sortedlist = deplist;
-	sortedlist = graph.sorted(sortedlist);
-	decltype(sortedlist) topo_sorted;
-	for(const auto &id : sortedlist)
-	{
-		if(id.front() != 'Q')
+		out << query_to_scheme(pred) << "? ";
+		auto size = rename_rel.get_tuples().size();
+		if(size == 0) out << "No\n";
+		else if(size > 0)
 		{
-			out << "    " << id <<"\n";
-			topo_sorted.push_back(id);
+			out << "Yes(" << size << ")\n";
+			out << "select\n";
+			out << selection_rel;
+			out << "project\n";
+			out << projection_rel;
+			out << "rename\n";
+			out << rename_rel;
 		}
+		out << "\n";
 	}
-	out << "\n";
-
-	// Cycle Finding
-	// Backward Edges
-	out << "  Backward Edges\n";
-	for(const auto &s : deplist)
-	{
-		priority_queue< string, deque<string>, greater<string> > pq;
-
-		if(s.front() != 'Q')
-		{
-			for(const auto &d : graph.at(s))
-			{
-				if(graph[d].postorder >= graph[s].postorder) pq.push(d);
-			}
-		}
-
-		if(not pq.empty())
-		{
-			out << "    " << s << ":";
-			while(not pq.empty())
-			{
-				out << " " << pq.top();
-				pq.pop();
-			}
-			out << "\n";
-		}
-	}
-	out << "\n";
-
-	// Rule Evaluation
-	out << "  Rule Evaluation\n";
-	bool eval_again = true;
-	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
-	{
-		eval_again = terp_rule(*iter);
-		if(++iter == topo_sorted.cend() and not eval_again) iter = topo_sorted.cbegin();
-	}
-	// do rule eval work here
-	out << "\n";
-
-	// Query output
-	Relation r = interpret_query(db[pred.ident], pred);
-
-	out << qs << "? ";
-
-	auto size = r.get_tuples().size();
-	if(size == 0) out << "No\n";
-	else out << "Yes(" << size << ")\n";
-	out << r;
-	out << "\n";
-}
-
-bool Interpreter::terp_rule(const string &rid)
-{
-	auto dlprog = parser->get_DatalogProgram();
-
-	auto i = ridmap.at(rid);
-	auto rule = dlprog->Rules.at(i);
-	auto r = db[rule.pred.ident];
-
-	out << "    " << string(rule) << "\n";
-
-//	if(caller_count == false) return false;
-
-//	auto dlprog = parser->get_DatalogProgram();
-
-	size_t orig_size = db.db_size();
-
-//	for(auto rule : dlprog->Rules)
-	{
-		std::vector<Relation> rels;
-
-		for(auto pred : rule.pred_list)
-		{
-			Relation r = interpret_query(db.at(pred.ident), pred);
-
-			rels.push_back(r);
-		}
-
-		Relation result = rels.front();
-		for(auto r : rels)
-		{
-			result = result.join(r);
-			// result = result + r;
-		}
-
-		Relation final = db.at(rule.pred.ident);
-
-		final = final.rename(query_to_scheme(rule.pred));
-		final = final.unioned(result);
-		// final = final | result;
-
-		db[final.get_name()] = final;
-	}
-
-//	return orig_size != db.db_size();
-	return orig_size < db.db_size();
-//	return caller_count + this->terp_rules(orig_size < db.db_size());
 }
 
 void Interpreter::build_graph_output()
@@ -384,7 +287,24 @@ void Interpreter::build_graph()
 
 DataBase Interpreter::get_database() const { return db; }
 
-string Interpreter::get_query_output() const { return dgout.str() + out.str(); }
+string Interpreter::get_query_output() const { return out.str(); }
+
+void Interpreter::terp_rules_wrapper()
+{
+	out << "Rule Evaluation\n\n";
+	auto passes = terp_rules();
+
+	out << "\n";
+
+	out << "Converged after " << passes << " passes through the Rules.\n\n";
+
+	for(auto &p : db)
+	{
+		out << p.first << "\n";
+
+		out << string(p.second) << "\n";
+	}
+}
 
 void Interpreter::interpret()
 {
@@ -392,8 +312,6 @@ void Interpreter::interpret()
 
 	terp_schemes();
 	terp_facts();
-	// out << "Converged after " << terp_rules() << " passes through the Rules.\n";
-//	terp_rules();
-	build_graph();
+	terp_rules_wrapper();
 	terp_queries();
 }

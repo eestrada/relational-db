@@ -8,13 +8,6 @@
 #include <string>
 #include <ostream>
 
-
-// TODO: make an ordered_set class that keeps track of the order  
-// items were entered into the set. This is unlike the built in set
-// since that is more along the lines of a sorted set. This class
-// ought to simplify the process of doing joins and making sure that
-// schemes do not have duplicate column entries.
-
 namespace DB
 {
 
@@ -52,25 +45,38 @@ public:
 	Relation select(Index index1, Index index2) const;
 	Relation project(const IndexList &indices) const;
 	Relation rename(StrDict mapping) const; // Renames the internal scheme
+	Relation & rename_update(StrDict mapping); // Renames the internal scheme
 	Relation rename(Scheme new_names) const; // Renames the internal scheme
+	Relation & rename_update(Scheme new_names); // Renames the internal scheme
 	Relation unioned(const Relation &other) const;
+	Relation & union_update(const Relation &other);
 	Relation join(const Relation &other) const;
-	void insert(const Tuple& t);
+	Relation & join_update(const Relation &other);
+	Relation difference(const Relation &other) const;
+	Relation & difference_update(const Relation &other);
+	void insert(const Tuple &t);
 	void insert(Tuple &&t);
-	const string& get_name() const;
-	const Scheme& get_scheme() const;
-	const TupleSet& get_tuples() const;
 
-	// Convenience functions
-	Relation operator|(const Relation &other) { return unioned(other); }
-	Relation operator+(const Relation &other) { return join(other); }
+	// getter functions
+	const string & get_name() const { return scheme.name; }
+	const Scheme & get_scheme() const { return scheme; }
+	const TupleSet & get_tuples() const { return tuples; }
+	size_t size() const { return tuples.size(); }
+
+	// syntactic sugar
+	Relation operator|(const Relation &other) const { return unioned(other); }
+	Relation & operator|=(const Relation &other) { return union_update(other); }
+	Relation operator+(const Relation &other) const { return join(other); }
+	Relation & operator+=(const Relation &other) { return join_update(other); }
+	Relation operator-(const Relation &other) const { return difference(other); }
+	Relation & operator-=(const Relation &other) { return difference_update(other); }
 	operator string() const;
 private:
 	Scheme scheme;
 	TupleSet tuples;
 };
 
-class DataBase : public unordered_map<string, Relation>
+class DataBase : public map<string, Relation>
 {
 public:
 	Relation& operator[](string name);
@@ -79,7 +85,6 @@ public:
 	size_t db_size() const;
 	explicit operator string() const;
 };
-
 
 } // end namespace DB
 

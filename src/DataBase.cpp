@@ -8,13 +8,6 @@
 using namespace DB;
 using namespace std;
 
-
-class UnjoinableError : public runtime_error
-{
-public:
-	UnjoinableError(const string &s) : runtime_error(s){}
-};
-
 template <typename T, typename U>
 ostream & operator<<(ostream &out, const pair<T,U> &p)
 {
@@ -129,10 +122,17 @@ Relation Relation::project(const IndexList &indices) const
 Relation Relation::unioned(const Relation &other) const
 {
 	Relation retval = *this;
+	return retval.union_update(other);
+}
+
+Relation & Relation::union_update(const Relation &other)
+{
+	if (&other == this) return *this; // unioning with self is a no-op
+
 	IndexList pil;
 
 	Index i1 = 0;
-	for(const auto &s1 : retval.scheme)
+	for(auto &s1 : this->scheme)
 	{
 		Index i2 = 0;
 		for(const auto &s2 : other.scheme)
@@ -145,59 +145,59 @@ Relation Relation::unioned(const Relation &other) const
 
 	Relation fixed = other.project(pil);
 
-	for (const auto &t : fixed.tuples) { retval.insert(t); }
+	for (auto &t : fixed.tuples) { this->insert(t); }
 
-	return retval;
+	return *this;
 }
 
-Tuple join_remaining(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+Tuple join_tuple(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
 {
+	// Add all of t1 since we already know that all of it can be joined.
 	Tuple retval = t1;
+
 	// Add remaining values from t2 based on uniqueness of Scheme columns.
-	for(auto i2 = 0; i2 < s2.size(); ++i2)
+	auto size1 = s1.size();
+	auto size2 = s2.size();
+	for(auto i2 = 0; i2 < size2; ++i2)
 	{
 		bool unique = true;
 
-		for(auto i1 = 0; i1 < s1.size(); ++i1)
+		for(auto i1 = 0; i1 < size1; ++i1)
 		{
-			if(s2.at(i2) == s1.at(i1))
+			if(s2[i2] == s1[i1])
 			{
 				unique = false;
 				break;
 			}
 		}
-		if(unique) retval.push_back(t2.at(i2));
+		if(unique) retval.push_back(t2[i2]);
 	}
 
 	return retval;
 }
 
-Tuple join_tuples(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
+bool test_joinability(const Tuple &t1, const Tuple &t2, const Scheme &s1, const Scheme &s2)
 {
-	Tuple retval;
-
 	// Check for joinability. Then append values from t1 that are either unique
 	// based on the Scheme or match t2 based on the Scheme. If the Schemes
-	// match columns, but the tuples do not match values, throw an exception.
-	for(auto i1 = 0; i1 < s1.size(); ++i1)
+	// match columns, but the tuples do not match values, the tuples cannot be joined.
+	auto size1 = s1.size();
+	auto size2 = s2.size();
+	for(auto i1 = 0; i1 < size1; ++i1)
 	{
-		retval.push_back(t1.at(i1)); // Assume tuples will be joinable.
-
-		for(auto i2 = 0; i2 < s2.size(); ++i2)
+		for(auto i2 = 0; i2 < size2; ++i2)
 		{
-			if(s1.at(i1) == s2.at(i2))
-			{
-				if (t1.at(i1) == t2.at(i2)) break;
-				else throw UnjoinableError(string("Tuples cannot be joined:"));
-			}
+			if(s1[i1] == s2[i2] and t1[i1] != t2[i2]) return false;
 		}
 	}
 
-	return join_remaining(retval, t2, s1, s2);
+	return true;
 }
 
 Relation Relation::join(const Relation &other) const
 {
+	if (&other == this) return *this; // joining with self is a no-op
+
 	Scheme jscheme = this->scheme + other.scheme;
 
 	Relation retval(jscheme);
@@ -206,67 +206,91 @@ Relation Relation::join(const Relation &other) const
 	{
 		for(const auto &t2 : other.tuples)
 		{
-			try
+			auto joinable = test_joinability(t1, t2, this->scheme, other.scheme);
+			if(joinable)
 			{
-				auto t = join_tuples(t1, t2, this->scheme, other.scheme);
+				Tuple t = join_tuple(t1, t2, this->scheme, other.scheme);
 				retval.insert(move(t));
 			}
-			catch(const UnjoinableError &e){} //pass
 		}
 	}
 
 	return retval;
 }
 
-void Relation::insert(const Tuple& t)
+Relation & Relation::join_update(const Relation &other)
 {
-	// if(t.size() != scheme.size()) throw runtime_error("Tuple length does not match Scheme length.");
-	//tuples.insert(move(t));
+	if (&other != this) *this = this->join(other);
+	return *this;
+}
+
+Relation Relation::difference(const Relation &other) const
+{
+	Relation retval = *this;
+
+	return retval.difference_update(other);
+}
+
+/*
+Inplace difference operation.
+*/
+Relation & Relation::difference_update(const Relation &other)
+{
+	for(auto &t : other.tuples)
+	{
+		this->tuples.erase(t);
+	}
+
+	return *this;
+}
+
+void Relation::insert(const Tuple &t)
+{
 	tuples.insert(t);
-	// auto ret = tuples.insert(move(t));
-	// if(ret.second == false) {} // Possibly throw exception if insert fails
 }
 
 void Relation::insert(Tuple &&t)
 {
-     tuples.insert(move(t));
+	tuples.insert(move(t));
 }
 
 Relation Relation::rename(StrDict mapping) const
 {
+	Relation retval = *this;
+	return retval.rename_update(mapping);
+}
+
+Relation & Relation::rename_update(StrDict mapping)
+{
 	if(mapping.size() == 0) return *this;
 
-	Relation retval = *this;
-	Scheme new_scheme = this->scheme;
-
-	for(auto i = new_scheme.begin(); i != new_scheme.end(); ++i)
+	for(auto i = this->scheme.begin(); i != this->scheme.end(); ++i)
 	{
-		try	{ mapping.at(*i); }
+		StrDict::mapped_type s;
+		try { s = mapping.at(*i); }
 		catch(const out_of_range &e) { continue; }
 		/* else */
-		*i = mapping.at(*i);
+		*i = s;
 	}
 
-	retval.scheme = move(new_scheme);
-
-	return retval;
+	return *this;
 }
 
 Relation Relation::rename(Scheme new_names) const
 {
+	Relation retval = *this;
+	return retval.rename_update(new_names);
+}
+
+Relation & Relation::rename_update(Scheme new_names)
+{
 	if(new_names.size() != this->scheme.size())
 		throw runtime_error("Scheme lengths do not match");
 
-	Relation retval = *this;
+	this->scheme = move(new_names);
 
-	retval.scheme = move(new_names);
-
-	return retval;
+	return *this;
 }
-
-const string& Relation::get_name() const { return scheme.name; }
-const Scheme& Relation::get_scheme() const { return scheme; }
-const TupleSet& Relation::get_tuples() const {	return tuples; }
 
 Relation::operator string() const
 {
@@ -280,9 +304,9 @@ Relation::operator string() const
 		out << "  ";
 		for(unsigned i = 0; i < sch.size(); ++i)
 		{
-			out << sch.at(i) <<"="<< t.at(i);
+			out << sch[i] <<"="<< t[i];
 
-			if(i != sch.size()-1) out << ", ";
+			if(i != sch.size()-1) out << " ";
 			else out << "\n";
 		}
 	}
@@ -297,7 +321,7 @@ Relation& DataBase::operator[](string name)
 
 void DataBase::insert(Relation r)
 {
-    unordered_map<string, Relation>::insert({r.get_name(), move(r)});
+    map<string, Relation>::insert({r.get_name(), move(r)});
 }
 
 bool DataBase::has(string name) const {	return this->count(name); }
@@ -323,9 +347,8 @@ DataBase::operator string() const
 	{
 		out << "\t" << p.second.get_scheme() << "\n";
 
-		const auto& ts = p.second.get_tuples();
 
-		for(auto &t : ts)
+		for(auto &t : p.second.get_tuples())
 		{
 			out << "\t\t" << t << "\n";
 		}

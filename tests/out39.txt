@@ -1,0 +1,74 @@
+Scheme Evaluation
+
+Fact Evaluation
+
+ES
+  A='a' B='b' C='c' D='d'
+  A='c' B='d' C='d' D='c'
+  A='d' B='c' C='d' D='c'
+  A='duck' B='goose' C='duck' D='goose'
+
+SK
+  A='a' B='c'
+  A='b' B='b'
+  A='b' B='c'
+
+rs
+  Y='monkey' Y='monkey' X='cow'
+
+Query Evaluation
+
+SK(A,'c')? Yes(2)
+select
+  A='a' B='c'
+  A='b' B='c'
+project
+  A='a'
+  A='b'
+rename
+  A='a'
+  A='b'
+
+SK('b','c')? Yes(1)
+select
+  A='b' B='c'
+project
+rename
+
+SK('c','c')? No
+
+SK(A,A)? Yes(1)
+select
+  A='b' B='b'
+project
+  A='b'
+rename
+  A='b'
+
+ES(A,B,B,A)? Yes(1)
+select
+  A='c' B='d' C='d' D='c'
+project
+  A='c' B='d'
+rename
+  A='c' B='d'
+
+ES(X,Y,X,Y)? Yes(2)
+select
+  A='d' B='c' C='d' D='c'
+  A='duck' B='goose' C='duck' D='goose'
+project
+  A='d' B='c'
+  A='duck' B='goose'
+rename
+  X='d' Y='c'
+  X='duck' Y='goose'
+
+rs(Y,Y,'cow')? Yes(1)
+select
+  Y='monkey' Y='monkey' X='cow'
+project
+  Y='monkey'
+rename
+  Y='monkey'
+
