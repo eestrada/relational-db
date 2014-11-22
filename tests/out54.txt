@@ -1,26 +1,52 @@
+Scheme Evaluation
+
+Fact Evaluation
+
+bob
+  x='1'
+
+jim
+  x='2'
+
+joe
+  x='4'
+
 Dependency Graph
   Q1: R1 R2
   R1:
   R2:
 
+Query Evaluation
+
 bob(x)?
 
-  Postorder Numbers
-    Q1: 3
-    R1: 1
-    R2: 2
+Postorder Numbers
+  Q1: 3
+  R1: 1
+  R2: 2
 
-  Rule Evaluation Order
-    R1
-    R2
+Rule Evaluation Order
+  R1
+  R2
 
-  Backward Edges
+Backward Edges
 
-  Rule Evaluation
-    bob(x) :- jim(x)
-    bob(x) :- joe(x)
+Rule Evaluation
+bob(x) :- jim(x)
+  x='2'
+bob(x) :- joe(x)
+  x='4'
 
 bob(x)? Yes(3)
+select
+  x='1'
+  x='2'
+  x='4'
+project
+  x='1'
+  x='2'
+  x='4'
+rename
   x='1'
   x='2'
   x='4'

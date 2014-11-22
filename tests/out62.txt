@@ -49,168 +49,38 @@ snap
 
 tthCourses
 
-Rule Evaluation
-
-before(C1,C2) :- cp(C2,C1)
-  C1='CS100' C2='CS101'
-  C1='CS100' C2='EE200'
-  C1='CS101' C2='CS120'
-  C1='CS101' C2='CS205'
-  C1='CS120' C2='CS121'
-  C1='CS121' C2='CS206'
-  C1='CS205' C2='CS206'
-  C1='EE005' C2='EE200'
-before(C1,C2) :- cp(C3,C1),before(C3,C2)
-  C1='CS100' C2='CS120'
-  C1='CS100' C2='CS205'
-  C1='CS101' C2='CS121'
-  C1='CS101' C2='CS206'
-  C1='CS120' C2='CS206'
-tthCourses(C) :- cdh(C,'Tu',H)
-  C='CS101'
-tthCourses(C) :- cdh(C,'Th',H)
-  C='PH100'
-Schedule(N,C,R,D,H) :- snap(S,N,A,P),csg(C,S,G),cr(C,R),cdh(C,D,H)
-  N='C. Brown' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-  N='L. Van Pelt' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='L. Van Pelt' C='PH100' R='Newton Lab.' D='Th' H='11AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-  N='Snoopy' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-Grades(N,C,G) :- snap(S,N,A,P),csg(C,S,G)
-  N='C. Brown' C='CS101' G='A'
-  N='C. Brown' C='EE200' G='C'
-  N='L. Van Pelt' C='CS101' G='B'
-  N='L. Van Pelt' C='PH100' G='C+'
-  N='P. Patty' C='EE200' G='B+'
-  N='Snoopy' C='CS101' G='A-'
-  N='Snoopy' C='EE200' G='B'
-Students(C,R,N,G) :- snap(S,N,A,P),csg(C,S,G),cr(C,R)
-  C='CS101' R='Turing Aud.' N='C. Brown' G='A'
-  C='CS101' R='Turing Aud.' N='L. Van Pelt' G='B'
-  C='CS101' R='Turing Aud.' N='Snoopy' G='A-'
-  C='EE200' R='25 Ohm Hall' N='C. Brown' G='C'
-  C='EE200' R='25 Ohm Hall' N='P. Patty' G='B+'
-  C='EE200' R='25 Ohm Hall' N='Snoopy' G='B'
-  C='PH100' R='Newton Lab.' N='L. Van Pelt' G='C+'
-before(C1,C2) :- cp(C2,C1)
-before(C1,C2) :- cp(C3,C1),before(C3,C2)
-  C1='CS100' C2='CS121'
-  C1='CS100' C2='CS206'
-tthCourses(C) :- cdh(C,'Tu',H)
-tthCourses(C) :- cdh(C,'Th',H)
-Schedule(N,C,R,D,H) :- snap(S,N,A,P),csg(C,S,G),cr(C,R),cdh(C,D,H)
-Grades(N,C,G) :- snap(S,N,A,P),csg(C,S,G)
-Students(C,R,N,G) :- snap(S,N,A,P),csg(C,S,G),cr(C,R)
-before(C1,C2) :- cp(C2,C1)
-before(C1,C2) :- cp(C3,C1),before(C3,C2)
-tthCourses(C) :- cdh(C,'Tu',H)
-tthCourses(C) :- cdh(C,'Th',H)
-Schedule(N,C,R,D,H) :- snap(S,N,A,P),csg(C,S,G),cr(C,R),cdh(C,D,H)
-Grades(N,C,G) :- snap(S,N,A,P),csg(C,S,G)
-Students(C,R,N,G) :- snap(S,N,A,P),csg(C,S,G),cr(C,R)
-
-Converged after 3 passes through the Rules.
-
-Grades
-  N='C. Brown' C='CS101' G='A'
-  N='C. Brown' C='EE200' G='C'
-  N='L. Van Pelt' C='CS101' G='B'
-  N='L. Van Pelt' C='PH100' G='C+'
-  N='P. Patty' C='EE200' G='B+'
-  N='Snoopy' C='CS101' G='A-'
-  N='Snoopy' C='EE200' G='B'
-
-Schedule
-  N='C. Brown' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='C. Brown' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-  N='L. Van Pelt' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='L. Van Pelt' C='PH100' R='Newton Lab.' D='Th' H='11AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='P. Patty' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-  N='Snoopy' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
-  N='Snoopy' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
-
-Students
-  C='CS101' R='Turing Aud.' N='C. Brown' G='A'
-  C='CS101' R='Turing Aud.' N='L. Van Pelt' G='B'
-  C='CS101' R='Turing Aud.' N='Snoopy' G='A-'
-  C='EE200' R='25 Ohm Hall' N='C. Brown' G='C'
-  C='EE200' R='25 Ohm Hall' N='P. Patty' G='B+'
-  C='EE200' R='25 Ohm Hall' N='Snoopy' G='B'
-  C='PH100' R='Newton Lab.' N='L. Van Pelt' G='C+'
-
-before
-  C1='CS100' C2='CS101'
-  C1='CS100' C2='CS120'
-  C1='CS100' C2='CS121'
-  C1='CS100' C2='CS205'
-  C1='CS100' C2='CS206'
-  C1='CS100' C2='EE200'
-  C1='CS101' C2='CS120'
-  C1='CS101' C2='CS121'
-  C1='CS101' C2='CS205'
-  C1='CS101' C2='CS206'
-  C1='CS120' C2='CS121'
-  C1='CS120' C2='CS206'
-  C1='CS121' C2='CS206'
-  C1='CS205' C2='CS206'
-  C1='EE005' C2='EE200'
-
-cdh
-  C='CS101' D='Tu' H='10AM'
-  C='EE200' D='F' H='10AM'
-  C='EE200' D='M' H='10AM'
-  C='EE200' D='W' H='1PM'
-  C='PH100' D='Th' H='11AM'
-
-cp
-  C='CS101' Q='CS100'
-  C='CS120' Q='CS101'
-  C='CS121' Q='CS120'
-  C='CS205' Q='CS101'
-  C='CS206' Q='CS121'
-  C='CS206' Q='CS205'
-  C='EE200' Q='CS100'
-  C='EE200' Q='EE005'
-
-cr
-  C='CS101' R='Turing Aud.'
-  C='EE200' R='25 Ohm Hall'
-  C='PH100' R='Newton Lab.'
-
-csg
-  C='CS101' S='12345' G='A'
-  C='CS101' S='33333' G='A-'
-  C='CS101' S='67890' G='B'
-  C='EE200' S='12345' G='C'
-  C='EE200' S='22222' G='B+'
-  C='EE200' S='33333' G='B'
-  C='PH100' S='67890' G='C+'
-
-snap
-  S='12345' N='C. Brown' A='12 Apple St.' P='555-1234'
-  S='22222' N='P. Patty' A='56 Grape Blvd.' P='555-9999'
-  S='33333' N='Snoopy' A='12 Apple St.' P='555-1234'
-  S='67890' N='L. Van Pelt' A='34 Pear Ave.' P='555-5678'
-
-tthCourses
-  C='CS101'
-  C='PH100'
+Dependency Graph
+  Q1:
+  Q10: R6
+  Q11: R7
+  Q2:
+  Q3:
+  Q4:
+  Q5:
+  Q6: R3 R4
+  Q7: R1 R2
+  Q8: R1 R2
+  Q9: R5
+  R1:
+  R2: R1 R2
+  R3:
+  R4:
+  R5:
+  R6:
+  R7:
 
 Query Evaluation
+
+snap(Id,'Snoopy',A,P)?
+
+Postorder Numbers
+  Q1: 1
+
+Rule Evaluation Order
+
+Backward Edges
+
+Rule Evaluation
 
 snap(Id,'Snoopy',A,P)? Yes(1)
 select
@@ -219,6 +89,17 @@ project
   S='33333' A='12 Apple St.' P='555-1234'
 rename
   Id='33333' A='12 Apple St.' P='555-1234'
+
+csg(Course,'33333',Grade)?
+
+Postorder Numbers
+  Q2: 1
+
+Rule Evaluation Order
+
+Backward Edges
+
+Rule Evaluation
 
 csg(Course,'33333',Grade)? Yes(2)
 select
@@ -231,6 +112,17 @@ rename
   Course='CS101' Grade='A-'
   Course='EE200' Grade='B'
 
+cp(Course,'CS100')?
+
+Postorder Numbers
+  Q3: 1
+
+Rule Evaluation Order
+
+Backward Edges
+
+Rule Evaluation
+
 cp(Course,'CS100')? Yes(2)
 select
   C='CS101' Q='CS100'
@@ -241,6 +133,17 @@ project
 rename
   Course='CS101'
   Course='EE200'
+
+cdh('EE200',Day,Hour)?
+
+Postorder Numbers
+  Q4: 1
+
+Rule Evaluation Order
+
+Backward Edges
+
+Rule Evaluation
 
 cdh('EE200',Day,Hour)? Yes(3)
 select
@@ -256,6 +159,17 @@ rename
   Day='M' Hour='10AM'
   Day='W' Hour='1PM'
 
+cr('CS101',Room)?
+
+Postorder Numbers
+  Q5: 1
+
+Rule Evaluation Order
+
+Backward Edges
+
+Rule Evaluation
+
 cr('CS101',Room)? Yes(1)
 select
   C='CS101' R='Turing Aud.'
@@ -263,6 +177,25 @@ project
   R='Turing Aud.'
 rename
   Room='Turing Aud.'
+
+tthCourses(C)?
+
+Postorder Numbers
+  Q6: 3
+  R3: 1
+  R4: 2
+
+Rule Evaluation Order
+  R3
+  R4
+
+Backward Edges
+
+Rule Evaluation
+tthCourses(C) :- cdh(C,'Tu',H)
+  C='CS101'
+tthCourses(C) :- cdh(C,'Th',H)
+  C='PH100'
 
 tthCourses(C)? Yes(2)
 select
@@ -275,11 +208,66 @@ rename
   C='CS101'
   C='PH100'
 
+before('CS100','CS206')?
+
+Postorder Numbers
+  Q7: 3
+  R1: 1
+  R2: 2
+
+Rule Evaluation Order
+  R1
+  R2
+
+Backward Edges
+  R2: R2
+
+Rule Evaluation
+before(C1,C2) :- cp(C2,C1)
+  C1='CS100' C2='CS101'
+  C1='CS100' C2='EE200'
+  C1='CS101' C2='CS120'
+  C1='CS101' C2='CS205'
+  C1='CS120' C2='CS121'
+  C1='CS121' C2='CS206'
+  C1='CS205' C2='CS206'
+  C1='EE005' C2='EE200'
+before(C1,C2) :- cp(C3,C1),before(C3,C2)
+  C1='CS100' C2='CS120'
+  C1='CS100' C2='CS205'
+  C1='CS101' C2='CS121'
+  C1='CS101' C2='CS206'
+  C1='CS120' C2='CS206'
+before(C1,C2) :- cp(C2,C1)
+before(C1,C2) :- cp(C3,C1),before(C3,C2)
+  C1='CS100' C2='CS121'
+  C1='CS100' C2='CS206'
+before(C1,C2) :- cp(C2,C1)
+before(C1,C2) :- cp(C3,C1),before(C3,C2)
+
 before('CS100','CS206')? Yes(1)
 select
   C1='CS100' C2='CS206'
 project
 rename
+
+before('CS100',prerequisiteTo)?
+
+Postorder Numbers
+  Q8: 3
+  R1: 1
+  R2: 2
+
+Rule Evaluation Order
+  R1
+  R2
+
+Backward Edges
+  R2: R2
+
+Rule Evaluation
+before(C1,C2) :- cp(C2,C1)
+before(C1,C2) :- cp(C3,C1),before(C3,C2)
 
 before('CS100',prerequisiteTo)? Yes(6)
 select
@@ -304,6 +292,33 @@ rename
   prerequisiteTo='CS206'
   prerequisiteTo='EE200'
 
+Schedule('Snoopy',C,R,D,H)?
+
+Postorder Numbers
+  Q9: 2
+  R5: 1
+
+Rule Evaluation Order
+  R5
+
+Backward Edges
+
+Rule Evaluation
+Schedule(N,C,R,D,H) :- snap(S,N,A,P),csg(C,S,G),cr(C,R),cdh(C,D,H)
+  N='C. Brown' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
+  N='C. Brown' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
+  N='C. Brown' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
+  N='C. Brown' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
+  N='L. Van Pelt' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
+  N='L. Van Pelt' C='PH100' R='Newton Lab.' D='Th' H='11AM'
+  N='P. Patty' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
+  N='P. Patty' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
+  N='P. Patty' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
+  N='Snoopy' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
+  N='Snoopy' C='EE200' R='25 Ohm Hall' D='F' H='10AM'
+  N='Snoopy' C='EE200' R='25 Ohm Hall' D='M' H='10AM'
+  N='Snoopy' C='EE200' R='25 Ohm Hall' D='W' H='1PM'
+
 Schedule('Snoopy',C,R,D,H)? Yes(4)
 select
   N='Snoopy' C='CS101' R='Turing Aud.' D='Tu' H='10AM'
@@ -321,6 +336,27 @@ rename
   C='EE200' R='25 Ohm Hall' D='M' H='10AM'
   C='EE200' R='25 Ohm Hall' D='W' H='1PM'
 
+Grades('Snoopy',C,G)?
+
+Postorder Numbers
+  Q10: 2
+  R6: 1
+
+Rule Evaluation Order
+  R6
+
+Backward Edges
+
+Rule Evaluation
+Grades(N,C,G) :- snap(S,N,A,P),csg(C,S,G)
+  N='C. Brown' C='CS101' G='A'
+  N='C. Brown' C='EE200' G='C'
+  N='L. Van Pelt' C='CS101' G='B'
+  N='L. Van Pelt' C='PH100' G='C+'
+  N='P. Patty' C='EE200' G='B+'
+  N='Snoopy' C='CS101' G='A-'
+  N='Snoopy' C='EE200' G='B'
+
 Grades('Snoopy',C,G)? Yes(2)
 select
   N='Snoopy' C='CS101' G='A-'
@@ -331,6 +367,27 @@ project
 rename
   C='CS101' G='A-'
   C='EE200' G='B'
+
+Students('CS101',R,N,G)?
+
+Postorder Numbers
+  Q11: 2
+  R7: 1
+
+Rule Evaluation Order
+  R7
+
+Backward Edges
+
+Rule Evaluation
+Students(C,R,N,G) :- snap(S,N,A,P),csg(C,S,G),cr(C,R)
+  C='CS101' R='Turing Aud.' N='C. Brown' G='A'
+  C='CS101' R='Turing Aud.' N='L. Van Pelt' G='B'
+  C='CS101' R='Turing Aud.' N='Snoopy' G='A-'
+  C='EE200' R='25 Ohm Hall' N='C. Brown' G='C'
+  C='EE200' R='25 Ohm Hall' N='P. Patty' G='B+'
+  C='EE200' R='25 Ohm Hall' N='Snoopy' G='B'
+  C='PH100' R='Newton Lab.' N='L. Van Pelt' G='C+'
 
 Students('CS101',R,N,G)? Yes(3)
 select
