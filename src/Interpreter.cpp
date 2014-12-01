@@ -282,15 +282,23 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	out << "\n";
 
 	// Query output
-	Relation r = db.at(pred.ident);
-	r = interpret_query(pred, r, r, r);
+	Relation selection_rel = db.at(pred.ident);
+	Relation projection_rel, rename_rel;
+	rename_rel = interpret_query(pred, selection_rel, projection_rel, rename_rel);
 
 	out << qs << "? ";
-
-	auto size = r.get_tuples().size();
+	auto size = rename_rel.get_tuples().size();
 	if(size == 0) out << "No\n";
-	else out << "Yes(" << size << ")\n";
-	out << r;
+	else if(size > 0)
+	{
+		out << "Yes(" << size << ")\n";
+		out << "select\n";
+		out << selection_rel;
+		out << "project\n";
+		out << projection_rel;
+		out << "rename\n";
+		out << rename_rel;
+	}
 	out << "\n";
 }
 
