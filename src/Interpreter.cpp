@@ -245,6 +245,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	// Cycle Finding
 	// Backward Edges
 	out << "Backward Edges\n";
+	bool backward_edges = false;
 	for(const auto &s : deplist)
 	{
 		priority_queue< string, deque<string>, greater<string> > pq;
@@ -259,6 +260,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 		if(not pq.empty())
 		{
+			backward_edges = true;
 			out << "  " << s << ":";
 			while(not pq.empty())
 			{
@@ -272,12 +274,15 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 	// Rule Evaluation
 	out << "Rule Evaluation\n";
-	bool eval_again = true;
-	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
+	bool eval_again = false;
+	for(auto iter = topo_sorted.cbegin(); iter != topo_sorted.cend(); )
 	{
-		// do rule eval work here
-		eval_again = terp_rule(*iter);
-		if(++iter == topo_sorted.cend() and not eval_again) iter = topo_sorted.cbegin();
+		eval_again = terp_rule(*iter) or eval_again;
+		if(++iter == topo_sorted.cend() and eval_again and backward_edges)
+		{
+			iter = topo_sorted.cbegin();
+			eval_again = false;
+		}
 	}
 	out << "\n";
 
