@@ -275,10 +275,10 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	bool eval_again = true;
 	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
 	{
+		// do rule eval work here
 		eval_again = terp_rule(*iter);
 		if(++iter == topo_sorted.cend() and not eval_again) iter = topo_sorted.cbegin();
 	}
-	// do rule eval work here
 	out << "\n";
 
 	// Query output
@@ -312,10 +312,6 @@ bool Interpreter::terp_rule(const string &rid)
 
 	out << "" << string(rule) << "\n";
 
-//	if(caller_count == false) return false;
-
-//	auto dlprog = parser->get_DatalogProgram();
-
 	size_t orig_size = db.db_size();
 
 //	for(auto rule : dlprog->Rules)
@@ -331,24 +327,27 @@ bool Interpreter::terp_rule(const string &rid)
 		}
 
 		Relation result = rels.front();
-		for(auto r : rels)
+		for(auto iter = rels.begin() + 1; iter != rels.end(); ++iter)
 		{
-			result = result.join(r);
-			// result = result + r;
+			result = result + *iter; // join
 		}
 
-		Relation final = db.at(rule.pred.ident);
+		auto name = rule.pred.ident;
+		Relation final = db.at(name);
 
-		final = final.rename(query_to_scheme(rule.pred));
-		final = final.unioned(result);
-		// final = final | result;
+		final.rename_update(query_to_scheme(rule.pred));
+		final |= result; // in place union
 
-		db[final.get_name()] = final;
+		auto &s = db.at(name).get_scheme();
+		final.rename_update(s);
+		final -= db.at(name); // in place difference
+
+		out << string(final);
+
+		db.at(name) |= final; // in place union
 	}
 
-//	return orig_size != db.db_size();
-	return orig_size < db.db_size();
-//	return caller_count + this->terp_rules(orig_size < db.db_size());
+	return orig_size != db.db_size();
 }
 
 void Interpreter::build_graph_output()
