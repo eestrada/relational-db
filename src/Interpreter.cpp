@@ -216,19 +216,19 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 	// Depth-First Search
 	// Postorder
-	out << "  Postorder Numbers\n";
+	out << "Postorder Numbers\n";
 	graph.reset();
    	auto deplist = graph.depth_search(qid);
 	sort(deplist.begin(), deplist.end());
 	for(const auto &id : deplist)
 	{
-		out << "    " << id << ": " << graph.at(id).postorder <<"\n";
+		out << "  " << id << ": " << graph.at(id).postorder <<"\n";
 	}
 	out << "\n";
 
 	// Topological Sort
 	// Rule Evaluation Order
-	out << "  Rule Evaluation Order\n";
+	out << "Rule Evaluation Order\n";
 	auto sortedlist = deplist;
 	sortedlist = graph.sorted(sortedlist);
 	decltype(sortedlist) topo_sorted;
@@ -236,7 +236,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	{
 		if(id.front() != 'Q')
 		{
-			out << "    " << id <<"\n";
+			out << "  " << id <<"\n";
 			topo_sorted.push_back(id);
 		}
 	}
@@ -244,7 +244,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 	// Cycle Finding
 	// Backward Edges
-	out << "  Backward Edges\n";
+	out << "Backward Edges\n";
 	for(const auto &s : deplist)
 	{
 		priority_queue< string, deque<string>, greater<string> > pq;
@@ -259,7 +259,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 
 		if(not pq.empty())
 		{
-			out << "    " << s << ":";
+			out << "  " << s << ":";
 			while(not pq.empty())
 			{
 				out << " " << pq.top();
@@ -271,7 +271,7 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	out << "\n";
 
 	// Rule Evaluation
-	out << "  Rule Evaluation\n";
+	out << "Rule Evaluation\n";
 	bool eval_again = true;
 	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
 	{
@@ -302,7 +302,7 @@ bool Interpreter::terp_rule(const string &rid)
 	auto rule = dlprog->Rules.at(i);
 	auto r = db[rule.pred.ident];
 
-	out << "    " << string(rule) << "\n";
+	out << "" << string(rule) << "\n";
 
 //	if(caller_count == false) return false;
 
