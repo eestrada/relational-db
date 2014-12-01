@@ -319,38 +319,35 @@ bool Interpreter::terp_rule(const string &rid)
 
 	size_t orig_size = db.db_size();
 
-//	for(auto rule : dlprog->Rules)
+	std::vector<Relation> rels;
+
+	for(auto pred : rule.pred_list)
 	{
-		std::vector<Relation> rels;
+		Relation r = db.at(pred.ident);
+		r = interpret_query(pred, r, r, r);
 
-		for(auto pred : rule.pred_list)
-		{
-			Relation r = db.at(pred.ident);
-			r = interpret_query(pred, r, r, r);
-
-			rels.push_back(r);
-		}
-
-		Relation result = rels.front();
-		for(auto iter = rels.begin() + 1; iter != rels.end(); ++iter)
-		{
-			result = result + *iter; // join
-		}
-
-		auto name = rule.pred.ident;
-		Relation final = db.at(name);
-
-		final.rename_update(query_to_scheme(rule.pred));
-		final |= result; // in place union
-
-		auto &s = db.at(name).get_scheme();
-		final.rename_update(s);
-		final -= db.at(name); // in place difference
-
-		out << string(final);
-
-		db.at(name) |= final; // in place union
+		rels.push_back(r);
 	}
+
+	Relation result = rels.front();
+	for(auto iter = rels.begin() + 1; iter != rels.end(); ++iter)
+	{
+		result = result + *iter; // join
+	}
+
+	auto name = rule.pred.ident;
+	Relation final = db.at(name);
+
+	final.rename_update(query_to_scheme(rule.pred));
+	final |= result; // in place union
+
+	auto &s = db.at(name).get_scheme();
+	final.rename_update(s);
+	final -= db.at(name); // in place difference
+
+	out << string(final);
+
+	db.at(name) |= final; // in place union
 
 	return orig_size != db.db_size();
 }
@@ -417,7 +414,6 @@ void Interpreter::build_graph()
 			}
         }
 		graph[rnode.id] = rnode;
-//		ridmap[rnode.id] = rule1.pred.ident;
 		ridmap[rnode.id] = r1cnt - 1;
         ++r1cnt;
 	}
@@ -429,23 +425,6 @@ DataBase Interpreter::get_database() const { return db; }
 
 string Interpreter::get_query_output() const { return out.str(); }
 
-void Interpreter::terp_rules_wrapper()
-{
-	out << "Rule Evaluation\n\n";
-	auto passes = terp_rules();
-
-	out << "\n";
-
-	out << "Converged after " << passes << " passes through the Rules.\n\n";
-
-	for(auto &p : db)
-	{
-		out << p.first << "\n";
-
-		out << string(p.second) << "\n";
-	}
-}
-
 void Interpreter::interpret()
 {
 	parser->parse();
@@ -453,6 +432,5 @@ void Interpreter::interpret()
 	terp_schemes();
 	terp_facts();
 	build_graph();
-	//terp_rules_wrapper();
 	terp_queries();
 }

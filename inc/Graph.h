@@ -17,7 +17,7 @@ namespace DG
 using namespace std;
 
 typedef vector<string> StrList;
-//struct Node : DB::OrderedSet< string >
+
 struct Node : set< string >
 {
 	Node() : id(), visited(false), postorder(){}
