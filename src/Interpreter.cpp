@@ -191,28 +191,156 @@ void Interpreter::terp_queries()
 {
 	out << "Query Evaluation\n\n";
 	auto dlprog = parser->get_DatalogProgram();
-	
-	for(auto &pred : dlprog->Queries)
-	{
-		Relation selection_rel = db[pred.ident];
-		Relation projection_rel, rename_rel;
-		rename_rel = interpret_query(pred, selection_rel, projection_rel, rename_rel);
 
-		out << query_to_scheme(pred) << "? ";
-		auto size = rename_rel.get_tuples().size();
-		if(size == 0) out << "No\n";
-		else if(size > 0)
-		{
-			out << "Yes(" << size << ")\n";
-			out << "select\n";
-			out << selection_rel;
-			out << "project\n";
-			out << projection_rel;
-			out << "rename\n";
-			out << rename_rel;
-		}
-		out << "\n";
+	auto qcnt = 1;		
+	for(auto pred : dlprog->Queries)
+	{
+		build_query_output("Q" + to_string(qcnt), pred);
+		++qcnt;
 	}
+}
+
+void Interpreter::build_Postorder(const string &qid)
+{
+	// postorder
+
+	// Topo sort
+}
+
+void Interpreter::build_query_output(const string &qid, const Predicate &pred)
+{
+	auto qs =  query_to_scheme(pred);
+
+	// Graph output
+	out << qs << "?\n\n";
+
+	// Depth-First Search
+	// Postorder
+	out << "  Postorder Numbers\n";
+	graph.reset();
+   	auto deplist = graph.depth_search(qid);
+	sort(deplist.begin(), deplist.end());
+	for(const auto &id : deplist)
+	{
+		out << "    " << id << ": " << graph.at(id).postorder <<"\n";
+	}
+	out << "\n";
+
+	// Topological Sort
+	// Rule Evaluation Order
+	out << "  Rule Evaluation Order\n";
+	auto sortedlist = deplist;
+	sortedlist = graph.sorted(sortedlist);
+	decltype(sortedlist) topo_sorted;
+	for(const auto &id : sortedlist)
+	{
+		if(id.front() != 'Q')
+		{
+			out << "    " << id <<"\n";
+			topo_sorted.push_back(id);
+		}
+	}
+	out << "\n";
+
+	// Cycle Finding
+	// Backward Edges
+	out << "  Backward Edges\n";
+	for(const auto &s : deplist)
+	{
+		priority_queue< string, deque<string>, greater<string> > pq;
+
+		if(s.front() != 'Q')
+		{
+			for(const auto &d : graph.at(s))
+			{
+				if(graph[d].postorder >= graph[s].postorder) pq.push(d);
+			}
+		}
+
+		if(not pq.empty())
+		{
+			out << "    " << s << ":";
+			while(not pq.empty())
+			{
+				out << " " << pq.top();
+				pq.pop();
+			}
+			out << "\n";
+		}
+	}
+	out << "\n";
+
+	// Rule Evaluation
+	out << "  Rule Evaluation\n";
+	bool eval_again = true;
+	for(auto iter = topo_sorted.cbegin(); eval_again and iter != topo_sorted.cend(); )
+	{
+		eval_again = terp_rule(*iter);
+		if(++iter == topo_sorted.cend() and not eval_again) iter = topo_sorted.cbegin();
+	}
+	// do rule eval work here
+	out << "\n";
+
+	// Query output
+	Relation r = db.at(pred.ident);
+	r = interpret_query(pred, r, r, r);
+
+	out << qs << "? ";
+
+	auto size = r.get_tuples().size();
+	if(size == 0) out << "No\n";
+	else out << "Yes(" << size << ")\n";
+	out << r;
+	out << "\n";
+}
+
+bool Interpreter::terp_rule(const string &rid)
+{
+	auto dlprog = parser->get_DatalogProgram();
+
+	auto i = ridmap.at(rid);
+	auto rule = dlprog->Rules.at(i);
+	auto r = db[rule.pred.ident];
+
+	out << "    " << string(rule) << "\n";
+
+//	if(caller_count == false) return false;
+
+//	auto dlprog = parser->get_DatalogProgram();
+
+	size_t orig_size = db.db_size();
+
+//	for(auto rule : dlprog->Rules)
+	{
+		std::vector<Relation> rels;
+
+		for(auto pred : rule.pred_list)
+		{
+			Relation r = db.at(pred.ident);
+			r = interpret_query(pred, r, r, r);
+
+			rels.push_back(r);
+		}
+
+		Relation result = rels.front();
+		for(auto r : rels)
+		{
+			result = result.join(r);
+			// result = result + r;
+		}
+
+		Relation final = db.at(rule.pred.ident);
+
+		final = final.rename(query_to_scheme(rule.pred));
+		final = final.unioned(result);
+		// final = final | result;
+
+		db[final.get_name()] = final;
+	}
+
+//	return orig_size != db.db_size();
+	return orig_size < db.db_size();
+//	return caller_count + this->terp_rules(orig_size < db.db_size());
 }
 
 void Interpreter::build_graph_output()
@@ -313,6 +441,6 @@ void Interpreter::interpret()
 	terp_schemes();
 	terp_facts();
 	build_graph();
-	terp_rules_wrapper();
+	//terp_rules_wrapper();
 	terp_queries();
 }
