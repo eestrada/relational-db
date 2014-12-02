@@ -200,24 +200,11 @@ void Interpreter::terp_queries()
 	}
 }
 
-void Interpreter::build_Postorder(const string &qid)
+DG::StrList Interpreter::build_Postorder(const string &qid)
 {
-	// postorder
-
-	// Topo sort
-}
-
-void Interpreter::build_query_output(const string &qid, const Predicate &pred)
-{
-	auto qs =  query_to_scheme(pred);
-
-	// Graph output
-	out << qs << "?\n\n";
-
 	// Depth-First Search
 	// Postorder
 	out << "Postorder Numbers\n";
-	graph.reset();
    	auto deplist = graph.depth_search(qid);
 	sort(deplist.begin(), deplist.end());
 	for(const auto &id : deplist)
@@ -226,8 +213,11 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	}
 	out << "\n";
 
-	// Topological Sort
-	// Rule Evaluation Order
+	return deplist;
+}
+
+DG::StrList Interpreter::build_Toposort(const DG::StrList &deplist)
+{
 	out << "Rule Evaluation Order\n";
 	auto sortedlist = deplist;
 	sortedlist = graph.sorted(sortedlist);
@@ -242,8 +232,11 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 	}
 	out << "\n";
 
-	// Cycle Finding
-	// Backward Edges
+	return topo_sorted;
+}
+
+bool Interpreter::build_BackwardEdges(const DG::StrList &deplist)
+{
 	out << "Backward Edges\n";
 	bool backward_edges = false;
 	for(const auto &s : deplist)
@@ -271,6 +264,29 @@ void Interpreter::build_query_output(const string &qid, const Predicate &pred)
 		}
 	}
 	out << "\n";
+
+	return backward_edges;
+}
+
+void Interpreter::build_query_output(const string &qid, const Predicate &pred)
+{
+	auto qs =  query_to_scheme(pred);
+
+	// Graph output
+	out << qs << "?\n\n";
+
+	// Depth-First Search
+	// Postorder
+	graph.reset();
+	auto deplist = this->build_Postorder(qid);
+
+	// Topological Sort
+	// Rule Evaluation Order
+	auto topo_sorted = this->build_Toposort(deplist);
+
+	// Cycle Finding
+	// Backward Edges
+	bool backward_edges = this->build_BackwardEdges(deplist);
 
 	// Rule Evaluation
 	out << "Rule Evaluation\n";

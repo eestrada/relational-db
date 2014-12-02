@@ -78,7 +78,9 @@ private:
 	void build_graph();
 	void build_graph_output();
 	void build_query_output(const string &qid, const Predicate &pred);
-	void build_Postorder(const string &qid);
+	DG::StrList build_Postorder(const string &qid);
+	DG::StrList build_Toposort(const DG::StrList &deplist);
+	bool build_BackwardEdges(const DG::StrList &deplist);
 private:
 	unique_ptr<Parser> parser;
 	DataBase db;
